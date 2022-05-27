@@ -1,0 +1,1924 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>[TDD Kata] Potter</title>
+    <url>/KenChen/3803256218/</url>
+    <content><![CDATA[<p>repo: <a href="https://github.com/kenchen879/kata-potter">https://github.com/kenchen879/kata-potter</a></p>
+<h2 id="需求設計"><a href="#需求設計" class="headerlink" title="需求設計"></a>需求設計</h2><p>曾幾何時，有一個 5 本書系列，講述了一位名叫哈利的非常英國的英雄。 （至少在這個 Kata 被發明的時候，只有 5 個。從那以後他們成倍增加）全世界的孩子都認為他很棒，當然，出版商也一樣。因此，為了對人類慷慨解囊，（並為了增加銷售額），他們建立了以下定價模型，以利用哈利吸引人的優點。</p>
+<p>這五本書中的任何一本都需要 8 歐元。但是，如果您從該系列中購買了兩本不同的書，則可以在這兩本書上獲得 5% 的折扣。<br>如果您購買 3 種不同的書籍，您將獲得 10% 的折扣。購買 4 種不同的書籍，您將獲得 20% 的折扣。如果您全部購買 5 個，您將獲得 25% 的巨大折扣。</p>
+<p>請注意，例如，如果您購買了四本書，其中 3 本書是不同的書名，那麼您可以在其中的 3 本書上獲得 10% 的折扣，但第四本書的價格仍然是 8 歐元。</p>
+<p>波特狂熱正在席捲全國，各地青少年的父母都在排隊，購物籃裡裝滿了波特的書籍。你的任務是編寫一段代碼來計算任何可以想像到的購物籃的價格，並提供盡可能大的折扣。</p>
+<p>舉例來說，這個購物籃會花費多少錢?</p>
+<ul>
+<li>2 copies of the first book</li>
+<li>2 copies of the second book</li>
+<li>2 copies of the third book</li>
+<li>1 copy of the fourth book</li>
+<li>1 copy of the fifth book</li>
+</ul>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">(4 * 8) - 20% [first book, second book, third book, fourth book]</span><br><span class="line">+ (4 * 8) - 20% [first book, second book, third book, fifth book]</span><br><span class="line">= 25.6 * 2</span><br><span class="line">= 51.20</span><br></pre></td></tr></table></figure>
+
+<h2 id="開始-Red–Green–Refactor-cycle"><a href="#開始-Red–Green–Refactor-cycle" class="headerlink" title="開始 Red–Green–Refactor cycle"></a>開始 Red–Green–Refactor cycle</h2><ol>
+<li><p>第一個紅燈 (Red)</p>
+ <figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// potter.spec.ts</span></span><br><span class="line"><span class="title function_">test</span>(<span class="string">&#x27;testBasics: buy one book&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> potter = <span class="keyword">new</span> <span class="title class_">Potter</span>();</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">0</span>);</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([<span class="number">1</span>]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">8</span>);</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([<span class="number">2</span>]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">8</span>);</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([<span class="number">3</span>]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">8</span>);</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([<span class="number">4</span>]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">8</span>);</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">8</span> * <span class="number">3</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+ <figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// potter.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">Potter</span> &#123;</span><br><span class="line">    <span class="title function_">addToBasket</span>(<span class="params">pins: <span class="built_in">number</span></span>) &#123;&#125;</span><br><span class="line">    <span class="keyword">get</span> <span class="title function_">price</span>() &#123;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第一個綠燈 (Green)</p>
+<p> 將 score method 回傳值改為 0，形成第一個綠燈。</p>
+ <figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// potter.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">Potter</span> &#123;</span><br><span class="line">    <span class="title function_">addToBasket</span>(<span class="params">pins: <span class="built_in">number</span></span>) &#123;&#125;</span><br><span class="line">    <span class="keyword">get</span> <span class="title function_">price</span>() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第一次重構</p>
+ <figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// potter.spec.ts</span></span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Potter</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;./potter&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="title function_">describe</span>(<span class="string">&#x27;Kata - Harry Potter Book&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> <span class="attr">potter</span>: <span class="title class_">Potter</span>;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">beforeEach</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    potter = <span class="keyword">new</span> <span class="title class_">Potter</span>();</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="title function_">it</span>(<span class="string">&#x27;should create an instance&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">expect</span>(potter).<span class="title function_">toBeTruthy</span>();</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="title function_">test</span>(<span class="string">&#x27;testBasics: buy one book&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">0</span>);</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([<span class="number">1</span>]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">8</span>);</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([<span class="number">2</span>]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">8</span>);</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([<span class="number">3</span>]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">8</span>);</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([<span class="number">4</span>]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">8</span>);</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">8</span> * <span class="number">3</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第二個紅燈</p>
+ <figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// potter.spec.ts</span></span><br><span class="line"><span class="title function_">test</span>(<span class="string">&#x27;testBasics: buy one book&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([<span class="number">0</span>, <span class="number">1</span>]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">8</span> * <span class="number">2</span> * <span class="number">0.95</span>);</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([<span class="number">0</span>, <span class="number">2</span>, <span class="number">4</span>]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">8</span> * <span class="number">3</span> * <span class="number">0.9</span>);</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">8</span> * <span class="number">4</span> * <span class="number">0.8</span>);</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">8</span> * <span class="number">5</span> * <span class="number">0.75</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第二個綠燈</p>
+ <figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">Potter</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="attr">_basket</span>: <span class="built_in">number</span>[] = [];</span><br><span class="line">    <span class="title function_">addToBasket</span>(<span class="params">book: <span class="built_in">number</span>[]</span>) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">_basket</span> = [];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; book.<span class="property">length</span>; i++)</span><br><span class="line">            <span class="variable language_">this</span>.<span class="property">_basket</span>.<span class="title function_">push</span>(book[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">get</span> <span class="title function_">price</span>() &#123;</span><br><span class="line">        <span class="keyword">let</span> price = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> totalBookNumber = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> distunctBookNumber = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        totalBookNumber = <span class="variable language_">this</span>.<span class="property">_basket</span>.<span class="property">length</span>;</span><br><span class="line">        <span class="keyword">const</span> distinctBasket = <span class="variable language_">this</span>.<span class="property">_basket</span>.<span class="title function_">filter</span>(<span class="function">(<span class="params">ele , pos</span>) =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">_basket</span>.<span class="title function_">indexOf</span>(ele) == pos;</span><br><span class="line">        &#125;);</span><br><span class="line">        distunctBookNumber = distinctBasket.<span class="property">length</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (distunctBookNumber == <span class="number">1</span>) &#123;</span><br><span class="line">            price = <span class="number">8</span> * totalBookNumber;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">switch</span> (totalBookNumber) &#123;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">                    price = <span class="number">8</span> * <span class="number">2</span> * <span class="number">0.95</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">                    price = <span class="number">8</span> * <span class="number">3</span> * <span class="number">0.9</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">4</span>:</span><br><span class="line">                    price = <span class="number">8</span> * <span class="number">4</span> * <span class="number">0.8</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">5</span>:</span><br><span class="line">                    price = <span class="number">8</span> * <span class="number">5</span> * <span class="number">0.75</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="attr">default</span>:</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> price;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第二次重構</p>
+ <figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// potter.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">Potter</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="attr">_basket</span>: <span class="built_in">number</span>[] = [];</span><br><span class="line">    <span class="title function_">addToBasket</span>(<span class="params">book: <span class="built_in">number</span>[]</span>) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">_basket</span> = [];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; book.<span class="property">length</span>; i++)</span><br><span class="line">            <span class="variable language_">this</span>.<span class="property">_basket</span>.<span class="title function_">push</span>(book[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">get</span> <span class="title function_">price</span>() &#123;</span><br><span class="line">        <span class="keyword">let</span> price = <span class="number">8</span>;</span><br><span class="line">        <span class="keyword">let</span> discount = [<span class="number">1</span>, <span class="number">1</span>, <span class="number">0.95</span>, <span class="number">0.9</span>, <span class="number">0.8</span>, <span class="number">0.75</span>];</span><br><span class="line">        <span class="keyword">let</span> totalBookNumber = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> distinctBookNumber = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        totalBookNumber = <span class="variable language_">this</span>.<span class="property">_basket</span>.<span class="property">length</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 取得不重複的購物籃</span></span><br><span class="line">        <span class="keyword">const</span> distinctBasket = <span class="variable language_">this</span>.<span class="property">distinctBasket</span>;</span><br><span class="line">        <span class="comment">// 取得不重複購物籃的數量</span></span><br><span class="line">        distinctBookNumber = distinctBasket.<span class="property">length</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (distinctBookNumber == <span class="number">1</span>) &#123;</span><br><span class="line">            price *= totalBookNumber;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">switch</span> (totalBookNumber) &#123;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">                    price *= <span class="number">2</span> * discount[<span class="number">2</span>];</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">                    price *= <span class="number">3</span> * discount[<span class="number">3</span>];</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">4</span>:</span><br><span class="line">                    price *= <span class="number">4</span> * discount[<span class="number">4</span>];</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">5</span>:</span><br><span class="line">                    price *= <span class="number">5</span> * discount[<span class="number">5</span>];</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="attr">default</span>:</span><br><span class="line">                    price = <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> price;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    get distinctBasket () &#123;</span><br><span class="line">        <span class="keyword">const</span> distinctBasket = [...(<span class="keyword">new</span> <span class="title class_">Set</span>(<span class="variable language_">this</span>.<span class="property">_basket</span>))];</span><br><span class="line">        <span class="keyword">return</span> distinctBasket;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第三個紅燈</p>
+ <figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// potter.spec.ts</span></span><br><span class="line"><span class="title function_">test</span>(<span class="string">&#x27;testSeveralDiscounts&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">8</span> + (<span class="number">8</span> * <span class="number">2</span> * <span class="number">0.95</span>));</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">2</span> * (<span class="number">8</span> * <span class="number">2</span> * <span class="number">0.95</span>));</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>((<span class="number">8</span> * <span class="number">4</span> * <span class="number">0.8</span>) + (<span class="number">8</span> * <span class="number">2</span> * <span class="number">0.95</span>));</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">8</span> + (<span class="number">8</span> * <span class="number">5</span> * <span class="number">0.75</span>));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第三個綠燈</p>
+ <figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// potter.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">Potter</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="attr">_basket</span>: <span class="built_in">number</span>[] = [];</span><br><span class="line">    <span class="title function_">addToBasket</span>(<span class="params">book: <span class="built_in">number</span>[]</span>) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">_basket</span> = [];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; book.<span class="property">length</span>; i++)</span><br><span class="line">            <span class="variable language_">this</span>.<span class="property">_basket</span>.<span class="title function_">push</span>(book[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">get</span> <span class="title function_">price</span>() &#123;</span><br><span class="line">        <span class="keyword">let</span> price = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">const</span> discount = [<span class="number">1</span>, <span class="number">1</span>, <span class="number">0.95</span>, <span class="number">0.9</span>, <span class="number">0.8</span>, <span class="number">0.75</span>];</span><br><span class="line">        <span class="keyword">let</span> totalBookNumber = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">// 取得不重複的購物籃</span></span><br><span class="line">        <span class="keyword">let</span> distinctBasket = [];</span><br><span class="line">        <span class="keyword">let</span> distinctBookNumber = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> index = [];</span><br><span class="line"></span><br><span class="line">        totalBookNumber = <span class="variable language_">this</span>.<span class="property">_basket</span>.<span class="property">length</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (totalBookNumber &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// 取得不重複的購物籃</span></span><br><span class="line">            distinctBasket = <span class="variable language_">this</span>.<span class="property">distinctBasket</span>;</span><br><span class="line">            <span class="comment">// 取得不重複購物籃的數量</span></span><br><span class="line">            distinctBookNumber = distinctBasket.<span class="property">length</span>;</span><br><span class="line">            <span class="keyword">switch</span> (distinctBookNumber) &#123;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">                    price += <span class="number">8</span> * distinctBookNumber;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">                    price += <span class="number">8</span> * <span class="number">2</span> * discount[<span class="number">2</span>];</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">                    price += <span class="number">8</span> * <span class="number">3</span> * discount[<span class="number">3</span>];</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">4</span>:</span><br><span class="line">                    price += <span class="number">8</span> * <span class="number">4</span> * discount[<span class="number">4</span>];</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">5</span>:</span><br><span class="line">                    price += <span class="number">8</span> * <span class="number">5</span> * discount[<span class="number">5</span>];</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="attr">default</span>:</span><br><span class="line">                    price = <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            index = distinctBasket.<span class="title function_">filter</span>(<span class="function"><span class="params">e</span> =&gt;</span> <span class="variable language_">this</span>.<span class="property">_basket</span>.<span class="title function_">indexOf</span>(e));</span><br><span class="line">            index.<span class="title function_">forEach</span>(<span class="function"><span class="params">e</span> =&gt;</span> <span class="variable language_">this</span>.<span class="property">_basket</span>.<span class="title function_">splice</span>(e, distinctBookNumber));</span><br><span class="line">            totalBookNumber -= distinctBookNumber;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> price;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    get distinctBasket () &#123;</span><br><span class="line">        <span class="keyword">const</span> distinctBasket = [...(<span class="keyword">new</span> <span class="title class_">Set</span>(<span class="variable language_">this</span>.<span class="property">_basket</span>))];</span><br><span class="line">        <span class="keyword">return</span> distinctBasket;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第三次重構</p>
+ <figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// potter.spec.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">Potter</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="attr">_basket</span>: <span class="built_in">number</span>[] = [];</span><br><span class="line">    <span class="title function_">addToBasket</span>(<span class="params">book: <span class="built_in">number</span>[]</span>) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">_basket</span> = [];</span><br><span class="line">        book.<span class="title function_">forEach</span>(<span class="function"><span class="params">e</span> =&gt;</span> <span class="variable language_">this</span>.<span class="property">_basket</span>.<span class="title function_">push</span>(e));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">get</span> <span class="title function_">price</span>() &#123;</span><br><span class="line">        <span class="keyword">let</span> price = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">const</span> discount = [<span class="number">1</span>, <span class="number">1</span>, <span class="number">0.95</span>, <span class="number">0.9</span>, <span class="number">0.8</span>, <span class="number">0.75</span>];</span><br><span class="line">        <span class="keyword">let</span> totalBookNumber = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">// 取得不重複的購物籃</span></span><br><span class="line">        <span class="keyword">let</span> distinctBasket = [];</span><br><span class="line">        <span class="keyword">let</span> distinctBookNumber = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> index = [];</span><br><span class="line"></span><br><span class="line">        totalBookNumber = <span class="variable language_">this</span>.<span class="property">_basket</span>.<span class="property">length</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (totalBookNumber &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// 取得不重複的購物籃</span></span><br><span class="line">            distinctBasket = <span class="variable language_">this</span>.<span class="property">distinctBasket</span>;</span><br><span class="line">            <span class="comment">// 取得不重複購物籃的數量</span></span><br><span class="line">            distinctBookNumber = distinctBasket.<span class="property">length</span>;</span><br><span class="line">            <span class="keyword">switch</span> (distinctBookNumber) &#123;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">                    price += <span class="number">8</span> * distinctBookNumber;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">                    price += <span class="number">8</span> * <span class="number">2</span> * discount[<span class="number">2</span>];</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">                    price += <span class="number">8</span> * <span class="number">3</span> * discount[<span class="number">3</span>];</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">4</span>:</span><br><span class="line">                    price += <span class="number">8</span> * <span class="number">4</span> * discount[<span class="number">4</span>];</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">5</span>:</span><br><span class="line">                    price += <span class="number">8</span> * <span class="number">5</span> * discount[<span class="number">5</span>];</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="attr">default</span>:</span><br><span class="line">                    price = <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            index = distinctBasket.<span class="title function_">filter</span>(<span class="function"><span class="params">e</span> =&gt;</span> <span class="variable language_">this</span>.<span class="property">_basket</span>.<span class="title function_">indexOf</span>(e));</span><br><span class="line">            index.<span class="title function_">forEach</span>(<span class="function"><span class="params">e</span> =&gt;</span> <span class="variable language_">this</span>.<span class="property">_basket</span>.<span class="title function_">splice</span>(e, distinctBookNumber));</span><br><span class="line">            totalBookNumber -= distinctBookNumber;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> price;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    get distinctBasket () &#123;</span><br><span class="line">        <span class="keyword">const</span> distinctBasket = [...(<span class="keyword">new</span> <span class="title class_">Set</span>(<span class="variable language_">this</span>.<span class="property">_basket</span>))];</span><br><span class="line">        <span class="keyword">return</span> distinctBasket;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第四個紅燈</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// potter.spec.ts</span></span><br><span class="line"><span class="title function_">test</span>(<span class="string">&#x27;testEdgeCases&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">2</span> * (<span class="number">8</span> * <span class="number">4</span> * <span class="number">0.8</span>));</span><br><span class="line">    potter.<span class="title function_">addToBasket</span>([<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, </span><br><span class="line">                        <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, </span><br><span class="line">                        <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, </span><br><span class="line">                        <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, </span><br><span class="line">                        <span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>]);</span><br><span class="line">    <span class="title function_">expect</span>(potter.<span class="property">price</span>).<span class="title function_">toBe</span>(<span class="number">3</span> * (<span class="number">8</span> * <span class="number">5</span> * <span class="number">0.75</span>) + <span class="number">2</span> * (<span class="number">8</span> * <span class="number">4</span> * <span class="number">0.8</span>));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第四個綠燈以及第四次重構</p>
+<p>要取得價格最佳解。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// potter.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">Potter</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="attr">_basket</span>: <span class="built_in">number</span>[] = [];</span><br><span class="line">    <span class="keyword">private</span> totalBookNumber = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">constructor</span> () &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">_basket</span> = [];</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">totalBookNumber</span> = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">addToBasket</span>(<span class="params">book: <span class="built_in">number</span>[]</span>) &#123;</span><br><span class="line">        book.<span class="title function_">forEach</span>(<span class="function"><span class="params">e</span> =&gt;</span> <span class="variable language_">this</span>.<span class="property">_basket</span>.<span class="title function_">push</span>(e));</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">totalBookNumber</span> = book.<span class="property">length</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">get</span> <span class="title function_">price</span>() &#123;</span><br><span class="line">        <span class="keyword">let</span> price = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">const</span> discount = [<span class="number">1</span>, <span class="number">1</span>, <span class="number">0.95</span>, <span class="number">0.9</span>, <span class="number">0.8</span>, <span class="number">0.75</span>];</span><br><span class="line">        <span class="comment">// 取得不重複的購物籃</span></span><br><span class="line">        <span class="keyword">let</span> <span class="attr">distinctBasket</span>:<span class="built_in">number</span>[] = [];</span><br><span class="line">        <span class="comment">// 取得不重複購物籃的數量</span></span><br><span class="line">        <span class="keyword">let</span> distinctBookNumber = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (<span class="variable language_">this</span>.<span class="property">totalBookNumber</span> &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="title function_">checkOptimalPrice</span>()) &#123;</span><br><span class="line">                price += <span class="number">2</span> * <span class="number">8</span> * <span class="number">4</span> * discount[<span class="number">4</span>];</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                distinctBasket = <span class="variable language_">this</span>.<span class="title function_">createDistinctBasket</span>();</span><br><span class="line">                distinctBookNumber = distinctBasket.<span class="property">length</span>;</span><br><span class="line">                price += <span class="number">8</span> * distinctBookNumber * discount[distinctBookNumber];</span><br><span class="line">                <span class="variable language_">this</span>.<span class="title function_">removeBook</span>(distinctBasket, distinctBookNumber);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> price;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    checkOptimalPrice () &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">totalBookNumber</span> &lt; <span class="number">8</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="attr">distinctBasket1</span>: <span class="built_in">number</span>[] = [];</span><br><span class="line">        <span class="keyword">let</span> <span class="attr">distinctBasket2</span>: <span class="built_in">number</span>[] = [];</span><br><span class="line"></span><br><span class="line">        distinctBasket1 = <span class="variable language_">this</span>.<span class="title function_">createDistinctBasket</span>();</span><br><span class="line">        <span class="variable language_">this</span>.<span class="title function_">removeBook</span>(distinctBasket1, distinctBasket1.<span class="property">length</span>);</span><br><span class="line">        distinctBasket2 = <span class="variable language_">this</span>.<span class="title function_">createDistinctBasket</span>();</span><br><span class="line">        <span class="variable language_">this</span>.<span class="title function_">removeBook</span>(distinctBasket2, distinctBasket2.<span class="property">length</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (distinctBasket1.<span class="property">length</span> == <span class="number">5</span> &amp;&amp; distinctBasket2.<span class="property">length</span> == <span class="number">3</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            distinctBasket1.<span class="title function_">forEach</span>(<span class="function"><span class="params">e</span> =&gt;</span> <span class="variable language_">this</span>.<span class="property">_basket</span>.<span class="title function_">push</span>(e));</span><br><span class="line">            <span class="variable language_">this</span>.<span class="property">totalBookNumber</span> += distinctBasket1.<span class="property">length</span>;</span><br><span class="line">            distinctBasket2.<span class="title function_">forEach</span>(<span class="function"><span class="params">e</span> =&gt;</span> <span class="variable language_">this</span>.<span class="property">_basket</span>.<span class="title function_">push</span>(e));</span><br><span class="line">            <span class="variable language_">this</span>.<span class="property">totalBookNumber</span> += distinctBasket2.<span class="property">length</span>;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    removeBook (<span class="attr">distinct</span>: <span class="built_in">number</span>[], <span class="attr">num</span>: <span class="built_in">number</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; num; i++) &#123;</span><br><span class="line">            <span class="variable language_">this</span>.<span class="property">_basket</span>.<span class="title function_">splice</span>(<span class="variable language_">this</span>.<span class="property">_basket</span>.<span class="title function_">indexOf</span>(distinct[i]), <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">totalBookNumber</span> -= num;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    createDistinctBasket () &#123;</span><br><span class="line">        <span class="comment">// 取得不重複的購物籃</span></span><br><span class="line">        <span class="keyword">const</span> distinctBook = [...(<span class="keyword">new</span> <span class="title class_">Set</span>(<span class="variable language_">this</span>.<span class="property">_basket</span>))];</span><br><span class="line">        <span class="comment">// 取得不重複購物籃的數量</span></span><br><span class="line">        <span class="keyword">return</span> distinctBook;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+      <categories>
+        <category>Notes</category>
+        <category>Testing</category>
+      </categories>
+      <tags>
+        <tag>NYCU</tag>
+        <tag>110-2</tag>
+        <tag>Notes</tag>
+        <tag>Testing</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[資料中心網路技術] Project3 在 Mininet 中建立拓樸並使用 SDN 控制器監視系統</title>
+    <url>/KenChen/690226879/</url>
+    <content><![CDATA[<h1 id="資料中心網路技術-project3-在-Mininet-中建立拓樸並使用-SDN-控制器監視系統"><a href="#資料中心網路技術-project3-在-Mininet-中建立拓樸並使用-SDN-控制器監視系統" class="headerlink" title="資料中心網路技術 project3 在 Mininet 中建立拓樸並使用 SDN 控制器監視系統"></a>資料中心網路技術 project3 在 Mininet 中建立拓樸並使用 SDN 控制器監視系統</h1><hr>
+<p>交大資料中心網路技術 project 3，在這個 project 將會學到如何使用 Mininet 建立拓樸並使用 SDN controller 監視系統。</p>
+<p><a href="https://docs.google.com/spreadsheets/d/16j_8sKSjkVPSrrXBOzbMj_b8uMHnhsdwQRBnILnhUEs/edit?usp=sharing">Demo日期</a>: 4&#x2F;21 16:00</p>
+<h2 id="Mininet-介紹"><a href="#Mininet-介紹" class="headerlink" title="Mininet 介紹"></a>Mininet 介紹</h2><hr>
+<h3 id="基本指令"><a href="#基本指令" class="headerlink" title="基本指令"></a>基本指令</h3><ul>
+<li><p><code>$</code> 在 shell 中執行 Linux 指令</p>
+</li>
+<li><p><code>mininet&gt;</code> 在 Mininet’s CLI 中執行 Mininet 指令</p>
+</li>
+<li><p><code>#</code> 在 root shell 中執行 Linux 指令</p>
+</li>
+<li><p>顯示 Mininet 參數選項</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mn -h</span><br></pre></td></tr></table></figure></li>
+<li><p>使用最小拓樸進入 Mininet CLI</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mn</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>mininet 預設拓樸 <code>mininal</code>，包含一個 switch、一個 controller 和 兩個主機</p>
+</blockquote>
+</li>
+<li><p>顯示 Mininet CLI commands</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mininet&gt; <span class="built_in">help</span></span><br></pre></td></tr></table></figure></li>
+<li><p>顯示 nodes</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mininet&gt; nodes</span><br></pre></td></tr></table></figure></li>
+<li><p>顯示鏈結</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mininet&gt; net</span><br></pre></td></tr></table></figure></li>
+<li><p>印出所有 nodes 的資訊</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mininet&gt; dump</span><br></pre></td></tr></table></figure></li>
+<li><p>對 host1 下 ifonfig -a 指令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mininet&gt; h1 ifconfig -a</span><br></pre></td></tr></table></figure></li>
+<li><p>測試兩個hosts的連線</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mininet&gt; h1 ping h2</span><br></pre></td></tr></table></figure></li>
+<li><p>測試所有連線</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pingall</span><br></pre></td></tr></table></figure></li>
+<li><p>執行一簡單的 web server and client</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mininet&gt; h1 python -m SimpleHTTPServer 80 &amp;</span><br><span class="line">mininet&gt; h2 wget -O - h1</span><br><span class="line">...</span><br><span class="line">mininet&gt; h1 <span class="built_in">kill</span> %python</span><br></pre></td></tr></table></figure></li>
+<li><p>離開 CLI</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mininet&gt; <span class="built_in">exit</span></span><br></pre></td></tr></table></figure></li>
+<li><p>CleanUp，若有 carsh 則執行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mn -c</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="進階選項"><a href="#進階選項" class="headerlink" title="進階選項"></a>進階選項</h3><ul>
+<li><code>--custom</code>: 使用 custom topology</li>
+<li><code>--topo</code>: 使用在腳本中的字典 “topos” 的 “mytopo”</li>
+<li><code>--link=tc</code>: 使用 traffic control link</li>
+<li><code>--controller</code>: 使用外部 controller 控制<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo mn --topo mytopo --custom ~/mininet/custom/xxxscript.py --controller remote --switch default,protocols=OpenFlow13 --<span class="built_in">link</span>=tc</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="執行測試"><a href="#執行測試" class="headerlink" title="執行測試"></a>執行測試</h4><ul>
+<li>在 shell 執行 pingall<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mn --<span class="built_in">test</span> pingair</span><br></pre></td></tr></table></figure></li>
+<li>測試 h1&#x2F;h2 間流量效能<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mn --<span class="built_in">test</span> iperf</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="改變拓樸大小和型態"><a href="#改變拓樸大小和型態" class="headerlink" title="改變拓樸大小和型態"></a>改變拓樸大小和型態</h4><ul>
+<li>使用 <code>--topo</code> 這個參數<ul>
+<li>single 是單個 switch 連接多台 host</li>
+<li>linear 是一台 host 接一台 switch，switch 再串成線狀<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mn --<span class="built_in">test</span> pingall --topo single,3</span><br><span class="line">$ sudo mn --<span class="built_in">test</span> pingall --topo linear,4</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h4 id="Link-variations"><a href="#Link-variations" class="headerlink" title="Link variations"></a>Link variations</h4><ul>
+<li>Mininet 2.0 後允許對 link 下參數</li>
+<li>假設將頻寬設為 10 Mps，每條 link 有 delay 10 ms，在測試中可見 RTT 約為 40 ms<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mn --<span class="built_in">link</span> tc,bw=10,delay=10ms</span><br><span class="line">mininet&gt; iperf</span><br><span class="line">mininet&gt; h1 ping -c10 h2</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="步驟"><a href="#步驟" class="headerlink" title="步驟"></a>步驟</h2><hr>
+<p>大綱:</p>
+<ul>
+<li>在 mininet 中建立一個特定的拓樸網路系統</li>
+<li>修改 SDN controller <code>simple_switch_13.py</code> 程式碼<ul>
+<li>使控制器可以監控交換器的流量</li>
+<li>並顯示交換器的 L2 address table<br><img src="https://i.imgur.com/P4Z8v3E.png" alt="Source Address Table"></li>
+</ul>
+</li>
+</ul>
+<h3 id="在-mininet-中建立拓樸"><a href="#在-mininet-中建立拓樸" class="headerlink" title="在 mininet 中建立拓樸"></a>在 mininet 中建立拓樸</h3><p>參考 mininet 中一簡單 script: <code>~/mininet/custom/topo-2sw-2host.py</code>。</p>
+<h4 id="建立拓樸指令"><a href="#建立拓樸指令" class="headerlink" title="建立拓樸指令"></a>建立拓樸指令</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo mn --topo mytopo --custom ~/mininet/custom/yourscript.py --controller remote --switch default,protocols=OpenFlow13 -- <span class="built_in">link</span>=tc</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>--custom</code>: 使用 custom topology</li>
+<li><code>--topo</code>: 使用在腳本中的字典 “topos” 的 “mytopo”</li>
+<li><code>--link=tc</code>: 使用 traffic control link</li>
+<li><code>--controller</code>: 使用外部 controller 控制</li>
+</ul>
+<p><strong>~&#x2F;mininet&#x2F;custom&#x2F;topo-2sw-2host.py</strong></p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> mininet.topo <span class="keyword">import</span> Topo</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyTopo</span>( <span class="title class_ inherited__">Topo</span> ):</span><br><span class="line">  <span class="string">&quot;Simple topology example.&quot;</span></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">build</span>(<span class="params"> self </span>):</span><br><span class="line">    <span class="string">&quot;Create custom topo.&quot;</span></span><br><span class="line">      <span class="comment"># Add hosts and switches</span></span><br><span class="line">      leftHost = self.addHost( <span class="string">&#x27;h1&#x27;</span> )</span><br><span class="line">      rightHost = self.addHost( <span class="string">&#x27;h2&#x27;</span> )</span><br><span class="line">      leftSwitch = self.addSwitch( <span class="string">&#x27;s3&#x27;</span> )</span><br><span class="line">      rightSwitch = self.addSwitch( <span class="string">&#x27;s4&#x27;</span> )</span><br><span class="line"></span><br><span class="line">      <span class="comment"># Add links</span></span><br><span class="line">      self.addLink( leftHost, leftSwitch )</span><br><span class="line">      self.addLink( leftSwitch, rightSwitch )</span><br><span class="line">      self.addLink( rightSwitch, rightHost )</span><br><span class="line">topos = &#123; <span class="string">&#x27;mytopo&#x27;</span>: ( <span class="keyword">lambda</span>: MyTopo() ) &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="建立一拓樸"><a href="#建立一拓樸" class="headerlink" title="建立一拓樸"></a>建立一拓樸</h4><p><img src="https://i.imgur.com/MJ1XgNO.png" alt="topology"></p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyTopo</span>( <span class="title class_ inherited__">Topo</span> ):</span><br><span class="line">  <span class="string">&quot;Simple topology example.&quot;</span></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">build</span>(<span class="params"> self </span>):</span><br><span class="line">      <span class="string">&quot;Create custom topo.&quot;</span></span><br><span class="line">      <span class="comment"># Add 6 hosts</span></span><br><span class="line">      myHost = []</span><br><span class="line">      <span class="keyword">for</span> h <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">6</span>):</span><br><span class="line">        myHost.append(self.addHost(<span class="string">&#x27;h%s&#x27;</span> % (h+<span class="number">1</span>)))</span><br><span class="line">      <span class="comment"># Add 4 switches</span></span><br><span class="line">      mySwitch = []</span><br><span class="line">      <span class="keyword">for</span> h <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">4</span>):</span><br><span class="line">        mySwitch.append(self.addSwitch(<span class="string">&#x27;s%s&#x27;</span> % (h+<span class="number">1</span>)))</span><br><span class="line">      <span class="comment"># Add links</span></span><br><span class="line">      <span class="comment"># bw: bandwidth of 10 Mbps</span></span><br><span class="line">      <span class="comment"># loss: 10% packet loss rate</span></span><br><span class="line">      self.addLink(myHost[<span class="number">0</span>], mySwitch[<span class="number">0</span>], bw=<span class="number">100</span>)</span><br><span class="line">      self.addLink(myHost[<span class="number">1</span>], mySwitch[<span class="number">0</span>], bw=<span class="number">100</span>)</span><br><span class="line">      self.addLink(myHost[<span class="number">2</span>], mySwitch[<span class="number">1</span>], bw=<span class="number">100</span>)</span><br><span class="line">      self.addLink(myHost[<span class="number">3</span>], mySwitch[<span class="number">2</span>], bw=<span class="number">100</span>)</span><br><span class="line">      self.addLink(myHost[<span class="number">4</span>], mySwitch[<span class="number">3</span>], bw=<span class="number">100</span>)</span><br><span class="line">      self.addLink(myHost[<span class="number">5</span>], mySwitch[<span class="number">3</span>], bw=<span class="number">100</span>)</span><br><span class="line">      self.addLink(mySwitch[<span class="number">0</span>], mySwitch[<span class="number">1</span>], bw=<span class="number">1000</span>, loss=<span class="number">5</span>)</span><br><span class="line">      self.addLink(mySwitch[<span class="number">1</span>], mySwitch[<span class="number">2</span>], bw=<span class="number">1000</span>, loss=<span class="number">5</span>)</span><br><span class="line">      self.addLink(mySwitch[<span class="number">2</span>], mySwitch[<span class="number">3</span>], bw=<span class="number">1000</span>, loss=<span class="number">5</span>)</span><br><span class="line">topos = &#123; <span class="string">&#x27;mytopo&#x27;</span>: ( <span class="keyword">lambda</span>: MyTopo() ) &#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="修改-SDN-controller-code"><a href="#修改-SDN-controller-code" class="headerlink" title="修改 SDN controller code"></a>修改 SDN controller code</h3><ul>
+<li>建立一 thread 來每五秒監視交換器流量<br>參考 <a href="http://osrg.github.io/ryu-book/en/Ryubook.pdf">Chap.3 of Ryubook</a></li>
+<li>使用 <code>OFPPortStatsRequest()</code>、<code>OFPPortStatsReply()</code> 來取得交換器埠的資訊<br>參考 <a href="https://ryu.readthedocs.io/en/latest/ofproto_v1_3_ref.html">Chap.3 of Ryubook or the link below</a></li>
+<li>目標<ul>
+<li>使用 OFPPortStatsRequest()、OFPPortStatsReply() 得到交換器 port 資訊</li>
+<li>監控資訊<ul>
+<li>Switch ID</li>
+<li>TX 和 RX 封包資訊</li>
+<li>交換器 MAC address table</li>
+</ul>
+</li>
+<li>每五秒將結果印出來<br><img src="https://i.imgur.com/RyOI6Vz.png" alt="monitor"></li>
+<li>使用上面所規定的拓樸(4sw_6hosts)</li>
+</ul>
+</li>
+</ul>
+<h4 id="實作一流量監視器"><a href="#實作一流量監視器" class="headerlink" title="實作一流量監視器"></a>實作一流量監視器</h4><p>網路是許多服務和業務的基礎設施，因此必須保持正常穩定運行。當網路發生錯誤時，必須查明原因並迅速恢復運行。為了檢測錯誤並找出原因，有必要定期了解網路狀態。</p>
+<p>例如，假設某個網路設備的某個 port 的流量指示一個非常高的值，如果沒有連續測量該 port 的流量，則無法確定是異常狀態還是通常是這種狀態以及何時變為這種狀態，出於這個原因，持續監控網路的健康狀況對於使用該網次的服務或企業的持續和安全運行至關重要。當然，簡單地監控流量資訊並不能提供完美的保證，但本節將介紹如何使用 OpenFlow 獲取交換器的統計信息。</p>
+<h4 id="Fixed-Cycle-Processing"><a href="#Fixed-Cycle-Processing" class="headerlink" title="Fixed-Cycle Processing"></a>Fixed-Cycle Processing</h4><p>在交換集線器處理的同時，創建一個 thread 定期向 OpenFlow 交換器發出請求以得到統計資訊。</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SimpleMonitor13</span>(simple_switch_13.SimpleSwitch13):</span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, *args, **kwargs</span>):</span><br><span class="line">    <span class="built_in">super</span>(SimpleMonitor13, self).__init__(*args, **kwargs)</span><br><span class="line">    self.datapaths = &#123;&#125;</span><br><span class="line">    self.monitor_thread = hub.spawn(self._monitor)</span><br><span class="line"><span class="comment"># ...</span></span><br></pre></td></tr></table></figure>
+<p><code>ryu.lib.hub</code> 中有一些 eventlet wrappers 和基本類別實現。在此使用 <code>hub.spawn()</code>，用於建立 thread。實際上建立的 thread 是一個 eventlet green thread。</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="comment"># ...</span></span><br><span class="line"><span class="meta">@set_ev_cls(<span class="params">ofp_event.EventOFPStateChange, [MAIN_DISPATCHER, DEAD_DISPATCHER]</span>)</span></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">_state_change_handler</span>(<span class="params">self, ev</span>):</span><br><span class="line">    datapath = ev.datapath</span><br><span class="line">    <span class="keyword">if</span> ev.state == MAIN_DISPATCHER:</span><br><span class="line">      <span class="keyword">if</span> datapath.<span class="built_in">id</span> <span class="keyword">not</span> <span class="keyword">in</span> self.datapaths:</span><br><span class="line">        self.logger.debug(<span class="string">&#x27;register datapath: %016x&#x27;</span>, datapath.<span class="built_in">id</span>)</span><br><span class="line">        self.datapaths[datapath.<span class="built_in">id</span>] = datapath</span><br><span class="line">    <span class="keyword">elif</span> ev.state == DEAD_DISPATCHER:</span><br><span class="line">      <span class="keyword">if</span> datapath.<span class="built_in">id</span> <span class="keyword">in</span> self.datapaths:</span><br><span class="line">        self.logger.debug(<span class="string">&#x27;unregister datapath: %016x&#x27;</span>, datapath.<span class="built_in">id</span>)</span><br><span class="line">        <span class="keyword">del</span> self.datapaths[datapath.<span class="built_in">id</span>]</span><br><span class="line"><span class="comment"># 每 10 秒對交換器發出統計訊息的請求</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">_monitor</span>(<span class="params">self</span>):</span><br><span class="line">  <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="keyword">for</span> dp <span class="keyword">in</span> self.datapaths.values():</span><br><span class="line">      self._request_stats(dp)</span><br><span class="line">  hub.sleep(<span class="number">10</span>)</span><br><span class="line"><span class="comment"># ...</span></span><br></pre></td></tr></table></figure>
+<p>為了確保連接的交換器被監控，<code>EventOFPStateChange</code> 事件用於檢測連接和斷開連接。此事件由 Ryu 框架發出，在 Datapath 狀態更改時發出。<br>因此當 Datapath 狀態變為 <code>MAIN_DISPATCHER</code> 時，該交換器被註冊為監視目標，當它變為 <code>DEAD_DISPATCHER</code> 時，該註冊被刪除。</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">_request_stats</span>(<span class="params">self, datapath</span>):</span><br><span class="line">  self.logger.debug(<span class="string">&#x27;send stats request: %016x&#x27;</span>, datapath.<span class="built_in">id</span>)</span><br><span class="line">  ofproto = datapath.ofproto</span><br><span class="line">  parser = datapath.ofproto_parser</span><br><span class="line"></span><br><span class="line">  req = parser.OFPFlowStatsRequest(datapath)</span><br><span class="line">  datapath.send_msg(req)</span><br><span class="line"></span><br><span class="line">  req = parser.OFPPortStatsRequest(datapath, <span class="number">0</span>, ofproto.OFPP_ANY)</span><br><span class="line">  datapath.send_msg(req)</span><br></pre></td></tr></table></figure>
+<p>透過定期呼叫 <code>_request_stats()</code>，向交換器發出 <code>OFPFlowStatsRequest</code> 和 <code>OFPPortStatsRequest</code>。</p>
+<ul>
+<li><code>OFPFlowStatsRequest</code> 請求交換器提供與 flow entry 相關的統計資訊。請求的目標 flow entry 可以通過 table ID、output port、cookie 值和 match 等條件來縮小範圍，但這裡所有 entry 都受請求的約束。</li>
+<li><code>OFPPortStatsRequest</code> 請求交換器提供 port 相關的統計資訊。可以指定所需的 port number 以從中獲取資訊。在這裡，<code>OFPP_ANY</code> 被指定為從所有 port 請求資訊。</li>
+</ul>
+<h4 id="FlowStats"><a href="#FlowStats" class="headerlink" title="FlowStats"></a>FlowStats</h4><p>為了從交換器接收回應，要建立一個接收 <code>FlowStatsReply</code> 消息的事件處理器。</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="meta">@set_ev_cls(<span class="params">ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">_flow_stats_reply_handler</span>(<span class="params">self, ev</span>):</span><br><span class="line">  body = ev.msg.body</span><br><span class="line">  self.logger.info(<span class="string">&#x27;datapath &#x27;</span></span><br><span class="line">                    <span class="string">&#x27;in-port eth-dst &#x27;</span></span><br><span class="line">                    <span class="string">&#x27;out-port packets bytes&#x27;</span>)</span><br><span class="line">  self.logger.info(<span class="string">&#x27;---------------- &#x27;</span></span><br><span class="line">                    <span class="string">&#x27;-------- ----------------- &#x27;</span></span><br><span class="line">                    <span class="string">&#x27;-------- -------- --------&#x27;</span>)</span><br><span class="line">  <span class="keyword">for</span> stat <span class="keyword">in</span> <span class="built_in">sorted</span>([flow <span class="keyword">for</span> flow <span class="keyword">in</span> body <span class="keyword">if</span> flow.priority == <span class="number">1</span>],</span><br><span class="line">                      key=<span class="keyword">lambda</span> flow: (flow.match[<span class="string">&#x27;in_port&#x27;</span>],</span><br><span class="line">                                        flow.match[<span class="string">&#x27;eth_dst&#x27;</span>])):</span><br><span class="line">    self.logger.info(<span class="string">&#x27;%016x %8x %17s %8x %8d %8d&#x27;</span>,</span><br><span class="line">                      ev.msg.datapath.<span class="built_in">id</span>,</span><br><span class="line">                      stat.match[<span class="string">&#x27;in_port&#x27;</span>], stat.match[<span class="string">&#x27;eth_dst&#x27;</span>],</span><br><span class="line">                      stat.instructions[<span class="number">0</span>].actions[<span class="number">0</span>].port,</span><br><span class="line">                      stat.packet_count, stat.byte_count)</span><br></pre></td></tr></table></figure>
+<p><code>OPFFlowStatsReply</code> 類別的屬性 <code>body</code> 是 <code>OFPFlowStats</code> 的列表，存儲了每個 flow entry 的統計資訊，受 <code>FlowStatsRequest</code> 的約束。</p>
+<p>除了優先權為 0 的 Table-miss flow 外，所有 flow entry 都被選中。按照接收到的 port 和目的 MAC 位址排序，輸出與各個 flow entry match 的封包數和位元組數。</p>
+<p>此處，只將部分值輸出到日誌中，但為了持續收集和分析資訊，可能需要與外部程序連動。在這種情況下，可以將 <code>OFPFlowStatsReply</code> 的內容轉換為 JSON 格式。</p>
+<p>如下:</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line">self.logger.info(<span class="string">&#x27;%s&#x27;</span>, json.dumps(ev.msg.to_jsondict(), </span><br><span class="line">                  ensure_ascii=<span class="literal">True</span>, indent=<span class="number">3</span>, sort_keys=<span class="literal">True</span>))</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="PortStats"><a href="#PortStats" class="headerlink" title="PortStats"></a>PortStats</h4><p>為了從交換器接收回應，要建立一個接收 <code>PortStatsReply</code> 消息的事件處理器。</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="meta">@set_ev_cls(<span class="params">ofp_event.EventOFPPortStatsReply, MAIN_DISPATCHER</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">_port_stats_reply_handler</span>(<span class="params">self, ev</span>):</span><br><span class="line">  body = ev.msg.body</span><br><span class="line">  self.logger.info(<span class="string">&#x27;datapath port &#x27;</span></span><br><span class="line">                    <span class="string">&#x27;rx-pkts rx-bytes rx-error &#x27;</span></span><br><span class="line">                    <span class="string">&#x27;tx-pkts tx-bytes tx-error&#x27;</span>)</span><br><span class="line">  self.logger.info(<span class="string">&#x27;---------------- -------- &#x27;</span></span><br><span class="line">                    <span class="string">&#x27;-------- -------- -------- &#x27;</span></span><br><span class="line">                    <span class="string">&#x27;-------- -------- --------&#x27;</span>)</span><br><span class="line">  <span class="keyword">for</span> stat <span class="keyword">in</span> <span class="built_in">sorted</span>(body, key=attrgetter(<span class="string">&#x27;port_no&#x27;</span>)):</span><br><span class="line">    self.logger.info(<span class="string">&#x27;%016x %8x %8d %8d %8d %8d %8d %8d&#x27;</span>,</span><br><span class="line">                      ev.msg.datapath.<span class="built_in">id</span>, stat.port_no,</span><br><span class="line">                      stat.rx_packets, stat.rx_bytes, stat.rx_errors,</span><br><span class="line">                      stat.tx_packets, stat.tx_bytes, stat.tx_errors)</span><br></pre></td></tr></table></figure>
+<p><code>OPFPortStatsReply</code> 類別的屬性 body 是 <code>OFPPortStats</code> 的列表。</p>
+<p><code>OFPPortStats</code> 分別儲存 port number、發送&#x2F;接收封包 count、byte count、drop count、error count、frame error count、overrun count、CRC error count 和 collision count 等統計資訊。</p>
+<p>這裡，按照 port number 排序，輸出接收封包計數、接收字元組計數、接收錯誤計數、發送封包計數、發送字元組計數和發送錯誤計數。</p>
+<h4 id="實作監視器，修改-simple-monitor-13-py"><a href="#實作監視器，修改-simple-monitor-13-py" class="headerlink" title="實作監視器，修改 simple_monitor_13.py"></a>實作監視器，修改 simple_monitor_13.py</h4><figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SwitchMonitor13</span>(simple_switch_13.SimpleSwitch13):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, *args, **kwargs</span>):</span><br><span class="line">        <span class="built_in">super</span>(SwitchMonitor13, self).__init__(*args, **kwargs)</span><br><span class="line">        self.datapaths = &#123;&#125;</span><br><span class="line">        self.monitor_thread = hub.spawn(self._monitor)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @set_ev_cls(<span class="params">ofp_event.EventOFPStateChange,</span></span></span><br><span class="line"><span class="params"><span class="meta">                [MAIN_DISPATCHER, DEAD_DISPATCHER]</span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_state_change_handler</span>(<span class="params">self, ev</span>):</span><br><span class="line">        datapath = ev.datapath</span><br><span class="line">        <span class="keyword">if</span> ev.state == MAIN_DISPATCHER:</span><br><span class="line">            <span class="keyword">if</span> datapath.<span class="built_in">id</span> <span class="keyword">not</span> <span class="keyword">in</span> self.datapaths:</span><br><span class="line">                self.logger.debug(<span class="string">&#x27;register datapath: %016x&#x27;</span>, datapath.<span class="built_in">id</span>)</span><br><span class="line">                self.datapaths[datapath.<span class="built_in">id</span>] = datapath</span><br><span class="line">        <span class="keyword">elif</span> ev.state == DEAD_DISPATCHER:</span><br><span class="line">            <span class="keyword">if</span> datapath.<span class="built_in">id</span> <span class="keyword">in</span> self.datapaths:</span><br><span class="line">                self.logger.debug(<span class="string">&#x27;unregister datapath: %016x&#x27;</span>, datapath.<span class="built_in">id</span>)</span><br><span class="line">                <span class="keyword">del</span> self.datapaths[datapath.<span class="built_in">id</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_monitor</span>(<span class="params">self</span>):</span><br><span class="line">        count = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">for</span> dp <span class="keyword">in</span> self.datapaths.values():</span><br><span class="line">                self._request_stats(dp)</span><br><span class="line">            <span class="comment"># Print the address table of all switches every 5 seconds</span></span><br><span class="line">            <span class="comment"># Count print times</span></span><br><span class="line">            </span><br><span class="line">            self.logger.info(<span class="string">f&#x27;Print the address table of all switches <span class="subst">&#123;count&#125;</span> times&#x27;</span>)</span><br><span class="line">            count = count + <span class="number">1</span></span><br><span class="line">            hub.sleep(<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_request_stats</span>(<span class="params">self, datapath</span>):</span><br><span class="line">        self.logger.debug(<span class="string">&#x27;send stats request: %016x&#x27;</span>, datapath.<span class="built_in">id</span>)</span><br><span class="line">        ofproto = datapath.ofproto</span><br><span class="line">        parser = datapath.ofproto_parser</span><br><span class="line"></span><br><span class="line">        <span class="comment"># get the switch port information</span></span><br><span class="line">        req_port = parser.OFPPortStatsRequest(datapath, <span class="number">0</span>, ofproto.OFPP_ANY)</span><br><span class="line">        datapath.send_msg(req_port)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Switch MAC Address Table</span></span><br><span class="line">        req_flow = parser.OFPFlowStatsRequest(datapath)</span><br><span class="line">        datapath.send_msg(req_flow)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @set_ev_cls(<span class="params">ofp_event.EventOFPPortStatsReply, MAIN_DISPATCHER</span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_port_stats_reply_handler</span>(<span class="params">self, ev</span>):</span><br><span class="line">        body = ev.msg.body</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Print Switch ID</span></span><br><span class="line">        self.logger.info(<span class="string">&#x27;Switch ID: %d&#x27;</span>, ev.msg.datapath.<span class="built_in">id</span>)</span><br><span class="line">        <span class="comment"># TX and RX packets information of each port in a switch</span></span><br><span class="line">        self.logger.info(<span class="string">&#x27;Port No. Tx-Bytes Rx-Bytes&#x27;</span>)</span><br><span class="line">        self.logger.info(<span class="string">&#x27;-------- -------- --------&#x27;</span>)</span><br><span class="line">        <span class="keyword">for</span> stat <span class="keyword">in</span> <span class="built_in">sorted</span>(body, key=attrgetter(<span class="string">&#x27;port_no&#x27;</span>)):</span><br><span class="line">            self.logger.info(<span class="string">&#x27;%8x %8d %8d&#x27;</span>, stat.port_no, stat.tx_bytes, stat.rx_bytes)</span><br><span class="line">    </span><br><span class="line"><span class="meta">    @set_ev_cls(<span class="params">ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER</span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_flow_stats_reply_handler</span>(<span class="params">self, ev</span>):</span><br><span class="line">        body = ev.msg.body</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Switch MAC Address Table</span></span><br><span class="line">        self.logger.info(<span class="string">&#x27;MAC Address Table Port No.&#x27;</span>)</span><br><span class="line">        self.logger.info(<span class="string">&#x27;----------------- --------&#x27;</span>)</span><br><span class="line">        <span class="keyword">for</span> stat <span class="keyword">in</span> <span class="built_in">sorted</span>([flow <span class="keyword">for</span> flow <span class="keyword">in</span> body <span class="keyword">if</span> flow.priority == <span class="number">1</span>],</span><br><span class="line">                           key=<span class="keyword">lambda</span> flow: (flow.match[<span class="string">&#x27;in_port&#x27;</span>],</span><br><span class="line">                                             flow.match[<span class="string">&#x27;eth_dst&#x27;</span>])):</span><br><span class="line">            self.logger.info(<span class="string">&#x27;%17s %8x&#x27;</span>, stat.match[<span class="string">&#x27;eth_dst&#x27;</span>], stat.match[<span class="string">&#x27;in_port&#x27;</span>])</span><br><span class="line">        self.logger.info(<span class="string">&#x27;***************************\n&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="結果"><a href="#結果" class="headerlink" title="結果"></a>結果</h2><hr>
+<blockquote>
+<p>為了方便執行，使用 makefile 更加快速，相關教學可以參考<a href="https://mropengate.blogspot.com/2018/01/makefile.html">連結</a></p>
+</blockquote>
+<figure class="highlight make"><table><tr><td class="code"><pre><span class="line"><span class="section">all:</span></span><br><span class="line">	xterm -e <span class="string">&quot;ryu-manager switchMonitor13.py&quot;</span> &amp;</span><br><span class="line">	sudo mn --topo mytopo --custom ./topo-4sw-6host.py --link tc</span><br></pre></td></tr></table></figure>
+
+<p><strong>利用 mininet 開啟一拓樸</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mn --topo mytopo --custom ./topo-4sw-6host.py --<span class="built_in">link</span> tc</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/oR8BWhx.png" alt="topo-4sw-6host"></p>
+<p><strong>利用 ryu 進行控制</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ryu-manager switchMonitor13.py</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/wJZR2qV.png" alt="switchMonitor13"></p>
+]]></content>
+      <categories>
+        <category>NYCU</category>
+        <category>110-2</category>
+        <category>DCN</category>
+      </categories>
+      <tags>
+        <tag>NYCU</tag>
+        <tag>110-2</tag>
+        <tag>DCN</tag>
+        <tag>Project</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[2022Intern] 聯發科 5G 軟韌體面試前相關問題整理和心得</title>
+    <url>/KenChen/1142073039/</url>
+    <content><![CDATA[<p>我在 2022 年的四月份投了 MTK 暑期實習，這篇文章會整理關於 MTK 5G 暑期實習可能會問到的問題，除了針對履歷還會有 O.S 的基本概念(但我在面試時沒有被問到專業知識，不過還是整理部分題目上來)，並且要做簡報來介紹，最後會有我對整個面試的心得。</p>
+<ul>
+<li>公司: MTK</li>
+<li>職缺: <a href="https://careers.mediatek.com/eREC/JobSearch/JobDetail/MTK120220225002?langKey=zh-TW">2022暑期實習_軟韌體開發_5G 行動通訊</a></li>
+<li>職位: 暑期實習</li>
+<li>部門: 不方便透漏</li>
+<li>地點: Teams 視訊面談</li>
+</ul>
+<blockquote>
+<p>D: 4&#x2F;1 官網投遞履歷<br>[D+7] 填寫面試時間<br>[D+12] 面試<br>[D+19] HR 口頭 offer<br>[D+26] offer letter</p>
+</blockquote>
+<div class="note info @">
+            <p>請勿轉載，都是我的心血 :q</p>
+          </div>
+
+<h2 id="面試前準備"><a href="#面試前準備" class="headerlink" title="面試前準備"></a>面試前準備</h2><ul>
+<li>事前測驗(線上，面試前一天完成)<ul>
+<li>C coding test</li>
+<li>TOEIC 英文測驗</li>
+<li>華德士個人風格評量</li>
+</ul>
+</li>
+<li>更新線上資料，履歷、成績單和自我評核的部分</li>
+<li>自我介紹簡報 (做大概 20 頁左右)</li>
+</ul>
+<h2 id="投影片內容"><a href="#投影片內容" class="headerlink" title="投影片內容"></a>投影片內容</h2><blockquote>
+<p>大概 20 頁左右</p>
+</blockquote>
+<ol>
+<li>專案介紹</li>
+<li>修課介紹</li>
+<li>遇到的困難與挑戰，以及如何解決</li>
+</ol>
+<h2 id="5G-行動通訊軟韌體開發"><a href="#5G-行動通訊軟韌體開發" class="headerlink" title="5G 行動通訊軟韌體開發"></a>5G 行動通訊軟韌體開發</h2><blockquote>
+<p>官網介紹的內容</p>
+</blockquote>
+<h3 id="這個部門在做甚麼"><a href="#這個部門在做甚麼" class="headerlink" title="這個部門在做甚麼?"></a>這個部門在做甚麼?</h3><ul>
+<li>對行動通訊、無線及寛頻連結、家庭娛樂晶片解決方案有濃厚興趣</li>
+<li>勇於表達意見，以團隊成功為目標，面對困難不輕易放棄，總是在想更好的做法，擁有創新及不斷學習的精神</li>
+<li>聯發科技邀請您，與全球最頂尖的菁英一同合作，彼此激盪最新的創意與解法，共同挑戰每一個不可能<blockquote>
+<p>對於行動通訊產業有濃厚興趣<br>熟悉通訊原理、數位訊號處理、電腦網路、計算機組織、作業系統</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="面試問題"><a href="#面試問題" class="headerlink" title="面試問題"></a>面試問題</h2><p>網路上查是會問 C 語言 和 OS 等知識，下面整理幾個有查到的問題。</p>
+<h3 id="O-S"><a href="#O-S" class="headerlink" title="O.S"></a>O.S</h3><ul>
+<li>process + thread、mutex + semaphore、scheduling、virtaul memory、TLB miss &#x2F; cache miss &#x2F; page fault、memory management</li>
+<li>OS相關基本題: Interrupt、Process &amp; Thread、Multi-thread、Mutex&amp;Semaphore、Spin lock、Sync相關各類問題、volatile、Pipeline</li>
+<li>印象比較深的一題是談到shared memory會有race condition的問題 我解釋完race condition如何解決後，主管分享他的畫面 給我看一段sample code(兩個function都對同一個變數(a)++) 問我這樣會不會有race condition的問題? 我答:要看這兩個function會不會concurrent的執行，還有++是不是atomic的操作 主管問:如果a++要設計成atomic，用assembly要怎麼寫 這邊我只答得出來a++的assembly，主管跟我解釋後就繼續問其他的東西</li>
+<li>主管們會穿插問一些專業知識，像是OS、計算機組織、資料結構和網路的問題，像是我提到用UDP模擬TCP運作機制，就被其中一位主管問到three-way hand shake和four-way hand shake的問題，最常被問到的就是OS的問題，尤其是interupt、multithread、race condition、mutex&#x2F;semaphore、virtual memory等等最常問，另外就是一些專有名詞和機制，像是DMA、ISO網路7層、short-term scheduling、cache等等的概念，有些名詞真的是聽都沒聽過，主管又特別喜歡問你當某個現象發生要怎麼handle或是在甚麼情況下才會應用到這種機制。</li>
+</ul>
+<ol>
+<li><p>Process vs. Thread<br><code>Ans:</code><br>Process 是已經在執行的 program，每個 process 是互相獨立的，不是基本執行單位，而是 thread 的容器，一個 process 下會有多個 thread，共享資源、參數，而在 multithreading 中可能會發生 race condition，可能會產生死結。</p>
+</li>
+<li><p>Process 如何通訊<br><code>Ans:</code><br>兩大方法利用 shared memory 和 message passing，shared memory 透過共享記憶體宣告參數進行存取達到溝通的目的，速度快，但不適用於分散式系統，message passing 建立通訊鏈結，訊息可以雙向傳輸，結束後釋放 Link。</p>
+</li>
+<li><p>什麼是 Race condition<br><code>Ans:</code><br>在 shared memory 中，利用共享記憶體來共享參數進行存取，如果 process 之間執行順序不同會使資料不一致。<br>利用兩大策略 Disable Interrupt 和 Critical Section 來解決，前者是當 process 對共享參數存取前，先 disable interrupt(防止 CPU 被搶走)，直到完成後才 enable interrupt，也稱為 automically execution，在 multiprocessor 系統中效能太差。後者是對 process 中存取共享參數的指令集合，process 中可以有多個 critical section，需滿足 mutual exclusion、progress 和 bounded waiting，首先最多只允許一個 process 在 c.s. 執行，第二個不想執行的 process 不能影響其他 process 執行，最後是若有 n 個 process 要進入 critical section，則任一 process 頂多等 n-1 次，不能有 starvation。<br> [解決方法一]</p>
+ <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// pi</span></span><br><span class="line"><span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">  <span class="keyword">while</span>(turn != i);</span><br><span class="line">  c.s.</span><br><span class="line">  turn = j; <span class="comment">// turn 給j</span></span><br><span class="line">  r.s.</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// pj</span></span><br><span class="line"><span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">  <span class="keyword">while</span>(turn != j);</span><br><span class="line">  c.s.</span><br><span class="line">  turn = i;</span><br><span class="line">  r.s.</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p> [問題一]<br> 當 pi 不想進入c.s. 時，會影響 pj 不能執行，故違反 progress。<br> [解決方法二]</p>
+ <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// pi</span></span><br><span class="line"><span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">  flag[i] = <span class="literal">true</span>;</span><br><span class="line">  <span class="keyword">while</span>(flag[j]);</span><br><span class="line">  c.s.</span><br><span class="line">  flag[i] = <span class="literal">false</span>;</span><br><span class="line">  r.s.</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// pj</span></span><br><span class="line"><span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">  flag[j] = <span class="literal">true</span>;</span><br><span class="line">  <span class="keyword">while</span>(flag[i]);</span><br><span class="line">  c.s.</span><br><span class="line">  flag[j] = <span class="literal">false</span>;</span><br><span class="line">  r.s.</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> [問題二]<br> 會形成死結，違反 progress。<br> [解決方法三]</p>
+ <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// pi</span></span><br><span class="line"><span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">  flag[i] = <span class="literal">true</span>;</span><br><span class="line">  turn = j;</span><br><span class="line">  <span class="keyword">while</span>(flag[j] and turn == j);</span><br><span class="line">  c.s.</span><br><span class="line">  flag[i] = False;</span><br><span class="line">  r.s.</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>什麼是 semaphore(號誌)<br><code>Ans:</code><br>用來解決 critical section design 和同步問題的資料型態，由 OS 提供的一種軟體工具，提供兩個 atomic operations: wait(s) 和 signal(s)。</p>
+</li>
+<li><p>binding 的過程<br><code>Ans:</code><br>決定 process 執行的 memory 起始位址，可能是在 compile 或 link 時，為靜態 binding，也可以在執行時動態 binding<br>原始程式 –&gt; compiler –&gt; object code –&gt; linking loader –&gt; executable object code</p>
+</li>
+<li><p>Long term scheduler<br><code>Ans:</code><br>又稱 Job scheduler，用在 Batch System 中，從 Job Queue 中挑選一些合適的 jobs，將他們載入到 memory。可調控 CPU-bound 和 I&#x2F;O bound 比例。</p>
+</li>
+<li><p>Short term scheduler<br><code>Ans:</code><br>又稱 CPU scheduler，目的是從 ready queue 中挑出一個 process 並分配 CPU 給他執行。</p>
+</li>
+<li><p>Meium term scheduler<br><code>Ans:</code><br>當 memory space 不足又有其他 process 需要記憶體空間時會執行。先將一些 process swap-out 到 disk，當記憶體有空間時再 swap-in。</p>
+</li>
+<li><p>Context Switch<br><code>Ans:</code><br>CPU 要從執行的 process 切到另一個 process 執行時，要先執行 context switch。保存目前 process 狀態資訊，並載入另一 process 的狀態資訊。</p>
+</li>
+<li><p>Dispatch<br><code>Ans:</code><br>是 kernel 的一個模組，當 CPU scheduler 選出一個 process 後，dispatcher 會執行 context switch、change kernel mode 到 user mode 和 跳到執行的 entry。</p>
+</li>
+<li><p>評估 CPU 排班效率<br><code>Ans:</code><br>CPU 利用率、Throughput 產能、waiting time、turnaround time 以及 response time。</p>
+</li>
+<li><p>Stack vs. Heap</p>
+</li>
+<li><p>Synchronous call vs. Asynchronous call</p>
+</li>
+<li><p>Stack vs. Queue</p>
+</li>
+<li><p>O.S</p>
+</li>
+<li><p>Virtual Function</p>
+</li>
+<li><p>Data hazard</p>
+</li>
+<li><p>pipeline 設計的好處</p>
+</li>
+</ol>
+<h3 id="C"><a href="#C" class="headerlink" title="C"></a>C</h3><ul>
+<li>C\C++: Overloading、Virtual Function、Function Pointer、各種不同scope的Static用法、Stack&#x2F;heap&#x2F;.bss架構</li>
+<li>演算法: 特別需要熟悉複習的有 Sorting、Linked list各種implementation (e.g. reverse)、Stack&amp;heap的實現</li>
+</ul>
+<h3 id="自由發問"><a href="#自由發問" class="headerlink" title="自由發問"></a>自由發問</h3><ol>
+<li>向主管問關於他們部門的工作內容，挑比較細項的部分深入了解。</li>
+<li>考試的內容會不會佔評分很大的比重?<br><code>Ans:</code><br>主管是說有的主管是不在意考試分數的，大多是做個參考，但還是希望對寫程式有興趣。</li>
+<li>多久後會收到通知或確定自己有沒有被選上?<br><code>Ans:</code><br>大部分是2個禮拜左右才會通知二面，通常是一級單位會進行二面，會直接請老大出來面談，也有些主管直接一面就選人了。</li>
+<li>實習生的工作內容、計劃<br><code>Ans:</code><br>主管是說按照不同實習生的能力和擅長的語言會有不同的計畫會做。</li>
+<li>之後有幸可以實習後，若是遇到實驗室要meeting公司會怎麼安排?<br><code>Ans:</code><br>公司原則上是一週五天，但是研究生要 meeting 是很正常的事，公司通常會給實習生請半天~一天的假回學校meeting。</li>
+<li>正職是否需要加班?<br><code>Ans:</code><br>一般來說不會，幾乎沒有。</li>
+</ol>
+<h2 id="面試結果"><a href="#面試結果" class="headerlink" title="面試結果"></a>面試結果</h2><h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><p>在 Teams 上視訊面試，總時長約 1hr40min 左右，著裝我是穿襯衫而已，主要是要看起來很正式，並給予好印象。</p>
+<h3 id="面試心得"><a href="#面試心得" class="headerlink" title="面試心得"></a>面試心得</h3><p>原本很擔心如果要到現場面試會很緊張，因為這是我第二次面試，不過好險是視訊面試，比較不會太緊張，所以表現應該還算<del>正常</del>，主要是把我投影片上的每個內容每個專案都研究的十分透澈，所以在履歷上的東西必須十分了解，程式碼寫了什麼都必須非常清楚。</p>
+<p>個人認為必須要有投影片，才能按照自己的步調來介紹自己，避免沒東西跟主管聊而減少他對你的興趣，不過如果是學霸學歷或是口條很好，就當我沒說囉~</p>
+<h3 id="實習內容"><a href="#實習內容" class="headerlink" title="實習內容"></a>實習內容</h3><p>我的部門是 CSD&#x2F;MSP</p>
+<h2 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h2><ul>
+<li>PTT<ul>
+<li><a href="https://bit.ly/3LX2kDn">[請益] 聯發科暑期實習 軟韌體開發工作內容</a></li>
+<li><a href="https://bit.ly/3xlDPvE">[心得] 面試心得(軟韌、演算法)</a></li>
+<li><a href="https://www.ptt.cc/man/Tech_Job/DB04/D73F/D33E/M.1631165503.A.E0D.html">[心得] 軟韌、演算法 新鮮人面試心得</a></li>
+</ul>
+</li>
+<li><a href="https://bit.ly/362rYXV">台灣 軟體工程師 求職面試 Part6. 聯發科 MTK</a></li>
+<li><a href="https://bit.ly/3v9Ydx4">2016q3 Homework1 面試題目</a></li>
+<li><a href="https://bit.ly/3xflGj0">2018 聯發科(MTK)暑期實習一階面試(附一些題目)｜面試經驗分享</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Intern</category>
+        <category>MTK</category>
+      </categories>
+      <tags>
+        <tag>Intern</tag>
+        <tag>MTK</tag>
+        <tag>Interview</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[2022Intern] 台積電 IT BSID 面試前相關問題整理和心得</title>
+    <url>/KenChen/998653267/</url>
+    <content><![CDATA[<p>我在 2022 年的三月底投了大學長(這邊也非常感謝他對學弟妹的關照)推薦的 TSMC 暑期實習，這篇文章會整理關於 TSMC IT 暑期實習可能會問到的問題，除了針對履歷還會有 HackerRank 的測驗來問(但我在面試時沒有被問到專業知識，不過還是整理部分題目上來)，最後會有我對整個面試的心得。</p>
+<ul>
+<li>公司: TSMC</li>
+<li>職缺: IT BSID</li>
+<li>職位: 暑期實習</li>
+<li>部門: 不方便透漏</li>
+<li>地點: 竹科</li>
+</ul>
+<blockquote>
+<p>D: 3&#x2F;17 官網投遞履歷<br>[D+3] 填寫面試時間<br>[D+6] 面試通知<br>[D+13] 面試<br>[D+20] HR 線上面試<br>[D+41] HR 電話確認是否會去(尚未發 letter)<br>[D+47] 婉拒</p>
+</blockquote>
+<div class="note info @">
+            <p>請勿轉載，都是我的心血 :q</p>
+          </div>
+
+<h2 id="介紹台積電"><a href="#介紹台積電" class="headerlink" title="介紹台積電"></a>介紹台積電</h2><h3 id="部署策略是什麼"><a href="#部署策略是什麼" class="headerlink" title="部署策略是什麼"></a>部署策略是什麼</h3><p>Scale-out，透過 container 和 k8s 等技術，可以隨時擴充需要的資源，因此台積電也在近幾年建立了自己的私有雲。</p>
+<h3 id="IT-三大-Division"><a href="#IT-三大-Division" class="headerlink" title="IT 三大 Division"></a>IT 三大 Division</h3><ul>
+<li>ICSD(Infrastructure Communication Service Division)<ul>
+<li>網路設施維修維護</li>
+</ul>
+</li>
+<li>BSID(Business System Integration Division)<ul>
+<li>壓力據說最小，很少 on call</li>
+</ul>
+</li>
+<li>TSID(Technical System Integration Division)<ul>
+<li>產線自動化</li>
+</ul>
+</li>
+</ul>
+<h4 id="BSID-是什麼"><a href="#BSID-是什麼" class="headerlink" title="BSID 是什麼"></a>BSID 是什麼</h4><p>分成兩大類，共五個 team，主要在 2 廠</p>
+<ul>
+<li>e-commerce –&gt; customer, vendor</li>
+<li>e-business –&gt; <strong>supply chain</strong>, sales, 機動組</li>
+</ul>
+<h3 id="半導體產業鏈"><a href="#半導體產業鏈" class="headerlink" title="半導體產業鏈"></a>半導體產業鏈</h3><p>設計 –&gt; 製造 –&gt; 封裝&amp;測試</p>
+<ul>
+<li>上游: IC設計<ul>
+<li>電路設計、品牌經營與行銷</li>
+<li>聯發科、高通</li>
+</ul>
+</li>
+<li>中游: 晶圓製造<ul>
+<li>製造晶圓(wafer)、印製電路及元件</li>
+<li><strong>TSMC</strong>、聯華(UMC)</li>
+</ul>
+</li>
+<li>下游: 封裝測試<ul>
+<li>切割及包覆晶圓、封裝前後測試</li>
+<li>矽品精密、日月光集團</li>
+</ul>
+</li>
+</ul>
+<h2 id="面試問題"><a href="#面試問題" class="headerlink" title="面試問題"></a>面試問題</h2><ol>
+<li><p>如何降低成本及風險，並快速調整、快速交貨，以達到最高滿意度及最大獲利?<br><code>Ans:</code><br>我認為是要從供應商、客戶和企業本身來考量。第一，要考慮供應商供貨問題，並且要即時了解世界的變動，可能就是需要利用爬蟲和機器學習來解決; 第二，思考顧客最需要的是什麼，需要多少產品或是要很快速的產出; 第三，就是企業本身要考量需要多少材料，還有要和哪些供應商採購，並且是否有其他的供應商，就像是使用 Graph Database 找出台積電與上下游的關聯，甚至是其他間接的供應商。這些是在供應鏈管理中是很重要的問題，以達到最大獲利。</p>
+</li>
+<li><p>SCPM 要考量什麼問題</p>
+<blockquote>
+<p>Supplier Information: 供應商的位置和他們提供了什麼材料<br>Supply Chain Planning: TSMC 需要什麼材料，需要多少材料?什麼時候和哪個工廠?<br>Procurement &amp; Inventory: 要採購多少材料? 哪個供應商? 什麼是庫存水平?<br>Manufacturing: 何時何地開始晶圓製造?<br>Customer Demand: 什麼樣的晶圓，客戶需要多少?</p>
+</blockquote>
+</li>
+<li><p>什麼是 RESTful API<br><code>Ans:</code><br>Representational State Transfer，簡稱REST，它是一種網路架構風格，符合這個風格的 API 就叫 RESTful API，充分使用 HTTP protocol 的 GET&#x2F;POST&#x2F;PUT&#x2F;DELETE，達到直觀簡潔的 url、對資源的操作，並使用 JSON、XML、YAML等資料類型。</p>
+</li>
+<li><p>什麼是 Branch-and-Bound<br><code>Ans:</code><br>列出滿足約束條件或是滿足上限或下限的解，可以利用 BFS 或 DFS 找到最佳解。</p>
+</li>
+<li><p>什麼是 Dynamic Programming<br><code>Ans:</code><br>把問題拆成多個子問題，並依序求解，將每一回合的結果存入表格中，下一回合可以使用以求出的結果，最後找到最佳解。</p>
+</li>
+<li><p>高等演算法期末說明<br><code>Ans:</code><br>期末是實作貨櫃船塞港的問題，其中有100個工作，包含消耗資源、產出資源、抵達時間和截止日期，利用兩台機器各別依序處理50台機器，最後排出100個工作完成的最佳順序。使用了DP來解決這個問題，將每次子問題的完成時間並依據是否有資源可以執行存入表格，最後求出最佳解。</p>
+</li>
+<li><p>什麼是多型<br><code>Ans:</code><br>繼承是多型能夠實現的必要條件，而多型就是原有的類別提供一個介面或抽象類別，目的是為了消除類別間的耦合性，使程式更容易維護與擴充。也就是可以利用相同名稱的方法實現不同的實例。</p>
+</li>
+<li><p>什麼是泛型<br><code>Ans:</code><br>在設計類別或方法時，可以先宣告型別參數 T，直到建立實例時才要宣告其參數，優點是可以重複利用程式碼。</p>
+</li>
+<li><p>資料結構學什麼<br><code>Ans:</code><br>包含最基本的 stack、queue、linked list，還有像是 sort、search、graph、hash、tree 這些內容。</p>
+</li>
+</ol>
+<h2 id="BSID"><a href="#BSID" class="headerlink" title="BSID"></a>BSID</h2><h3 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h3><p>俄烏戰爭氖氣面臨斷供? 台積電: 以建立風險系統確保資源多樣化</p>
+<ul>
+<li>Market Information<ul>
+<li>透過爬蟲，找出全球氖氣的供應商</li>
+<li>當世界發生某些特殊事件時(地震、火災、天災、戰爭、倒閉)，對 TSMC 供應鏈是否會造成風險?</li>
+</ul>
+</li>
+<li>Materials Planning<ul>
+<li>根據 TSMC 法說會的營收預估，請預估 TSMC Q2，2022 Raw Wafer，氖氣及硫酸的需求量</li>
+</ul>
+</li>
+</ul>
+<h3 id="觀念"><a href="#觀念" class="headerlink" title="觀念"></a>觀念</h3><ol>
+<li><p>會直接影響到 TSMC 嗎<br><code>Ans:</code><br>不會，晶片製造商不會受到直接影響，是由他們的半導體製造材料的供應商提供，所以要判斷供應商是否因為壓力而提高價格，來決定要選擇哪家供應商。</p>
+</li>
+<li><p>會使 TSMC 供應鏈造成供貨風險嗎<br><code>Ans:</code><br>影響不大，因為跟美國高度依賴單一來源不同，TSMC 建立了風險系統來確保資源多樣化，也可向日本或韓國取得材料，以維持一定的安全庫存。</p>
+</li>
+<li><p>TSMC 的競爭優勢是什麼<br><code>Ans:</code><br>目前台積電的先進製程技術領先全球，並且先進製程佔了營收大約 50%，再加上有 Intel 的訂單，更是會成長。</p>
+</li>
+<li><p>TSMC 的危機是什麼<br><code>Ans:</code><br>氖氣成本佔晶圓代工成本比例較小，因此價格上漲帶來的影響可以忽略，但是俄烏戰爭引發的其他通膨影響，會對技術產品供需產生實質性影響。</p>
+</li>
+<li><p>怎麼看供應商<br><code>Ans:</code><br>從財報看，當採購金額大於某個比例時，必須揭露供應商。</p>
+</li>
+<li><p>Materials Planning<br><code>Ans:</code><br>台積電生產方式、作業方式，用營收預估材料需求量。</p>
+</li>
+</ol>
+<h3 id="法說會"><a href="#法說會" class="headerlink" title="法說會"></a>法說會</h3><p>針對 2021 Q4 法說會進行總結</p>
+<p>CFO 黃文德先生</p>
+<ol>
+<li>5 奈米需求增加，快要超過 7 奈米</li>
+<li>2021 車用電子增加</li>
+<li>2021 Q4 不管是在供貨還是營收上的高漲</li>
+<li>因為技術領先可以抓住 5G 和 HPC(高效能運算) 的趨勢</li>
+<li>在 2022 Q1 會受到 HPC、汽車領域和手機的支持</li>
+</ol>
+<p>CEO 魏哲家先生</p>
+<ol>
+<li>由於數位轉型的加速，半導體在供應鏈中越來越重要</li>
+<li>隨著 5G 對節能計算做出準備，因此需要更多的先進技術</li>
+<li>而 CPU、GPU 和 AI 加速器是 HPC 的主要增長領域平台</li>
+<li>N4P、N4X</li>
+</ol>
+<h3 id="考量點"><a href="#考量點" class="headerlink" title="考量點"></a>考量點</h3><ol>
+<li>美國</li>
+<li>氖氣供應商</li>
+<li>風險評估系統要如何維持</li>
+</ol>
+<h2 id="技術問題"><a href="#技術問題" class="headerlink" title="技術問題"></a>技術問題</h2><p>如果是 Intern 的話，以下不會考，這是比較資深的正職員工才會問到的問題(因為現在非常缺人)，所以只是先把有看到的題目放進來。</p>
+<h3 id="資料結構"><a href="#資料結構" class="headerlink" title="資料結構"></a>資料結構</h3><p>sorting algorithm &#x2F; BST &#x2F; stack &#x2F; queue &#x2F; binary tree &#x2F; hash map 具體實作和相關 time complexity</p>
+<h3 id="計算機網路"><a href="#計算機網路" class="headerlink" title="計算機網路"></a>計算機網路</h3><p>HTTP protocol 流程和 package format<br>cookie</p>
+<h3 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h3><p>Linux 環境的操作 (包含查看記憶體、network package、service port、process)</p>
+<ol>
+<li><p>查看記憶體<br><code>Ans:</code><br><code>top</code></p>
+</li>
+<li><p>查看 process<br><code>Ans:</code><br><code>ps</code></p>
+</li>
+<li><p>刪除 process<br><code>Ans:</code><br><code>kill -9 &lt;ID&gt;</code></p>
+</li>
+</ol>
+<h2 id="面試結果"><a href="#面試結果" class="headerlink" title="面試結果"></a>面試結果</h2><h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><ol>
+<li><p>F7 報到<br>在警衛室換證後到大廳報到繳交電子產品，進行適性測驗，完成後等待接駁車去面試場地</p>
+<div class="note danger @">
+            <p>如果英文沒過門檻要英文測驗，可以打電話提前問需不需要</p>
+          </div>
+</li>
+<li><p>晶元光電辦公室 面試</p>
+</li>
+</ol>
+<h3 id="面試心得"><a href="#面試心得" class="headerlink" title="面試心得"></a>面試心得</h3><p>完全都沒問到上面整理的問題，全程就像在聊天一樣，主要是把每個專案都研究的十分透澈，所以在履歷上的東西必須十分了解，深入到資料庫的 schema 怎麼建都要知道，程式碼寫了什麼都必須非常清楚。</p>
+<h3 id="實習內容"><a href="#實習內容" class="headerlink" title="實習內容"></a>實習內容</h3><p>雖然是在 BSID 底下的部門，但會依據能力來安排工作，會有其他的 section 的 product 可以挑選，依據他們正在做的 product 和自己會的能力進行匹配，會根據工作內容和最後的小組競賽來對實習進行評分，才有可能拿到 advanced offer。</p>
+]]></content>
+      <categories>
+        <category>Intern</category>
+        <category>TSMC</category>
+      </categories>
+      <tags>
+        <tag>Intern</tag>
+        <tag>Interview</tag>
+        <tag>TSMC</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[行動網路安全] Project1 Anomaly Detector in 5G Core Network</title>
+    <url>/KenChen/410559358/</url>
+    <content><![CDATA[<h1 id="行動網路安全-project1-Anomaly-Detector-in-5G-Core-Network"><a href="#行動網路安全-project1-Anomaly-Detector-in-5G-Core-Network" class="headerlink" title="行動網路安全 project1 Anomaly Detector in 5G Core Network"></a>行動網路安全 project1 Anomaly Detector in 5G Core Network</h1><hr>
+<p>這是 NYCU 110-2 行動網路安全的第一個 project，在 5G 的核心網路進行異常偵測，在此之前其實我對 5G 沒有很理解，只知道他比 4G 快、穩、大，他所應用到的技術該如何實現，其實我也是很不懂，所以這篇文不只有 project1 的實作步驟，也會有 5G 相關的概念。</p>
+<h2 id="介紹"><a href="#介紹" class="headerlink" title="介紹"></a>介紹</h2><hr>
+<h3 id="目標"><a href="#目標" class="headerlink" title="目標"></a>目標</h3><ul>
+<li>了解 5G AKA authentication 程序</li>
+<li>學會<ul>
+<li>5G AKA authentication</li>
+<li>5G SBA operation</li>
+<li>free5GC</li>
+<li>golang programming</li>
+<li>reading 3GPP Spec</li>
+</ul>
+</li>
+</ul>
+<h3 id="5G-AKA-authentication"><a href="#5G-AKA-authentication" class="headerlink" title="5G AKA authentication"></a>5G AKA authentication</h3><p>在介紹 5G 前，先來介紹 4G 的認證安全機制。</p>
+<h4 id="4G-認證安全機制"><a href="#4G-認證安全機制" class="headerlink" title="4G 認證安全機制"></a>4G 認證安全機制</h4><p>行動通訊網路安全以身分認證(Authectication)與金鑰管理(Key management)為基礎，在用戶端和網路之間進行雙向身分認證(MuutalAuthentication)，並產生加密金鑰來保護控制面(Control Plane)和用戶面(User Plane)資料，4G 採用 EPS-AKA(Evolved Packet System – Authentication and Key Agreement) 方式完成 4G 認證。</p>
+<p>完成身分認證有三個主要單元</p>
+<ul>
+<li>UE(User Equipment): 用戶設備，包含 1 塊通用體積電路卡(UICC)，其中包含至少 1 塊用戶身分識別模塊(USIM)應用程序，儲存用戶與 HN 共享的加密金鑰 K，稱為根金鑰(Root Key)。</li>
+<li>SN(Serving Network): 服務網路，主要由 4G 基地台(Evolved NodeB, eNB)和移動管理實體(Mobility ManagementEntity, MME)組成，提供無線電網路接入與訊息控制等服務。</li>
+<li>HN(Home Network): 本地網路，由本地用戶伺服器(HomeSubscribe Server, HSS)組成，HSS 儲存用戶資料及憑證，提供用戶身分認證和訪問授權(Authorization)等服務。HSS 包含認證中心(Authentication Center, AuC)，提供金鑰 K 儲存功能。</li>
+</ul>
+<p>依據 <code>TS 33.401</code>第六章內容，EPS-AKA 程序如下。<br><img src="https://i.imgur.com/IMQqLt9.png" alt="EPS-AKA"></p>
+<ol>
+<li>UE 將 <code>Attach Request</code> 消息，以無線電資源控制(Radio Resource Control, RRC) 程序傳送給 MME 後，觸發 EPS-AKA。</li>
+<li>MME 向 HSS 發送「認證請求(<code>Authentication Request</code>)」消息，包含 UE 標識(International Mobile Subscriber Identity, IMSI)和服務網路標識符(SN id)。</li>
+<li>…</li>
+</ol>
+<h4 id="5G-架構"><a href="#5G-架構" class="headerlink" title="5G 架構"></a>5G 架構</h4><p>在 5G 架構中，由具有不同功能的控制平面和使用者平面網路功能(Network Functions, NFs)組成。</p>
+<p>5G 網路還需實現</p>
+<ul>
+<li>UE 通訊、儲存其訂閱和憑證</li>
+<li>允許存取外部網路</li>
+<li>管理網路存取以及行動網路存取</li>
+</ul>
+<h2 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h2><hr>
+<ul>
+<li><a href="https://nccnews.com.tw/202010/ch4.html">5G行動通訊網路安全：認證安全機制淺談</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>NYCU</category>
+        <category>110-2</category>
+        <category>MNS</category>
+      </categories>
+      <tags>
+        <tag>NYCU</tag>
+        <tag>110-2</tag>
+        <tag>Project</tag>
+        <tag>MNS</tag>
+        <tag>5G</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[行動網路安全] Project2 IPSec/SIP session Hijacking</title>
+    <url>/KenChen/1221593068/</url>
+    <content><![CDATA[<ul>
+<li>Project 介紹<ul>
+<li><a href="https://youtu.be/79Phliy6KBw?t=3961">https://youtu.be/79Phliy6KBw?t=3961</a></li>
+</ul>
+</li>
+<li>VM image<ul>
+<li><a href="https://drive.google.com/file/d/1m2F55Dc5SZ_6xq_JwFxpRqE_ve_P9jnQ/view">https://drive.google.com/file/d/1m2F55Dc5SZ_6xq_JwFxpRqE_ve_P9jnQ/view</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="Goals"><a href="#Goals" class="headerlink" title="Goals"></a>Goals</h2><ul>
+<li>Understand how to hijack an IPSec&#x2F;SIP session<ul>
+<li>Non-3GPP network access of 4G&#x2F;5G core network is protected by IPSec</li>
+</ul>
+</li>
+<li>You will learn about<ul>
+<li>the IPSec operation</li>
+<li>using adb shell for development on smartphones</li>
+<li>fabricating packets using raw socket</li>
+<li>fabricating ESP headers and authentication data</li>
+<li>fabricating TCP packets</li>
+</ul>
+</li>
+</ul>
+<h2 id="介紹"><a href="#介紹" class="headerlink" title="介紹"></a>介紹</h2><h3 id="IPSec-是什麼"><a href="#IPSec-是什麼" class="headerlink" title="IPSec 是什麼"></a>IPSec 是什麼</h3><p>Internet Protocol Security 是一安全的網路協定套件，而在傳輸層就是利用 TLS，IPSec 透過對 IP 協定的封包進行加密和認證來保護 IP 協定的網路傳輸協定族(一些相互關聯的協定的集合)，簡單來說就是運用多種協定和演算法來保護 IP 封包。</p>
+<ul>
+<li>兩個主要功能<ul>
+<li>封裝安全載荷(ESP)，提供機密性、資料來源認證、無連接完整性、防重放和有限的傳輸流(traffic-flow)機密性</li>
+<li>網際網路金鑰交換(Internet Key Exchange，簡稱IKE或IKEv2)，為 AH、ESP 操作所需的安全關聯(SA)提供演算法、封包和金鑰參數 –&gt; 在這個 project 不會討論到這個，因為在 core network 中 key 來自於 SIM 卡</li>
+</ul>
+</li>
+</ul>
+<h3 id="Security-Association-SA"><a href="#Security-Association-SA" class="headerlink" title="Security Association(SA)"></a>Security Association(SA)</h3><p>SA 是資料庫(SAD)中的某一筆紀錄，登錄所需的安全機制，例如: 安全協定(AH 或 ESP)、操作模式(傳輸或通道模式)、認證演算法(HMAC-MD5等)、加密系統(DES-CBC等)、或共享秘密金鑰等。</p>
+<blockquote>
+<p>更多關於 SA 細節可以參考: <a href="http://www.tsnien.idv.tw/Security_WebBook/chap12/12-11%20IPSec%20%E5%AE%89%E5%85%A8%E9%97%9C%E8%81%AF.html">連結</a></p>
+</blockquote>
+<h3 id="IPSec-Primer"><a href="#IPSec-Primer" class="headerlink" title="IPSec Primer"></a>IPSec Primer</h3><p><strong>Security Associations</strong><br>為 IPSec 內的安全關聯(SA)。</p>
+<ul>
+<li>A key concept of IPSec<ul>
+<li>One-way relationship between a sender and a receiver: 如果有 bi-directional 通訊就需要 2-way Associations</li>
+<li>Two-way secure exchange: two SAs are required</li>
+</ul>
+</li>
+<li>Uniquely identified by three parameters: 辨識每個 SA<ul>
+<li>Security parameter index (SPI)</li>
+<li>IP destination address</li>
+<li>Protocol identifier: AH or ESP: AH 目前已經很少在用了，因為可以被複製</li>
+</ul>
+</li>
+</ul>
+<p><strong>Two IPSec Operation Modes</strong><br>IPSec 的運作模式有兩種:</p>
+<ul>
+<li>Transport mode: 像是 Vo-wifi</li>
+<li>Tunnel mode: 兩個 router 或是 gateway 之間，假設公司有多個 branches，可以利用 IPsec 保護 branch 之間的通訊，而使用者不用安裝任何 IPSec 軟體，直接被 gateway 保護<br><img src="https://i.imgur.com/d5DPCiN.png" alt="IPSec Modes"></li>
+</ul>
+<p><strong>Encapsulating Security Payload(ESP)</strong><br><img src="https://i.imgur.com/86xUd1L.png" alt="ESP"><br>Payload Data，可以是 TCP&#x2F;UDP 或是 IP 封包，藍色框框中包含加密資料，所以要使用加密演算法來加密這些資料，紅色框框中包含需要提供的資料完整性保護。</p>
+<p><strong>Transport 和 Tunnel Mode 比較</strong><br>IPSec 的兩種運作模式:</p>
+<ul>
+<li>Transport mode<ul>
+<li>Protection: IP 封包的 payload</li>
+<li>常用於兩主機間端對端的通訊</li>
+<li>ESP 保護 IP payload，不是 IP header</li>
+</ul>
+</li>
+<li>Tunnel Mode<ul>
+<li>Protection: 整個 IP 封包</li>
+<li>整個來源封包利用 tunnel 傳送到另一個點</li>
+<li>當其中一端的 SA 是 security gateway</li>
+<li>防火牆後面的網路上主機可以在不實作 IPSec 的情況下進行安全通訊。</li>
+</ul>
+</li>
+</ul>
+<p><strong>AH+ESP</strong><br><img src="https://i.imgur.com/IF2s3T7.png" alt="AH + ESP"></p>
+<p><strong>VoWi-Fi Security</strong><br><img src="https://i.imgur.com/xvblPc2.png" alt="VoWi-Fi Security"></p>
+<ul>
+<li>Wi-Fi IF 與 ePDG 間是 IPSec Tunnel Mode</li>
+<li>IMS VIF 與 IMS Core 間是 IPSec Transport Mode<blockquote>
+<p>project 就是要 hijack 這個 Transport mode</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>IPSec Hijacking Attack</strong><br><img src="https://i.imgur.com/B0uyNPO.png" alt="Hijacking"></p>
+<h2 id="IPSec-Hijack-實作步驟"><a href="#IPSec-Hijack-實作步驟" class="headerlink" title="IPSec Hijack 實作步驟"></a>IPSec Hijack 實作步驟</h2><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>情境: UE(智慧手機)在傳輸中有 IPSec association，這個 association 承載 TCP 連接，與模擬的 IMS 伺服器(筆電或虛擬機)。<br>:::info<br>攻擊者開發一個攻擊程式來 hijack IPSec&#x2F;TCP association<br>:::<br><img src="https://i.imgur.com/urlsmGe.png" alt="Attack Scenario"></p>
+<h3 id="如何進行"><a href="#如何進行" class="headerlink" title="如何進行"></a>如何進行</h3><p>開啟一程序來建立 IPSec&#x2F;TCP 關聯，並<strong>在 UE 上開發一個攻擊程序以劫持 IPSec&#x2F;TCP 關聯</strong>，並用攻擊者程式向伺服器傳送特定旗標。</p>
+<blockquote>
+<p>劫持成功後，伺服器會用正確的回應回覆(如上圖)。</p>
+</blockquote>
+<h3 id="設置環境"><a href="#設置環境" class="headerlink" title="設置環境"></a>設置環境</h3><p>使用 Wi-Fi 將 UE 和 IMS 伺服器連接到同一個局域網，首先，下載 <a href="https://drive.google.com/file/d/1m2F55Dc5SZ_6xq_JwFxpRqE_ve_P9jnQ/view?usp=sharing">VM image</a>，包含所有程式和範例程式碼。<br><img src="https://i.imgur.com/J8Sp0jM.png" alt="Environment"></p>
+<h3 id="如何攻擊"><a href="#如何攻擊" class="headerlink" title="如何攻擊"></a>如何攻擊</h3><p><img src="https://i.imgur.com/KhE32Tz.png" alt="hijack"></p>
+<h3 id="攻擊者程式要做什麼"><a href="#攻擊者程式要做什麼" class="headerlink" title="攻擊者程式要做什麼"></a>攻擊者程式要做什麼</h3><ul>
+<li>訊息即時監控和收集<ul>
+<li>從 SIP&#x2F;TCP header 中取得 session 訊息，例如 TCP sequence 和 ESP SPI</li>
+<li>從安全關聯資料庫(SAD)中檢索 IPSec 安全 context(如 ESP 驗證密鑰)</li>
+</ul>
+</li>
+<li>製作(fabrication) IPSec&#x2F;TCP 封包<ul>
+<li>製作 TPC&#x2F;IPSec&#x2F;IP header，包括所有 field 和 checksum</li>
+<li>產生 ESP padding<ul>
+<li>Pad Length 和 Next Header field 必須與 4-byte word 右對齊(RFC4303 Section 2.4)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>產生 ESP 驗證資料<ul>
+<li>使用 <code>hmac_sha1_96</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="Todo-List"><a href="#Todo-List" class="headerlink" title="Todo List"></a>Todo List</h3><table>
+<thead>
+<tr>
+<th>File</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>.&#x2F;src&#x2F;dev.c</td>
+<td>填寫 struct <code>sockaddr_ll addr</code>，用於在函式 <code>set_sock_fd</code> 中 bind</td>
+</tr>
+<tr>
+<td>.&#x2F;src&#x2F;dev.c</td>
+<td>把整個訊框儲存到 <code>self-&gt;frame</code></td>
+</tr>
+<tr>
+<td>.&#x2F;src&#x2F;transport.c</td>
+<td>完成 TCP checksum 計算</td>
+</tr>
+<tr>
+<td>.&#x2F;src&#x2F;transport.c</td>
+<td>收集 <code>segm</code> 資訊</td>
+</tr>
+<tr>
+<td>.&#x2F;src&#x2F;transport.c</td>
+<td>填寫 <code>self-&gt;tcphdr</code></td>
+</tr>
+<tr>
+<td>.&#x2F;src&#x2F;net.c</td>
+<td>完成 IP checksum 計算</td>
+</tr>
+<tr>
+<td>.&#x2F;src&#x2F;net.c</td>
+<td>收集 <code>pkt</code> 資訊</td>
+</tr>
+<tr>
+<td>.&#x2F;src&#x2F;net.c</td>
+<td>從 SAD dump 身份驗證密鑰</td>
+</tr>
+<tr>
+<td>.&#x2F;src&#x2F;esp.c</td>
+<td>填寫 <code>self-&gt;pad</code> 和 <code>self-&gt;pad_len</code>(參考 RFC4303 Session 2.4)</td>
+</tr>
+<tr>
+<td>.&#x2F;src&#x2F;esp.c</td>
+<td>把所有需要驗證的東西都放到 <code>buff</code> 並加上 <code>nb</code></td>
+</tr>
+<tr>
+<td>.&#x2F;src&#x2F;esp.c</td>
+<td>收集 <code>esp_pkt</code> 資訊</td>
+</tr>
+<tr>
+<td>.&#x2F;src&#x2F;esp.c</td>
+<td>填寫 ESP <code>header</code> 和 <code>tailer</code></td>
+</tr>
+<tr>
+<td>:::warning</td>
+<td></td>
+</tr>
+<tr>
+<td>更多詳細介紹參考: <a href="https://hackmd.io/tgrkQOYoSEmhWDsGYBCptg">連結</a></td>
+<td></td>
+</tr>
+<tr>
+<td>:::</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="驗證是否成功兩步驟"><a href="#驗證是否成功兩步驟" class="headerlink" title="驗證是否成功兩步驟"></a>驗證是否成功兩步驟</h3><ul>
+<li>single handshake test with a flag (70%)<ul>
+<li>An example with an invalid flag and a valid flag<br><img src="https://i.imgur.com/8RCdbj9.png" alt="single handshake"></li>
+</ul>
+</li>
+<li>multiple handshake tests with three flags (30%)<ul>
+<li>An example with an invalid flag and two valid flags<br><img src="https://i.imgur.com/RQ6Z23S.png" alt="multiple handshake"></li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>NYCU</category>
+        <category>110-2</category>
+        <category>MNS</category>
+      </categories>
+      <tags>
+        <tag>NYCU</tag>
+        <tag>110-2</tag>
+        <tag>Project</tag>
+        <tag>MNS</tag>
+        <tag>5G</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[Paper(一)] Leveraging Cloud Based Big Data Analytics In Knowledge Management For Enhanced Decision Making In Organization</title>
+    <url>/KenChen/343485952/</url>
+    <content><![CDATA[<h1 id="Paper"><a href="#Paper" class="headerlink" title="Paper"></a>Paper</h1><p>這是我第一篇記錄的 paper，會有我的個人心得，這篇主要是在講述 Big Data 在雲端裡的應用，<del>為了交大雲端計算報告才看的</del>，我的架構會是先從摘要和結論開始，再講述他們的 Methodology。</p>
+<ul>
+<li>題目: <a href="https://bit.ly/3L6AWCA">LEVERAGING CLOUD BASED BIG DATA ANALYTICS IN KNOWLEDGE MANAGEMENT FOR ENHANCED DECISION MAKING IN ORGANIZATIONS</a><blockquote>
+<p><a href="https://bit.ly/3IvdEo0">在知識管理中利用基於雲的大數據分析來增強組織的決策能力</a></p>
+</blockquote>
+</li>
+<li>等級: Journal</li>
+<li>出版: International Journal of Distributed and Parallel Systems (IJDPS) Vol.8, No.1, January 2017</li>
+</ul>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Big Data 可以幫助組織在 KM 上更加突破，不過因為 Big Data 具 5V 特性(甚至到10V，相關定義可以到此<a href="https://bit.ly/3D24Bdg">連結</a>查看)，傳統的資料管理技術已經無法提供有效的儲存和分析，因此本篇提出新的技術和架構想要解決這個問題。<br>能夠<strong>儲存和處理大量資料的雲端計算</strong>因此用於高效的 Big Data 處理，因為能夠最大限度降低 Big Data 分析所需的大規模計算基礎設施的成本。</p>
+<ul>
+<li><strong>貢獻</strong><ul>
+<li>分析 Big Data 對 KM 的影響。</li>
+<li>提出基於雲的概念框架，可以即時分析 Big Data，以促進主要在獲得競爭優勢的增強決策。</li>
+<li>為加強組織探索 Big Data 和 KM 之間的關係，因其通常是被分開討論。</li>
+</ul>
+</li>
+</ul>
+<h1 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h1><p>對於組織來說，收集大量資料為了做出更好的決策，並且根據研究得到</p>
+<blockquote>
+<p>利用資料推動決策的組織可以得到更多利潤。<br>Big Data 可以為組織有效管理 KM 創造新的可能性和機會。</p>
+</blockquote>
+<ul>
+<li>這篇論文主要是在研究 Big Data 在 KM 的作用，並將兩者連結，因此他們提出一基於雲的框架，透過分析從 Big Data 中提取價值，用於 KM 開發出有效的決策。</li>
+<li>在這個框架中，Big Data 平台將用具有雲端服務的技術來支持，像是 HDFS 和 MapReduce，以實現跨資料中心 cluster 的分散式處理。並且利用 NoSQL 在 Big Data 的即時處理上。</li>
+<li>通過分析舉例說明 Big Data 獲取和分析的完整週期，將 Big Data 價值轉為可操作的洞察力，用以支持包括知識獲取、分發和共享、呈現和儲存以及利用的 KM 過程。</li>
+<li>最後，由於在 KM 中利用這項新技術面臨著許多挑戰，例如數據科學家的可用性和保護資料隱私等，這些問題需要先解決才能實現這個框架。</li>
+</ul>
+<h1 id="Big-Data-與-KM-之間的關係"><a href="#Big-Data-與-KM-之間的關係" class="headerlink" title="Big Data 與 KM 之間的關係"></a>Big Data 與 KM 之間的關係</h1><p>由於 Big Data 和 雲端計算的盛行，組織在尋找如何有效收集和處理資料的方法，而使 KM 創造價值。</p>
+<p>Davenport 等人提出(<a href="https://bit.ly/36AEJZM">連結</a>)，組織可以通過使用與 KM 相關的 Big Data 來實現一些好處，組織主要使用的是資料流而不是歷史資料，因此逐漸益賴<strong>數據科學家</strong>而不是數據分析師，這項工作最後逐漸從 IT 中分離出來，並作為核心業務和運營職能。因此組織可以創造有價值的知識，並利用其來改進 KM 和 競爭優勢，因此得到 Big Data 和分析可以有助於即時 KM。</p>
+<h2 id="KM-兩種方法比較"><a href="#KM-兩種方法比較" class="headerlink" title="KM 兩種方法比較"></a>KM 兩種方法比較</h2><p>傳統方法 vs. 基於 Big Data 的方法</p>
+<ul>
+<li>傳統方法<br>著重在將隱性知識轉為顯性知識，將人們的專業知識轉為程式碼並存入資料庫中。</li>
+<li>基於 Big Data 的方法<br>由累積的大量數據來形成新知識，除了內部收集，更是可以從雲中收集，基於 Big Data 的 KM 主要是進行知識預測、知識導航和知識發現，以增強支持組織中的營運和決策制定。</li>
+</ul>
+<h1 id="Big-Data-Driven-KM-Framework"><a href="#Big-Data-Driven-KM-Framework" class="headerlink" title="Big Data Driven KM Framework"></a>Big Data Driven KM Framework</h1><ul>
+<li>首先從技術角度概述系統架構</li>
+<li>描述在 KM 中利用 Big Data 架構模式</li>
+<li>描述 Big Data 的功能視圖，Big Data 分析技術是管理系統和相關 Big Data 工具的關鍵</li>
+</ul>
+<h2 id="基礎設施層-Infrastructure-Layer"><a href="#基礎設施層-Infrastructure-Layer" class="headerlink" title="基礎設施層(Infrastructure Layer)"></a>基礎設施層(Infrastructure Layer)</h2><ul>
+<li>基礎設施由 sensor 網路、設備網路、數據和管理接口組成</li>
+<li>網路組件由各類型的 sensor、執行器、軟體組件和其他設備組成，從不同來源收集(或驅動)數據。</li>
+</ul>
+<p>可以看到下圖，管理底層網路基礎設施並處理其中生成的數據，增加了由定義良好的 Data 和 Management API組成的控制平面，<br><img src="https://i.imgur.com/zloMLmy.png" alt="A layered architecture of the framework"></p>
+<p>除了上述的 Big Data source 外，我們還將客戶的參與視為他們福利、業務規劃和決策的重要數據來源，這通常被稱為”眾包”(crowdsourcing)。 簡而言之，這些大數據的生成速度非常快，必須快速捕獲和處理(如即時監控的情況)。</p>
+<h2 id="平台層-Platform-Layer"><a href="#平台層-Platform-Layer" class="headerlink" title="平台層(Platform Layer)"></a>平台層(Platform Layer)</h2><p>架構的核心是第二層(平台層)，包含三個建構塊(building block)</p>
+<h2 id="知識管理層-Knowledge-Management-Layer"><a href="#知識管理層-Knowledge-Management-Layer" class="headerlink" title="知識管理層(Knowledge Management Layer)"></a>知識管理層(Knowledge Management Layer)</h2><p>可以看到圖中，最上層就是 KM layer 可以提供知識獲取、創建、分配和共享、存儲和利用知識管理的cycle。以達到即時創建Actionable Insights (代表可以作為依據做某些事情的，可操作的; 深入準確的理解; 合起來就是對公司而言有價值、可操作的有用信息。可以參考這個<a href="https://bit.ly/3wAxWu3">文章</a>)，用於支持依照需求的決策。</p>
+<p>這個框架會利用下層的分析結果會輸入到知識管理層，來完成剛剛提到的知識管理。在這個框架的基礎上，企業、政府和股東社群可以更好地規劃他們的商業活動，甚至是參與增強和有效的決策制定。</p>
+<h2 id="實作上的挑戰"><a href="#實作上的挑戰" class="headerlink" title="實作上的挑戰"></a>實作上的挑戰</h2><blockquote>
+<p>Question: 你覺得這個基於大數據的知識管理框架具提供即時資訊的功能，結合了大數據和雲端計算的優點，有什麼問題或挑戰嗎?</p>
+</blockquote>
+<p>這個基於大數據的知識管理框架，在理論上相要結合大數據和雲端計算的優點，但實際上有許多問題和挑戰。</p>
+<ul>
+<li>最重要的是面臨了技術挑戰。現在的技術可以很容易收集和管理大量的資料，這個框架必須解決處理大量不同資料和處理時間太長的問題，因為剛剛有提到需要有即時提供資訊的功能。在實際上，資料在沒處理前有很多種，無論是非結構或結構化的資料都十分龐大，很難分析和提取有效的價值。</li>
+<li>另一個問題是這些資料很難管理，這也是從大數據很難提取有用價值的主因。同時，擺脫傳統的資料管理技術並提出有效的分析演算法來處理結構化和非結構化資料是比較難的。</li>
+<li>最後，這個框架的實作需要跨領域的知識，例如: 大數據分析需要統計學、機器學習和資料管理上的專業知識，才能從組織大數據中得到有價值的見解，這將是一個挑戰。因此，該框架的成功會產生知識管理領域的新專家，主要是利用大數據和雲計算。</li>
+</ul>
+<h1 id="案例說明-–-Yahoo的大數據活動"><a href="#案例說明-–-Yahoo的大數據活動" class="headerlink" title="案例說明 – Yahoo的大數據活動"></a>案例說明 – Yahoo的大數據活動</h1><p>主要是關於為自己的產品和服務做廣告的預測模型，據他們觀察的資料，這篇文是在五年前發表的，所以現在已經不是這樣了，在當時美國 80% 的用戶會使用 Yahoo 提供的各種服務，每月會有來自世界各地超過 6 億用戶。提供的產品包括媒體、商業、貿易、搜索和訪問產品，並擁有像是 E-mail、電視、新聞、金融等的資產，相信現在這些服務也不是主流了。不過在當時，他們每天收集的資料量達到 25 TB 以上。資料主要是合作夥伴、廣告商和消費者。</p>
+<p>他們採用的商業策略是行為定位(這個機制能藉由消費者在網路中的行為，利用標籤進行興趣分類，來增加品牌跟消費者之間關聯性，舉例來說，像我平常可能搜尋或是講到 iPhone 這個關鍵字，過沒多久就會出現許多相關廣告)，以獲得競爭優勢的增強決策。他們維護每個消費者的行為或興趣和盈利能力指標。該策略通過將廣告定位到最新行為或在線活動表明與他們相關的產品或服務類別的客戶。以這種方式，最相關的用戶類別被識別。</p>
+<ul>
+<li>Enhance Decision Making<ul>
+<li>Look in — Restructure your IT organization for the “new normal” with trends, forecasts, and benchmarking.<ul>
+<li>通過趨勢、預測和基準測試，使 IT 組織可以適應新環境。</li>
+</ul>
+</li>
+<li>Look across — Understand your colleagues’ and constituents’ needs and expectations so you can refine your IT service management.<ul>
+<li>了解同事和委託人的需求和期望，這樣就可以改進 IT 服務的管理。</li>
+</ul>
+</li>
+<li>Look up — Align IT with the institutional mission through strategic uses of technology and data.<ul>
+<li>通過技術和資料的策略性應用，使 IT 與組織目標保持一致。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>下圖說明了他們的預測建模如何在非常抽象的級別上工作:<br><img src="https://i.imgur.com/yDtIeyh.png" alt="Yahoo predictive modeling cycle for target consumers"></p>
+<ul>
+<li>預測模型開始以數十萬個產品類別週期分析購買歷史，這些產品類別包含大量資料以進行前置處理。</li>
+<li>在這些產品的每個類別中，都建立了一個行為模型來描述消費者的購買行為，這也代表消費者對廣告的網路點擊流量。</li>
+<li>在下一階段，每個消費者每天都會標記適合產品類別的分數。</li>
+<li>然後根據在每個產品類別中獲得的分數對消費者進行排序，並且預測方案選擇消費者來定位所選產品類別中獲得最高相關性分數的廣告。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Papers</category>
+        <category>IJDPS</category>
+      </categories>
+      <tags>
+        <tag>Papers</tag>
+        <tag>IJDPS</tag>
+        <tag>Big Data</tag>
+        <tag>Cloud Computing</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[雲原生] Cloud Native 相關概念</title>
+    <url>/KenChen/343485956/</url>
+    <content><![CDATA[<h1 id="雲原生軟體開發相關概念與技術"><a href="#雲原生軟體開發相關概念與技術" class="headerlink" title="雲原生軟體開發相關概念與技術"></a>雲原生軟體開發相關概念與技術</h1><hr>
+<p>由於我在交大選修由台積電開設的「雲原生架構與現代軟體發展趨勢介紹」，所以我對雲原生的概念十分有興趣，這篇會著墨在雲原生進行複習。</p>
+<div class="note danger">
+            <p><span class="label warning"> 由於有版權問題，不會有相關檔案(eg. 投影片、上課內容)，請勿轉載!</span></p>
+          </div>
+
+
+
+<h2 id="介紹"><a href="#介紹" class="headerlink" title="介紹"></a>介紹</h2><hr>
+<h3 id="什麼是-CI-x2F-CD"><a href="#什麼是-CI-x2F-CD" class="headerlink" title="什麼是 CI&#x2F;CD"></a>什麼是 CI&#x2F;CD</h3><p>身為一個 DevOps 開發員，會 CI&#x2F;CD 觀念很基本，不但降低錯誤發生，也可以提升服務品質。</p>
+<p>CI&#x2F;CD 簡單來說就是程式 push 到 GitHub 或 GitLab 後，會進行流程自動化: 自動 build code、執行 unit test、自動部署、自動更新線上服務等。</p>
+<p><img src="https://i.imgur.com/flpx2kg.png" alt="CI"><br>開發者執行 <code>git push</code> 到 GitHub 後，將程式更新到 server 的步驟由 Jenkins 負責(相關應用可以到我的另一篇文章參考: <a href="https://kenchen879.github.io/KenChen/895155673/">連結</a>)。</p>
+<h4 id="持續整合-Continuous-Integration"><a href="#持續整合-Continuous-Integration" class="headerlink" title="持續整合(Continuous Integration)"></a>持續整合(Continuous Integration)</h4><p>…</p>
+<h4 id="持續部署-Continuous-Deployment"><a href="#持續部署-Continuous-Deployment" class="headerlink" title="持續部署(Continuous Deployment)"></a>持續部署(Continuous Deployment)</h4><p>…</p>
+<h3 id="什麼是-K8s"><a href="#什麼是-K8s" class="headerlink" title="什麼是 K8s"></a>什麼是 K8s</h3><ul>
+<li>VM</li>
+<li>Container</li>
+<li>Docker</li>
+<li>K8s 如何運作</li>
+<li>微服務</li>
+</ul>
+<h4 id="簡單介紹-k8s"><a href="#簡單介紹-k8s" class="headerlink" title="簡單介紹 k8s"></a>簡單介紹 k8s</h4><p>Kubernetes 因為中間有 8 個字母因此又稱 <code>k8s</code>，是一個幫助我們管理微服務(microservices)的系統，<u>可以自動化部署及管理多台機器上的多個容器(container)</u>。</p>
+<blockquote>
+<p>想解決的問題: 手動部署多個容器到多台機器上並監測管理這些容器的狀態很麻煩<br>解決方法: 提供一個平台以較高層次的抽象化去自動化操作與管理多個容器</p>
+</blockquote>
+<p>看 Kubernetes <a href="https://kubernetes.io/">官網</a>說明，描述:</p>
+<blockquote>
+<p><em><strong>Automated container deployment, scaling, and management</strong></em></p>
+</blockquote>
+<p>簡單來說，k8s 可以做到:</p>
+<ul>
+<li>同時部署多個容器到多台機器上(Deployment)</li>
+<li>服務的乘載量有變化時，可以對容器做自動擴展(Scaling) –&gt; 符合 TSMC 的 scale out 部署策略</li>
+<li>管理多個容器的狀態，自動偵測並重啟故障的容器(Management)</li>
+</ul>
+<p>看到這裡，想必有些讀者已經矇了，我在學關於 k8s 的觀念時其實也一知半解，特別是容器虛擬化、Docker 這些概念，在學 k8s 之前必須先了解 container 是什麼、Docker 是什麼、所以 k8s 要做什麼，甚至到後面到微服務觀念，都會在本篇一一介紹(如果已經很精熟的人可以直接跳過)。</p>
+<h4 id="什麼是虛擬化"><a href="#什麼是虛擬化" class="headerlink" title="什麼是虛擬化"></a>什麼是虛擬化</h4><blockquote>
+<p>想解決的問題: 我寫好了一支程式，在我的電腦上跑得很順，在你的電腦上就跑不動還要一直 debug，非常麻煩。<br>解決方法: 兩種虛擬化技術，在系統層級虛擬化，為 VM; 在作業系統層級，為 container。(例如: Virtual Box (VM)&#x2F; Docker (container))</p>
+</blockquote>
+<p>簡單介紹: 每台電腦的作業系統和硬體配置都不太一樣，我的程式只在某台電腦上的環境相容，而虛擬化就是要模擬出這個環境，讓程式可以在不同電腦上執行。</p>
+<h4 id="虛擬機器-vs-容器-container"><a href="#虛擬機器-vs-容器-container" class="headerlink" title="虛擬機器 vs. 容器(container)"></a>虛擬機器 vs. 容器(container)</h4><p>虛擬機器和容器雖然都是虛擬化技術，但兩者卻天差地別，接下來會簡單介紹兩者差別。</p>
+<h5 id="虛擬機器-VM"><a href="#虛擬機器-VM" class="headerlink" title="虛擬機器(VM)"></a>虛擬機器(VM)</h5><ul>
+<li>虛擬化目標: 將一個應用程式所需的環境打包，並建立一個獨立環境，方便在不同的硬體中移動。</li>
+</ul>
+<p>VM 是在系統層上虛擬化，透過 Hypervisor(eg. VirtualBox) 在目標機器提供一個或多個虛擬機器的平台。而這些 VM 可以執行完整的作業系統(Guest OS)。<br><img src="https://i.imgur.com/kwk0Q4u.png" alt="VM vs Container"></p>
+<h5 id="容器-Container"><a href="#容器-Container" class="headerlink" title="容器(Container)"></a>容器(Container)</h5><ul>
+<li>容器化目標: 改善 VM 因為要安裝 Guest OS 導致啟動慢、佔大量記憶體的問題。</li>
+</ul>
+<p>Container 是在作業系統層上虛擬化，透過 Container engine(eg. Docker) 將一個應用程式所需的程式碼、函式庫、組態檔打包，建立資源控管機制隔離各容器，並分配 Host OS 上的系統資源。不用另外安裝 Guest OS。</p>
+<p>–&gt; 所需硬碟容量大幅降低、啟動更快，因為不用安裝 Guest OS。</p>
+<h4 id="什麼是-Docker"><a href="#什麼是-Docker" class="headerlink" title="什麼是 Docker"></a>什麼是 Docker</h4><p>Docker 是容器打包的技術，包含了下列三元素</p>
+<ul>
+<li>映像檔(Image)</li>
+<li>容器(Container)</li>
+<li>倉儲(Repository)</li>
+</ul>
+<p>舉例來說: 利用蛋糕的模具(Image)，用這個模具烤蛋糕(Container)，並把模具在收納櫃(Repository)放好。</p>
+<p>這邊只是給一個簡單的例子，就好比在物件導向中的概念，利用模組來建立模型，下面會有更多詳細介紹這三個概念。</p>
+<h5 id="映像檔-Image"><a href="#映像檔-Image" class="headerlink" title="映像檔(Image)"></a>映像檔(Image)</h5><p>…</p>
+<h5 id="容器-Container-1"><a href="#容器-Container-1" class="headerlink" title="容器(Container)"></a>容器(Container)</h5><p>…</p>
+<h5 id="倉儲-Repository"><a href="#倉儲-Repository" class="headerlink" title="倉儲(Repository)"></a>倉儲(Repository)</h5><h4 id="k8s-四元件"><a href="#k8s-四元件" class="headerlink" title="k8s 四元件"></a>k8s 四元件</h4><p>講完 VM、Container、Docker 後，回來介紹 k8s 是如何運作的。首先了解四元件。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Cluster -&gt; Master Node -&gt; Worker Node -&gt; Pod</span><br></pre></td></tr></table></figure>
+
+<h5 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h5><p>是 k8s 運作的<strong>最小單位</strong>，一個 pod 對應到一個應用程式，例如: 一個 pod 對應到 一個 API server。</p>
+<ul>
+<li>每個 pod 都有一個 ID，也就是專屬於這個 pod 的 <code>yaml</code> 檔</li>
+<li>一個 pod 裡可以有多個 container，但一般只會有一個</li>
+<li>因為同一個 pod 中的 container 共享相同資源及網路，透過 local port number 溝通。</li>
+</ul>
+<h5 id="Worker-Node"><a href="#Worker-Node" class="headerlink" title="Worker Node"></a>Worker Node</h5><p>是 k8s 運作的<strong>最小硬體單位</strong>，一個 worker node (簡稱 node) 對應到一台機器，可以是實體機、AWS EC2 開的虛擬機或是 GCP 上的 Computer Engine。</p>
+<p>Node 三元件:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kubelet、kube-proxy、Container Runtime</span><br></pre></td></tr></table></figure>
+
+<div class="note info @">
+            <p>k8s 很強大，所有 Node 都抽象了，不用了解這些元件的詳細內容也可以很順利的操作! (所以這邊各元件先簡單介紹，後續有空的話會更詳細的補充)</p>
+          </div>
+
+<h5 id="Master-Node"><a href="#Master-Node" class="headerlink" title="Master Node"></a>Master Node</h5><p>是 k8s 運作的<strong>指揮中心</strong>，他也是 Node，但他負責管理其他所有 Node，稱為 Master。</p>
+<p>Master 四元件:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kube-apiserver、etcd、kube-scheduler、kube-controller-manager</span><br></pre></td></tr></table></figure>
+
+<h5 id="Cluster"><a href="#Cluster" class="headerlink" title="Cluster"></a>Cluster</h5><p>k8s 中 Master 與多個 Node 的集合，基本上就是在同一個環境裡所有 Node 集合在一起的單位。</p>
+<p><img src="https://i.imgur.com/JLVEu8c.png" alt="kubernetes"></p>
+<h3 id="微服務"><a href="#微服務" class="headerlink" title="微服務"></a>微服務</h3><p>微服務架構是一種雲原生架構方法，其中單一應用程式由許多鬆散連結且可獨立部署的小型服務所組成。</p>
+<ul>
+<li>擁有自己的技術堆疊，其中包含資料庫和資料管理模型。</li>
+<li>透過 <code>REST API</code>、事件串流與<code>訊息分配管理系統</code>的組合彼此相互通訊。</li>
+<li>依商業功能組織，其中區隔服務的界線通常稱為有界限的環境定義。</li>
+</ul>
+<p>優勢</p>
+<ul>
+<li>程式碼可以輕鬆更新。</li>
+<li>可以不用碰觸整個應用程式新增功能。</li>
+<li>團隊可以針對不同的元件使用不同的堆疊或是不同的程式語言。</li>
+<li>元件可以個別獨立擴充，減少因為單一特性可能面臨過多負載而必須擴充整個應用程式所造成的浪費和成本。</li>
+</ul>
+<div class="note success @">
+            <p>k8s 就是用來實作微服務架構的容器編排(container orchestration)，並且利用 Ingress 來進行通訊(可以想成就是利用 API 來串接)。</p>
+          </div>
+
+<p>舉例來說，k8s 中的一個 pod 就是一個服務，一個 k8s 的 cluster 就是一支應用程式，實現了微服務架構。</p>
+<h2 id="什麼是自動化"><a href="#什麼是自動化" class="headerlink" title="什麼是自動化"></a>什麼是自動化</h2><hr>
+<ul>
+<li><p>為何需要 IaC?</p>
+</li>
+<li><p>Dynamic infrastructure 遇到的挑戰</p>
+</li>
+<li><p>Principles of IaC</p>
+</li>
+<li><p>Practice of IaC</p>
+</li>
+<li><p>為何讓資料中心自動化的過程會加速</p>
+<ul>
+<li>The leading companies in digitizing operations are growing 5x faster than the laggards.</li>
+<li>維護和營運的成本會降低。</li>
+</ul>
+</li>
+<li><p>簡單介紹 IaC</p>
+<ul>
+<li>透過<strong>機器可讀(machine-readable)的定義檔</strong>而不是實際上的硬體配置或交互式配置工具來管理和配置電腦資料中心的過程。</li>
+</ul>
+</li>
+</ul>
+<h3 id="什麼是-Infrastructure-as-Code-IaC"><a href="#什麼是-Infrastructure-as-Code-IaC" class="headerlink" title="什麼是 Infrastructure as Code(IaC)"></a>什麼是 Infrastructure as Code(IaC)</h3><p>目標</p>
+<ul>
+<li>IT infrastructure 支持和促成變革，而不是成為障礙或約束。</li>
+<li>Changes are routune<ul>
+<li>系統更改是例行公事(routine)，不會給使用者或 IT 人員帶來戲劇性或壓力。</li>
+</ul>
+</li>
+<li>Spend time on valuable things<ul>
+<li>IT 人員將時間花在可以發揮他們能力在有價值的事情上，而不是日常的重複性任務上。</li>
+</ul>
+</li>
+<li>Enable users<ul>
+<li>使用者能夠定義、配置和管理他們需要的資源，而不需要 IT 人員為他們做這些。</li>
+</ul>
+</li>
+<li>Quick recover from failure<ul>
+<li>團隊能夠輕鬆快速地從失敗中恢復，而不是假設失敗可以完全預防。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Dynamic-Infrastructure-的挑戰"><a href="#Dynamic-Infrastructure-的挑戰" class="headerlink" title="Dynamic Infrastructure 的挑戰"></a>Dynamic Infrastructure 的挑戰</h3><h4 id="Server-Sprawl"><a href="#Server-Sprawl" class="headerlink" title="Server Sprawl"></a>Server Sprawl</h4><ul>
+<li>團隊努力使伺服器維持補丁和最新，使系統容易受到已知漏洞的攻擊。</li>
+<li>發現問題後，可能不會將修復程序推廣到可能受其影響的所有系統。</li>
+<li>跨伺服器的版本和配置差異代表在某些機器上工作的軟體和腳本在其他機器上不能運作。</li>
+</ul>
+<h4 id="Configuration-Drift"><a href="#Configuration-Drift" class="headerlink" title="Configuration Drift"></a>Configuration Drift</h4><ul>
+<li>Configuration Drift 是指同一件事的實例隨著時間的推移而變得不同。</li>
+</ul>
+<h4 id="Snowflake-Servers"><a href="#Snowflake-Servers" class="headerlink" title="Snowflake Servers"></a>Snowflake Servers</h4><ul>
+<li>不同於網絡上的任何其他服務器。因為他不能複製。</li>
+</ul>
+<h4 id="Jenga-Infrastructure"><a href="#Jenga-Infrastructure" class="headerlink" title="Jenga Infrastructure"></a>Jenga Infrastructure</h4><ul>
+<li>Jenga 基礎設施很容易被破壞，也不容易修復。這是擴展到整個系統組合的 snowflake server 問題。</li>
+</ul>
+<h4 id="Automation-Fear-Spiral"><a href="#Automation-Fear-Spiral" class="headerlink" title="Automation Fear Spiral"></a>Automation Fear Spiral</h4><ul>
+<li>許多團隊使用 Puppet 或 Chef 等自動化工具，但很少有人在無人值守(unattended)的情況下運行這些工具。</li>
+<li>每次調整配置來適應特定的任務。</li>
+<li>由於服務器不一致，對自動化缺乏信心。</li>
+<li>服務器不一致，因為沒有頻繁且一致地執行自動化。</li>
+<li>良好的監控和有效的自動化測試有助於建立信心，相信配置可以可靠地應用並迅速發現問題。</li>
+</ul>
+<h4 id="Erosion"><a href="#Erosion" class="headerlink" title="Erosion"></a>Erosion</h4><h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><hr>
+<p>…</p>
+<h2 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h2><hr>
+<ul>
+<li><a href="https://cwhu.medium.com/docker-tutorial-101-c3808b899ac6">Docker 基礎教學與介紹 101</a></li>
+<li><a href="https://cwhu.medium.com/kubernetes-basic-concept-tutorial-e033e3504ec0">Kubernetes 基礎教學(一) 原理介紹</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Notes</category>
+        <category>cloud_native</category>
+      </categories>
+      <tags>
+        <tag>NYCU</tag>
+        <tag>110-2</tag>
+        <tag>Notes</tag>
+        <tag>cloud_native</tag>
+        <tag>CI/CD</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[CI/CD] Hexo + GitHub Actions 自動化部署</title>
+    <url>/KenChen/895155673/</url>
+    <content><![CDATA[<h1 id="Hexo-GitHub-Actions-利用-CI-x2F-CD-自動化部署"><a href="#Hexo-GitHub-Actions-利用-CI-x2F-CD-自動化部署" class="headerlink" title="Hexo + GitHub Actions 利用 CI&#x2F;CD 自動化部署"></a>Hexo + GitHub Actions 利用 CI&#x2F;CD 自動化部署</h1><hr>
+<p>我算是 Hexo 新手，在建立 blog 時需要多多爬文才能解決我遇到的問題或是新增功能，剛好在學校學到 <span class="label info"> CI/CD</span> 相關概念，在這之前一直是以手動佈署的方式(每次都要打 <code>hexo d -g</code>)發文，一開始還沒感覺，當文章數量變多時，光是等 hexo 重新生成靜態頁面後再部署到 GitHub 太久又太麻煩，因此決定使用自動化部署流程。</p>
+<p>因為遇到一些問題，為了幫助可能遇到也跟我一樣問題的人，寫了這篇文~</p>
+<blockquote>
+<p>有遇到任何問題，也可以在下方留言板聯絡我!</p>
+</blockquote>
+<h2 id="GitHub-Actions-介紹"><a href="#GitHub-Actions-介紹" class="headerlink" title="GitHub Actions 介紹"></a>GitHub Actions 介紹</h2><hr>
+<p>首先介紹 GitHub Acitons 是什麼，參考自<a href="https://docs.github.com/en/actions"><code>連結</code></a>。</p>
+<div class="note success">
+            <p>原因: GitHub Actions 是 GitHub 的整合產品，不用額外申請帳號，並且很快，還可以支援 private repo!</p>
+          </div>
+
+<h3 id="簡單介紹"><a href="#簡單介紹" class="headerlink" title="簡單介紹"></a>簡單介紹</h3><ul>
+<li><p>目前常見的 CI&#x2F;CD 服務平台是 Travis CI 跟 Jenkins</p>
+<ul>
+<li>Travis CI 適用於開源專案，有很多 Hexo 自動化部署的參考文獻，不過不支援 GitHub private repo，所以本篇文沒有使用這個。</li>
+<li>Jenkins 常用於大型專案，功能完整且有大量的 plugin，使用者也很多。</li>
+</ul>
+</li>
+<li><p>GitHub Actions 由 GitHub 官方在2018年10月推出的<code>自動化流程工具</code>，也就是 CI&#x2F;CD 服務，目前已經開放公有、私有 repo 使用。</p>
+<ul>
+<li>CI&#x2F;CD: Continuous Integrataion 持續整合和 Continuous Deployment 持續部署，也就是把程式流程自動化，push 到 repo 後自動 bulid、自動跑測試、自動部署，都十分重要，由很多步驟與流程組成，而 GitHub Actions 將這些步驟稱為 <code>Actions</code>。<ul>
+<li>實作 CI&#x2F;CD: 寫設定檔(通常為 yml 或 json，關於 yaml 檔後續會開一篇介紹)後，由 CI&#x2F;CD 服務來進行對應的操作，就是 Infrastructire as Code(IaC) 的實踐。</li>
+<li>在寫程式時，要常注意是否遵守 DRY(Do Not Repeat Yourself) 原則，把共用的部分變成一個 module 或 function，在 CI&#x2F;CD 中也是相同的概念，許多操作在不同 project 是類似的或相同的，可以提出共享。</li>
+</ul>
+</li>
+<li>因此 GitHub Actions 可以把自己寫的 Actions 發布到公開的 Marketplace，讓別的開發者可以直接飲用，並且也能有多個版本，類似於 GitHub 或 Docker Hub。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Github-Actions-基本元素"><a href="#Github-Actions-基本元素" class="headerlink" title="Github Actions 基本元素"></a>Github Actions 基本元素</h3><p>在 GitHub Actions 中，有幾個重要的元素，由大至小為:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Workflow &gt; Job &gt; Step &gt; Action</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Workflow: CI&#x2F;CD 一次要運行的整個過程，一個 workflow 會涵蓋多個 Job、Step、Action</li>
+<li>Job: 代表「任務」，一個 workflow 由多個 job 組成，相對一個 workflow 可以完成多個任務。</li>
+<li>Step: 代表「步驟」，一個 job 由多個 step 組成，也就是一步一步完一個 job。</li>
+<li>Action: 代表「命令」或「動作」，每個 step 可以依序執行多個命令。</li>
+</ul>
+<h3 id="GitHub-Actions-Workflow-Config"><a href="#GitHub-Actions-Workflow-Config" class="headerlink" title="GitHub Actions Workflow Config"></a>GitHub Actions Workflow Config</h3><p>要啟用 GitHub Actions，不用太複雜的設定，只要在專案的根目錄新增 .github&#x2F;workflow&#x2F;xxx.yml，push 到 GitHub 上後就會自動執行放在該路徑裡的 .yml config 檔 (workflow document 採 YAML 格式)。可以創建很多個 .yml，GitHub 就會執行多個 workflow。</p>
+<blockquote>
+<p>Config 更多語法可以參閱<a href="https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions">官方文件</a>。<br>舉接下來會用到的設定檔來說:</p>
+</blockquote>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment">## 幫這個 workflow 取名，預設為 .yml 檔名</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">&#x27;hexo deploy&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 監聽 main 分支若有 push 行為就執行 jobs</span></span><br><span class="line"><span class="comment">## 也就是 workflow 的觸發條件，也有像是 schedule 等觸發條件</span></span><br><span class="line"><span class="comment">## Docs: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows</span></span><br><span class="line"><span class="attr">on:</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">main</span></span><br><span class="line"><span class="comment">## 可以有多個 jobs，原則上會平行執行，若沒有則按照順序</span></span><br><span class="line"><span class="comment">## job 也可以有多個 steps</span></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="comment">## 這邊 build 代表 job 的名稱</span></span><br><span class="line">  <span class="attr">build:</span></span><br><span class="line">    <span class="comment">## 指定要運行的環境</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line">    <span class="comment">## 定義真正要執行的指令</span></span><br><span class="line">    <span class="comment">## name: 方便 debug，名字可以自己定義</span></span><br><span class="line">    <span class="comment">## uses: 直接使用其他開發者寫好的 actions</span></span><br><span class="line">    <span class="comment">## Docs: https://github.com/actions/checkout</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Checkout</span></span><br><span class="line">      <span class="attr">uses:</span> <span class="string">actions/checkout@v1</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Use</span> <span class="string">Node.js</span> <span class="number">12.</span><span class="string">x</span></span><br><span class="line">      <span class="attr">uses:</span> <span class="string">actions/setup-node@v1</span></span><br><span class="line">      <span class="attr">with:</span></span><br><span class="line">        <span class="attr">node-version:</span> <span class="string">&quot;12.x&quot;</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">init)init</span> <span class="string">ssh</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">          ...</span></span><br><span class="line"><span class="string"></span>    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">A)npm</span> <span class="string">install</span> <span class="string">-g</span> <span class="string">hexo-cli</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">        npm install -g hexo-cli</span></span><br><span class="line"><span class="string"></span>    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">B)npm</span> <span class="string">install</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">        npm install</span></span><br><span class="line"><span class="string"></span>    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">C)</span> <span class="string">hexo</span> <span class="string">d</span> <span class="string">-g</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">hexo</span> <span class="string">d</span> <span class="string">-g</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Hexo-GitHub-Actions-自動化部署步驟"><a href="#Hexo-GitHub-Actions-自動化部署步驟" class="headerlink" title="Hexo + GitHub Actions 自動化部署步驟"></a>Hexo + GitHub Actions 自動化部署步驟</h2><hr>
+<h3 id="GitHub-Repository"><a href="#GitHub-Repository" class="headerlink" title="GitHub Repository"></a>GitHub Repository</h3><table>
+<thead>
+<tr>
+<th align="left">Repository</th>
+<th align="left">操作</th>
+<th align="left">說明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a href="https://github.com/kenchen879/xxx">https://github.com/kenchen879/xxx</a></td>
+<td align="left">建立一個倉儲，把原本 hexo 的 source code 放進去</td>
+<td align="left">名字隨便取，可以是 private</td>
+</tr>
+<tr>
+<td align="left"><a href="https://github.com/kenchen879.github.io">https://github.com/kenchen879.github.io</a></td>
+<td align="left">GitHub Actions 會把靜態網頁部署到這</td>
+<td align="left">名字固定，要是 public</td>
+</tr>
+</tbody></table>
+<h3 id="生成-SSG-部署金鑰"><a href="#生成-SSG-部署金鑰" class="headerlink" title="生成 SSG 部署金鑰"></a>生成 SSG 部署金鑰</h3><p>首先在 terminal 利用 <code>ssh-keygen</code> 生成一組金鑰，包含私鑰(github-deploy-key)和公鑰(github-deploy-key.pub)。</p>
+<blockquote>
+<p>名稱可以自己取</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen -f github-deploy-key</span><br></pre></td></tr></table></figure>
+
+<div class="note warning @">
+            <p>在 Mac OS 下用這個指令產生金鑰會出現問題(permission denied)，所以建議可以利用 GitHub 裡面產生 token，或是另外查詢 Mac 產生金鑰的方法。</p>
+          </div>
+
+
+<h3 id="設置-repo"><a href="#設置-repo" class="headerlink" title="設置 repo"></a>設置 repo</h3><h4 id="HexoBlog-存放-source-code-的-repo"><a href="#HexoBlog-存放-source-code-的-repo" class="headerlink" title="HexoBlog (存放 source code 的 repo)"></a>HexoBlog (存放 source code 的 repo)</h4><p>在存放 source code 的 repo 中，步驟如下<br><code>repo -&gt; Settings -&gt; Secrets -&gt; Actions -&gt; New repository secret</code><br><img src="https://i.imgur.com/RNHnUGs.png" alt="private"><br><img src="https://i.imgur.com/iZTDYyU.png" alt="new key"></p>
+<blockquote>
+<p>Name: 可以自己取，但後面設定 config 檔時要記得這個名稱!<br>Value: 放剛剛產生的私鑰 github-deploy-key 的內容</p>
+</blockquote>
+<h4 id="kenchen879-github-io-存放靜態網頁的repo"><a href="#kenchen879-github-io-存放靜態網頁的repo" class="headerlink" title="kenchen879.github.io (存放靜態網頁的repo)"></a>kenchen879.github.io (存放靜態網頁的repo)</h4><p>裡面的檔案設定好下列步驟後都不用動，會自動部署到 GitHub Pages，步驟如下<br><code>repo -&gt; Settings -&gt; Deploy keys -&gt; Add deploy key</code></p>
+<blockquote>
+<p>Name: 可以自己取<br>Value: 放剛剛產生的公鑰 github-deploy-key.pub 的內容</p>
+</blockquote>
+<h3 id="設定-config-file"><a href="#設定-config-file" class="headerlink" title="設定 config file"></a>設定 config file</h3><p>上面兩個設定好後，開啟 source code，並在根目錄下建立 <code>.github/workflow/hexoActions.yml</code>，就是上面說的 workflow，接下來 GitHub Actions 會抓取裡面的檔案內容執行動作。</p>
+<p>hexoActions.yml 如下</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">&#x27;hexo deploy&#x27;</span></span><br><span class="line"><span class="attr">on:</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">main</span></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">build:</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Checkout</span></span><br><span class="line">      <span class="attr">uses:</span> <span class="string">actions/checkout@v1</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Use</span> <span class="string">Node.js</span> <span class="number">12.</span><span class="string">x</span></span><br><span class="line">      <span class="attr">uses:</span> <span class="string">actions/setup-node@v1</span></span><br><span class="line">      <span class="attr">with:</span></span><br><span class="line">        <span class="attr">node-version:</span> <span class="string">&quot;12.x&quot;</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">init)init</span> <span class="string">ssh</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">          mkdir -p ~/.ssh/</span></span><br><span class="line"><span class="string">          echo &quot;$&#123;&#123;secrets.xxx&#125;&#125;&quot; &gt; ~/.ssh/id_rsa</span></span><br><span class="line"><span class="string">          chmod 600 ~/.ssh/id_rsa</span></span><br><span class="line"><span class="string">          ssh-keyscan github.com &gt;&gt; ~/.ssh/known_hosts</span></span><br><span class="line"><span class="string">          git config --global user.name &quot;xxx&quot;</span></span><br><span class="line"><span class="string">          git config --global user.email &quot;xxx@gmail.com&quot;</span></span><br><span class="line"><span class="string"></span>    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">A)npm</span> <span class="string">install</span> <span class="string">-g</span> <span class="string">hexo-cli</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">        npm install -g hexo-cli</span></span><br><span class="line"><span class="string"></span>    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">B)npm</span> <span class="string">install</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">        npm install</span></span><br><span class="line"><span class="string"></span>    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">C)</span> <span class="string">hexo</span> <span class="string">d</span> <span class="string">-g</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">hexo</span> <span class="string">d</span> <span class="string">-g</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>secrets.xxx</code>: 剛剛在 GitHub 設定的私鑰名稱<br><code>user.name &quot;xxx&quot;</code>: 使用者名稱<br><code>user.email &quot;xxx@gmail.com&quot;</code>: 使用者電子郵件</p>
+</blockquote>
+<h3 id="修改在根目錄下的-config-yml"><a href="#修改在根目錄下的-config-yml" class="headerlink" title="修改在根目錄下的 _config.yml"></a>修改在根目錄下的 _config.yml</h3><p>將 http 改成 ssh 才可以，因為是從 private repo. 自動化操作的，透過 ssh 進行連接。</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">git@github.com:xxx/xxx.github.io.git</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>branch: master</code>: 也可以是 <code>branch: main</code></p>
+</blockquote>
+<h3 id="刪掉-themes-x2F-next-下的-git"><a href="#刪掉-themes-x2F-next-下的-git" class="headerlink" title="刪掉 themes&#x2F;next 下的 .git"></a>刪掉 themes&#x2F;next 下的 <code>.git</code></h3><div class="note danger @">
+            <p>這點要特別注意，如果沒有做，當 GitHub Actions 自動部署到 GitHub Pages 時，產生的頁面會都是空白!</p>
+          </div>
+
+<p>當時我在這裡花費不少時間，因為主題 next 是 <code>git clone</code> 下來的，所以產生了 <code>.git</code>，會和 hexo 根目錄下的 .git 衝突，會使 <code>commit</code> 沒有把主題 push 上去而產生空白頁面。</p>
+<p>如果仍沒有辦法，將 themes&#x2F;next 先移出去，然後 commit 一次後，再將 themes&#x2F;next 移回來就成功了。</p>
+<p><img src="https://i.imgur.com/GnmsBha.gif" alt="GitHub Actions 流程"></p>
+<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><hr>
+<h3 id="困難與挑戰"><a href="#困難與挑戰" class="headerlink" title="困難與挑戰"></a>困難與挑戰</h3><p>用 GitHub Actions 這個 CI&#x2F;CD 的服務聽起來很方便，而且感覺也不難，但實際在執行時會遇到種種問題:</p>
+<ul>
+<li>workflow 的設定檔很嚴謹，要很注意縮排或是有沒有空格，可能都會出錯</li>
+<li>GitHub 上公私鑰的設定名稱鑰自己記得打了什麼，在 .yml 裡就是什麼</li>
+<li>特別注意 &#x2F;themes&#x2F;next 下的 .git 要刪掉，不然會被空白頁面搞瘋</li>
+</ul>
+<h3 id="心得"><a href="#心得" class="headerlink" title="心得"></a>心得</h3><p>爬了很多文，終於讓我成功使用 GitHub Actions 進行 CI&#x2F;CD 嚕 ~</p>
+<p>原因如下</p>
+<ul>
+<li>因為當部落格的數量越來越龐大，在本地端要產生靜態頁面(<code>hexo g</code>)並部署(<code>hexo d</code>)會花費太多時間和資源，並且我也懶得一直打 <code>hexo g -d</code>。</li>
+<li>當有文章還不想部署時，可以先不用 push 到 repo 中，進行隱藏只給自己在本地端修改和查看。</li>
+</ul>
+<p>剛好看到一篇<a href="https://op30132.github.io/2020/02/05/github-action/">文章</a>，讓我學習到怎麼用 GitHub Actions 來進行 CI&#x2F;CD，下篇我會針對 Cloud Native 相關知識進行補充。</p>
+<p>謝謝各位看到最後，當你&#x2F;妳需要任何的協助，歡迎在下面留言板留言(或是直接 mail 給我)~</p>
+<h2 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h2><hr>
+<ul>
+<li><a href="https://www.codeleading.com/article/28645292659/">Github action自动部署Hexo Next</a></li>
+<li><a href="https://op30132.github.io/2020/02/05/github-action/">Hexo + github actions 自動化部署</a></li>
+<li><a href="https://medium.com/starbugs/%E5%AF%A6%E4%BD%9C%E9%96%8B%E6%BA%90%E5%B0%8F%E5%B7%A5%E5%85%B7-%E8%88%87-github-actions-%E7%9A%84%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%9B%B8%E9%81%87-3dd2d70eeb">實作開源小工具，與 Github Actions 的第一次相遇!</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Notes</category>
+        <category>cloud_native</category>
+      </categories>
+      <tags>
+        <tag>Notes</tag>
+        <tag>cloud_native</tag>
+        <tag>CI/CD</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[資料中心網路技術] Midterm ch1&amp;2&amp;3</title>
+    <url>/KenChen/568021659/</url>
+    <content><![CDATA[<h1 id="資料中心網路技術期中考準備-ch1-3"><a href="#資料中心網路技術期中考準備-ch1-3" class="headerlink" title="資料中心網路技術期中考準備 ch1~3"></a>資料中心網路技術期中考準備 ch1~3</h1><hr>
+<p>整理交大 110-2 資料中心網路技術期中考筆記，範圍:</p>
+<ul>
+<li><a href="https://bit.ly/3ikPtOr">Chapter 1: Introduction to Data Center Networks and Cloud Computing</a></li>
+<li><a href="https://bit.ly/3traSMw">Chapter 2: Networking and Switching Technology Overview</a></li>
+<li><a href="https://bit.ly/3JBa5y3">Chapter 3: Software Defined Networking (SDN)</a></li>
+</ul>
+<h2 id="筆記整理"><a href="#筆記整理" class="headerlink" title="筆記整理"></a>筆記整理</h2><hr>
+<h3 id="ch1"><a href="#ch1" class="headerlink" title="ch1"></a>ch1</h3><p>大綱:</p>
+<ul>
+<li>介紹</li>
+<li>雲端運算<ul>
+<li>例子: 從地(ground)到雲(cloud)</li>
+<li>什麼是雲端運算</li>
+<li>雲服務和部署模型</li>
+</ul>
+</li>
+<li>資料中心網路的特性和挑戰</li>
+</ul>
+<h4 id="介紹"><a href="#介紹" class="headerlink" title="介紹"></a>介紹</h4><p><strong>新興的網路運算應用</strong><br><img src="https://i.imgur.com/j2mb3Qn.png" alt="Network Application"><br>–&gt; 所有東西都藉由網路來完成。</p>
+<p><strong>網路規模共享的超級電腦</strong><br>雲端用戶可以藉由網路來連接到雲上，並且可以運算作業、執行應用程式或儲存資料。</p>
+<p><strong>典型的倉儲規模的資料中心</strong></p>
+<ul>
+<li>每個資料中心就像是一個倉儲規模的電腦。<ul>
+<li>由數十萬台伺服器組成。</li>
+</ul>
+</li>
+<li>這些伺服器透過資料中心網路(DCN)的可靠且高效的基處架構互相連接，並支持雲端運算的應用程式和服務。</li>
+</ul>
+<p><strong>資料中心的伺服器和網路設備</strong><br><img src="https://i.imgur.com/vCLdPXc.png" alt="data center network"></p>
+<ul>
+<li>Server: 由商用現成產品(commercial off-the-shelf, COTS) PC 組成<ul>
+<li>CPUs</li>
+<li>Memory</li>
+<li>Hard Disks</li>
+</ul>
+</li>
+</ul>
+<p><strong>雲端運算的需求和好處</strong></p>
+<blockquote>
+<p>可靠且可擴展的 DCN 基礎設施對於實現無所不在的高品質使用者體驗是不可或缺的。</p>
+</blockquote>
+<ul>
+<li>容易擴充(scale well)</li>
+<li>藉由網路可以在任何一處取得(ubiquitous)資料</li>
+</ul>
+<h4 id="雲端運算"><a href="#雲端運算" class="headerlink" title="雲端運算"></a>雲端運算</h4><p><strong>From Ground to Cloud</strong></p>
+<ul>
+<li>Example1 - Computer Storage<ul>
+<li>電腦有內部硬碟儲存(C: Drive)來儲存程式、檔案和影片等。舉例來說，在一特定電腦內儲存資料，要使用那個內容必須回到那台電腦，因此要想辦法在其他電腦上存取那個資料，非常不彈性。</li>
+<li>外部儲存裝置的發展，使得內容可以被移動，並且可以儲存檔案在裝置中，開啟和使用該資料在任何電腦中。</li>
+<li>接著網路儲存，多個電腦可以共享儲存檔案，不需要使用 C:Deive，電腦間透過網路進行連結。</li>
+<li>最後是利用雲端儲存，資料儲存在雲端上(例如: Google Drive)，在任何有網路的設備上進行登入就可以取得資料。</li>
+</ul>
+</li>
+<li>Example2 - Programs<ul>
+<li>在一開始，要使用特定的軟體程式，進行購買後安裝到電腦上，只有當下載到電腦上才能開始使用，現在，使用者可以在雲端上使用軟體程式(例如: Gmail)，並且不用安裝和維護，隨時隨地可以使用。</li>
+</ul>
+</li>
+</ul>
+<p><strong>什麼是雲端運算</strong></p>
+<ul>
+<li>是一種基於網際網路(Internet)的資源供應，透過 Internet 將共享資源(運算和儲存）、軟體和資訊作為服務(如電網)按需(on-demand)提供給使用者&#x2F;設備。具有可利用網路存取、彈性擴展資源、資源可以被測量、按需求提供服務和將資源池提供給使用者等特性。<br>演進的過程: <code>Mainframe --&gt; PC --&gt; Client-Server Computing --&gt; Web Service(and SOA) --&gt; Cloud Computing</code></li>
+</ul>
+<p><strong>雲端服務模型</strong></p>
+<ul>
+<li>IaaS: 基礎設施即服務，把電腦原始資源(例如: 儲存裝置、硬體、網路)虛擬化按需提供給使用者，例如 Amazon EC2、GCP。</li>
+<li>PaaS: 平台即服務，提供開發者一可以執行、測試和發布程式的平台，不用擔心平台的擴充問題，例如 Microsoft Azure、Google App Engine。</li>
+<li>SaaS: 軟體即服務，將軟體利用網路提供給使用者，應用程式運行在雲端，不用下載、維護和補丁即可使用，例如 Google Apps、Dropbox。</li>
+</ul>
+<p><strong>雲端部署模型</strong></p>
+<ul>
+<li>Public Cloud: 第三方服務提供商(cloud data center)利用網路動態供應資源。</li>
+<li>Private Cloud: 資源在公司內的企業資料中心進行整合，並部署在組織內為使用者提供服務。</li>
+<li>Hybrid Cloud<ul>
+<li>這些服務包括 on-site(私有雲)和 off-site(公共雲)的計算資源。</li>
+<li>通過整合公有雲和私有雲服務，使用者可以利用雲端解決方案來處理成本太高而無法在本地維護的複雜功能(例如: 虛擬伺服器災難恢復和測試)。</li>
+</ul>
+</li>
+</ul>
+<p><strong>DCN 的特性和挑戰</strong></p>
+<ul>
+<li>Ethernet L2&#x2F;L3 switching: 目前最先進的 DCN 技術<ul>
+<li>雖然比其他標準好，但相同的舊設計是否可行?</li>
+<li>基於叢集的應用程式驅使了東西向流量的增加。</li>
+</ul>
+</li>
+<li>Convergence: 電腦和儲存裝置空間減少。</li>
+<li>Automated software-based control<ul>
+<li>最小化手動設定，例如 “plug-and-play”。</li>
+<li>新的典範轉移: SDN</li>
+</ul>
+</li>
+<li>效能、擴充性和成本<ul>
+<li>效能: 在多個工作負載下高吞吐量和低延遲</li>
+<li>擴充性: 支援伺服器的增加</li>
+<li>成本: opex&#x2F;capex</li>
+</ul>
+</li>
+<li>虛擬化<ul>
+<li>伺服器虛擬化: 更精細的資源分配粒度。</li>
+<li>網路虛擬化: 支持多使用者。</li>
+</ul>
+</li>
+</ul>
+<h3 id="ch2"><a href="#ch2" class="headerlink" title="ch2"></a>ch2</h3><p>大綱:</p>
+<ul>
+<li>Layer-2 Ethernet- The Basics</li>
+<li>Layer-3 IP and Subnetting</li>
+<li>Virtual LAN - Introduction and Operations</li>
+<li>Layer-2 and Layer-3 Data Forwarding (Switching) Devices<ul>
+<li>Layer-2 Switch</li>
+<li>Layer-2&#x2F;3 Switch</li>
+<li>Layer-3 Router</li>
+</ul>
+</li>
+<li>Layer-2 Spanning Tree Protocol<ul>
+<li>Layer-2 Switch Redundancy and Problems</li>
+<li>Spanning Tree Protocol (STP) and the Algorithm</li>
+</ul>
+</li>
+</ul>
+<p><strong>Frame Forwarding</strong></p>
+<ul>
+<li>不用設定就可以進行訊框轉發 – 即插即用(plug-and-play)和位址自動學習</li>
+<li>基於 Address Learning Table 進行訊框轉發<ul>
+<li>ALT 包含交換器的埠與連接設備的 MAC 位址的配對</li>
+<li>通過檢查傳入訊框的來源端 MAC 位址，通過學習建立表格</li>
+<li>根據表格檢查目的端 MAC 位址，然後通過配對的埠發送每個訊框</li>
+<li>如果目的端 MAC 位址不在表格中，則該訊框被泛洪(flooding)</li>
+<li>對於廣播訊框，會被 flooding 到所有埠</li>
+</ul>
+</li>
+<li>訊框轉發在硬體中以超快的速度完成</li>
+</ul>
+<h3 id="Virtual-LAN-Introduction-and-Operations"><a href="#Virtual-LAN-Introduction-and-Operations" class="headerlink" title="Virtual LAN - Introduction and Operations"></a>Virtual LAN - Introduction and Operations</h3><h4 id="為什麼要用-VLAN"><a href="#為什麼要用-VLAN" class="headerlink" title="為什麼要用 VLAN"></a>為什麼要用 VLAN</h4><p><img src="https://i.imgur.com/cSjxwwo.png" alt="VLAN"></p>
+<ul>
+<li>有兩個子網域(例如: 兩個公司)在這個網路中</li>
+<li>由於連接到交換器的所有主機都在同一個廣播網域中因此來自一個節點的廣播將被所有其他節點 flooding –&gt; 頻寬效率降低</li>
+<li>因此要使用 <code>VLAN</code></li>
+<li>VLAN 支援 在 Layer 2 “網路虛擬化和分段”</li>
+<li>廣播只會基於 VLAN 執行 –&gt; 效率更高</li>
+</ul>
+<h4 id="VLAN-vs-Subnetting"><a href="#VLAN-vs-Subnetting" class="headerlink" title="VLAN vs. Subnetting"></a>VLAN vs. Subnetting</h4><ul>
+<li>在L3，子網域劃分允許將網絡劃分為多個較小的廣播網域</li>
+<li>在L2，一個 LAN 是一個廣播網域</li>
+<li>VLAN 可以將單個網域切割為多個較小的廣播網域，來減少不需要的廣播(並增加吞吐量)，且實現更好的安全性</li>
+<li>如果有不同的子網域連接到一個 L2 Switch，需要使用不同的 VLAN (只要沒有跨越L3邊界)</li>
+<li>如果有一個子網連接到一個 L2 Switch，仍然可以定義不同的VLAN</li>
+<li>VLAN ID 不跨子網域(即 VLAN ID 相同但不同子網域下的2個 VLAN 完全不相關）</li>
+</ul>
+<h4 id="介紹-VLAN"><a href="#介紹-VLAN" class="headerlink" title="介紹 VLAN"></a>介紹 VLAN</h4><p><strong>沒有 VLAN</strong><br><img src="https://i.imgur.com/moqsOgf.png" alt="VLAN"></p>
+<ul>
+<li>每個 LAN 交換器創建立一個廣播網域，將所有訊框廣播到與交換器相連的所有主機。</li>
+<li>問題：這種物理位置依賴性導致嚴重的不靈活性、安全性和網路管理問題。</li>
+</ul>
+<p><strong>有 VLAN</strong><br><img src="https://i.imgur.com/zOsYo44.png" alt="VLAN"></p>
+<ul>
+<li>VLAN 是一個邏輯定義的廣播網域，由一個(如圖2)或多個交換器(如圖1)建立</li>
+<li>VLAN 根據組織的功能、項目團隊或應用程式在邏輯上對交換網路進行分段，而不考慮物理位置或與網路的連接</li>
+<li>特定工作團隊使用的所有主機共享同一個 VLAN，無論物理連接或位置如何</li>
+<li>VLAN 將 “Layer-3 子網域” 概念引入 Layer 2</li>
+<li>VLAN 解決可擴展性、吞吐量和網路管理問題</li>
+</ul>
+<h4 id="情境"><a href="#情境" class="headerlink" title="情境"></a>情境</h4><p><strong>2個子網域、一個交換器和沒有 VLAN</strong><br><img src="https://i.imgur.com/awJD68G.png" alt="no VLAN"><br><code>情境一</code><br>Host 10.1.0.10 想要發送訊框給 Host 10.1.0.30。<br>由於沒有 MAC address，所以 Layer 2 廣播 ARP request。</p>
+<p><code>問題一</code><br>交換器會 flood 給所有埠，所以每個不同子網域的主機也會收到廣播，因此導致 Layer-2 未知的單播</p>
+<p><code>情境二</code><br>Host 10.1.0.10 想要傳送訊框到 10.2.0.40。<br>不同子網域上的裝置必須通過路由器進行通訊，包含預設閘道(DG)功能。</p>
+<p><code>問題二</code><br>路由器發送 ARP 請求，向所有主機廣播 –&gt; 未知單播。</p>
+<h4 id="解決方法"><a href="#解決方法" class="headerlink" title="解決方法"></a>解決方法</h4><p><strong>傳統解決方法: Multiple Switched</strong><br><img src="https://i.imgur.com/CXjuZj1.png" alt="Solution1"></p>
+<p><strong>VLAN 解決方法: Port-based Assignment</strong><br><img src="https://i.imgur.com/c7maoSi.png" alt="Solution2"></p>
+<ul>
+<li>每個交換器埠都被設定(靜態&#x2F;動態)屬於一個 VLAN。</li>
+<li>任何連接到該埠的設備都屬於該埠的 VLAN。</li>
+<li>一個 VLAN 是由一個或多個交換器建立的廣播網域，即一個 VLAN 可以跨 LAN 交換器(如右圖)。</li>
+<li>連接交換機的埠&#x2F;鏈結設定為承載所有 VLAN 的流量，稱為中繼(trunk)埠&#x2F;鏈結。</li>
+</ul>
+<p><strong>在 VLAN 中的廣播網域</strong><br><img src="https://i.imgur.com/Rv6Xwc8.png" alt="Broadcast"></p>
+<ul>
+<li>被分配到同一 VLAN 的埠在同一個廣播廣域。</li>
+<li>避免了不正確的 flooding(如 ARP)。</li>
+</ul>
+<h4 id="VLAN-Trunk-x2F-Tagging"><a href="#VLAN-Trunk-x2F-Tagging" class="headerlink" title="VLAN Trunk&#x2F;Tagging"></a>VLAN Trunk&#x2F;Tagging</h4><p><img src="https://i.imgur.com/Qls7t6I.png" alt="VLAN trunk"></p>
+<p><strong>什麼是 VLAN Trunk&#x2F;Tagging</strong><br><code>Problem</code><br>屬於同一個 VLAN 但物理連接到兩個不同 LAN 交換器的兩台主機如何通訊?<br><code>Solution 1</code><br>在兩台交換機之間使用兩條獨立的鏈結 –&gt; 不可擴展，浪費頻寬。<br><code>Solution 2</code><br>使用帶 <code>Tagging</code> 的共享 Trunk 跨交換器攜帶流量。</p>
+<p><strong>如何通訊</strong></p>
+<ul>
+<li>Tag(一個唯一的 VLAN 標識符，VLAN ID)在訊框標頭進入 trunk 時被加到訊框標頭<ul>
+<li>標籤指定每個訊框的 VLAN 成員身份。</li>
+</ul>
+</li>
+<li>然後訊框根據 VLAN 標識符和 MAC 位址被轉發到適當的交換器。</li>
+<li>離開 trunk 到達目的交換器後，訊框中的 VLAN ID 被刪掉，訊框被轉發到目的。<br><img src="https://i.imgur.com/kcrS92n.png" alt="Image"></li>
+</ul>
+<h3 id="Layer-2-and-Layer-3-Data-Forwarding-Switching-Devices"><a href="#Layer-2-and-Layer-3-Data-Forwarding-Switching-Devices" class="headerlink" title="Layer-2 and Layer-3 Data Forwarding (Switching) Devices"></a>Layer-2 and Layer-3 Data Forwarding (Switching) Devices</h3><h3 id="L2-Switching-Ethernet"><a href="#L2-Switching-Ethernet" class="headerlink" title="L2 Switching(Ethernet)"></a>L2 Switching(Ethernet)</h3><ul>
+<li>裝置: L2 Switch</li>
+<li>資料鏈結層</li>
+<li>較便宜的裝置</li>
+<li>在硬體中進行交換(switching)</li>
+<li>基於固定的 MAC 位址</li>
+<li>自動設定</li>
+<li>訊框無法被更改</li>
+<li>無縫移動、遷移和故障轉移</li>
+<li>有很高的埠密度(&gt; 24)</li>
+<li><strong><u>專門為 VLAN 內(LAN) 通訊而設計</u></strong><br><img src="https://i.imgur.com/DtjC0C5.png" alt="L2 Switching"></li>
+</ul>
+<h3 id="L3-Routing"><a href="#L3-Routing" class="headerlink" title="L3 Routing"></a>L3 Routing</h3><ul>
+<li>裝置: Router</li>
+<li>較貴的裝置</li>
+<li>在軟硬體中進行路由(routing)</li>
+<li>基於分層的邏輯 IP 位址</li>
+<li>智能進行最短路徑和多重路徑路由</li>
+<li>封包拆封(de-encapsulated)</li>
+<li>有較少的埠</li>
+<li><strong><u>專門為 WAN 網路設計</u></strong><br><img src="https://i.imgur.com/DtjC0C5.png" alt="L3 Routing"></li>
+</ul>
+<h3 id="L2-x2F-3-Switch"><a href="#L2-x2F-3-Switch" class="headerlink" title="L2&#x2F;3 Switch"></a>L2&#x2F;3 Switch</h3><p><strong>緣由</strong></p>
+<ul>
+<li>如果不同 VLAN 之間的流量很大，需要一台具有 L3 路由能力的設備(路由器)</li>
+<li>但是，路由器通常比交換器慢(路由&#x2F;轉發決策通常比第 2 層轉發決策更複雜)，並且依賴於協定(OSPF、RIP 等) <ul>
+<li>支持 VLAN 間流量的過度使用</li>
+<li>延遲性能降低</li>
+</ul>
+</li>
+<li>新的解決方案: L2&#x2F;3 Switch<ul>
+<li>A light-weight router</li>
+<li>最常見的快速轉發決策設計在芯片(HW) 中，而其他決策則由 CPU 處理。<ul>
+<li>1: 路由查詢</li>
+<li>2: 減少生存時間 (TTL) 計數</li>
+<li>3: 重新計算 checksum</li>
+<li>4: 將訊框轉發到正確的輸出埠</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>說明</strong></p>
+<ul>
+<li>如同 L2 switches，有高密度的埠(&gt; 24)</li>
+<li>支持第 2 層橋接 (MAC) 和第 3 層 (IP) 路由功能的路由交換器</li>
+<li>第 3 層路由透過高速 ASICs 硬體完成</li>
+<li>沒有 WAN 連接(因此沒有複雜的 WAN 技術)</li>
+<li>需要典型的路由器進行 WAN 通訊(路由器位於 WAN 的邊緣)</li>
+</ul>
+<h3 id="Layer-2-Spanning-Tree-Protocol"><a href="#Layer-2-Spanning-Tree-Protocol" class="headerlink" title="Layer-2 Spanning Tree Protocol"></a>Layer-2 Spanning Tree Protocol</h3><h4 id="Redundant-Networking-Topology"><a href="#Redundant-Networking-Topology" class="headerlink" title="Redundant Networking Topology"></a>Redundant Networking Topology</h4><p><strong>緣由</strong></p>
+<ul>
+<li>冗餘網路拓撲用於確保網路在存在一個點故障的情況下繼續運行<ul>
+<li>包括交換器和鏈結</li>
+</ul>
+</li>
+<li>一個交換器或鏈結出現故障<ul>
+<li>由另一個接管<br><img src="https://i.imgur.com/PGlmUEw.png" alt="Image"></li>
+</ul>
+</li>
+</ul>
+<p><strong>冗餘拓樸問題</strong></p>
+<ul>
+<li>冗餘的 L2 拓樸會形成迴圈</li>
+<li>迴圈會形成下列問題<ul>
+<li>廣播風暴</li>
+<li>多重訊框複製</li>
+<li>MAC address table 不穩定<br><img src="https://i.imgur.com/Xw6B3Oy.png" alt="Image"></li>
+</ul>
+</li>
+</ul>
+<h4 id="STP"><a href="#STP" class="headerlink" title="STP"></a>STP</h4><p><strong>STP 優缺點</strong></p>
+<ul>
+<li>優點<ul>
+<li>Plug-and-Play 不用設定</li>
+<li>自動執行故障轉移</li>
+</ul>
+</li>
+<li>缺點<ul>
+<li>擴充性問題</li>
+<li>沒有利用的 L2 冗餘(頻寬浪費)</li>
+</ul>
+</li>
+</ul>
+<h3 id="ch3"><a href="#ch3" class="headerlink" title="ch3"></a>ch3</h3><p>大綱: </p>
+<ul>
+<li>Introduction<ul>
+<li>An Analogy between Computer and Network</li>
+</ul>
+</li>
+<li>Traditional Networks and Problems</li>
+<li>Software Defined Networking (SDN)<ul>
+<li>A New Paradigm</li>
+<li>Architecture and Interface</li>
+</ul>
+</li>
+<li>SDN API- OpenFlow Protocol</li>
+<li>SDN Advantages and Challenges</li>
+</ul>
+<h4 id="介紹-1"><a href="#介紹-1" class="headerlink" title="介紹"></a>介紹</h4><p><strong>演進</strong></p>
+<ul>
+<li>垂直整合 –&gt; 垂直不整合</li>
+<li>沒有層級&#x2F;抽象 –&gt; 有層級&#x2F;抽象</li>
+<li>封閉系統(供應商特定) –&gt; 開放系統和介面</li>
+<li>小企業並且創新慢 –&gt; 大企業演進快</li>
+</ul>
+<p><strong>在網路中分層和抽象</strong></p>
+<ul>
+<li>網路中的層級即是抽象的形式</li>
+<li>而分層只應用在 “Data Plane”</li>
+<li>Problem: 沒有在 “control plane” 抽象</li>
+<li>Solution: SDN，在 control plane 建立抽象</li>
+</ul>
+<h4 id="Traditional-Networks-and-Problems"><a href="#Traditional-Networks-and-Problems" class="headerlink" title="Traditional Networks and Problems"></a>Traditional Networks and Problems</h4><p><strong>傳統網路的控制平面如何操作</strong><br><img src="https://i.imgur.com/GCU3x69.png" alt="Image"><br>整合的系統:</p>
+<ul>
+<li>利用一分散式演算法來追蹤拓樸的改變</li>
+<li>計算路由</li>
+<li>安裝轉送規則</li>
+</ul>
+<p><strong>挑戰和問題</strong></p>
+<ul>
+<li>交換器和路由器已經演進到很多功能。<ul>
+<li>L2&#x2F;3 switching and VLAN、L3 routing、VPN、QoS and firewall</li>
+</ul>
+</li>
+<li>依賴分層(layering): 為了促進新功能，資料平面使用異質模組實現，導致複雜性增加。</li>
+<li>封閉系統，很難創新。<ul>
+<li>軟體透過供應商特定的介面與硬體綁在一起</li>
+<li>開發和部署新功能的時間很長</li>
+<li>維護成本高</li>
+</ul>
+</li>
+<li>動態分散式路由計算導致網路開銷高。<ul>
+<li>路由器的設計目的是動態和獨立地回應快速變化的網路狀況 –&gt; 資料中心網絡的過度利用。</li>
+<li>在當今的大型資料中心網路絡，30% 的路由器控制平面能力用於追蹤網絡拓撲。</li>
+<li>分散式演算法 –&gt; 效能降低<ul>
+<li>通用設計，而不是針對特殊需求量身定制</li>
+<li>收斂時間長得令人無法接受，效率低下(例如 STP)</li>
+<li>可擴展性差</li>
+<li>路由表資訊不一致</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="SDN-API-OpenFlow-Protocol"><a href="#SDN-API-OpenFlow-Protocol" class="headerlink" title="SDN API- OpenFlow Protocol"></a>SDN API- OpenFlow Protocol</h4><p><strong>Flow Table Matching</strong></p>
+<ul>
+<li>Match Fields</li>
+<li>Priority</li>
+<li>Counters</li>
+<li>Actions</li>
+<li>Timeouts</li>
+</ul>
+<h4 id="SDN-Advantages-and-Challenges"><a href="#SDN-Advantages-and-Challenges" class="headerlink" title="SDN Advantages and Challenges"></a>SDN Advantages and Challenges</h4><p><strong>SDN 優點</strong></p>
+<ul>
+<li>集中網絡查看和控制<ul>
+<li>SDN 控制器對拓撲、資源可用性以及網絡流量負載和分佈具有全局視圖</li>
+</ul>
+</li>
+<li>靈活可程式的控制所有設備<ul>
+<li>SDN 能夠控制流量的路徑、QoS、網路功能、彈性；甚至彈性的定義 “流量”</li>
+</ul>
+</li>
+<li>網路資源抽象<ul>
+<li>物理網路資源以彈性的方式抽象和分配給應用程式</li>
+<li>允許網路虛擬化</li>
+</ul>
+</li>
+<li>供應商不用管<ul>
+<li>新轉發功能的插入與使用哪些供應商的交換機無關</li>
+</ul>
+</li>
+</ul>
+<h2 id="題目"><a href="#題目" class="headerlink" title="題目"></a>題目</h2><hr>
+<h3 id="ch1-1"><a href="#ch1-1" class="headerlink" title="ch1"></a>ch1</h3><ol>
+<li>回答下列關於雲端運算的問題<br>(a). 舉兩個 “from Ground to Cloud” 演進的例子。並且簡短描述其優點。<br>(b). 簡明扼要地定義雲端運算。<br>(c). 雲端運算有 SaaS、PaaS 和 IaaS。請簡潔地描述各個模型的關鍵好處對於雲端使用者。<br><code>Ans:</code><br>(a).</li>
+</ol>
+<h3 id="ch2-1"><a href="#ch2-1" class="headerlink" title="ch2"></a>ch2</h3><ol>
+<li><p>There are three most commonly used data forwarding devices, namely typical routers, L2 switches, and L2&#x2F;3 switches. Describe how they are different from each other by drawing comparisons (e.g., with a table) from four perspectives: (1) layer-based functionality, (2) forwarding by software&#x2F;hardware, (3) port count, and (4) traffic pattern to be supported.<br>最常用的資料轉發裝置有典型的路由器、L2交換器和L2&#x2F;3交換器三種。通過從四個角度進行比較(例如: 使用表格)來描述它們之間的區別: (1) 基於層的功能、(2) 軟體&#x2F;硬體轉發、(3) 埠數以及 (4) 流量要支持的模式。<br><code>Ans:</code></p>
+<table>
+<thead>
+<tr>
+<th align="left">裝置</th>
+<th align="left">基於層的功能</th>
+<th align="left">軟硬體轉發</th>
+<th align="left">埠計數</th>
+<th align="left">流量模式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Router</td>
+<td align="left">網路層</td>
+<td align="left">在軟硬體中進行路由(routing)，利用分層的邏輯 IP 位址</td>
+<td align="left">很少</td>
+<td align="left">專門為 WAN 網路設計</td>
+</tr>
+<tr>
+<td align="left">L2 switches</td>
+<td align="left">資料鏈結層</td>
+<td align="left">在硬體中進行交換</td>
+<td align="left">&gt;24</td>
+<td align="left">專門為 inter-VLAN(LAN) 通訊設計</td>
+</tr>
+<tr>
+<td align="left">L2&#x2F;3 switches</td>
+<td align="left">網路層和資料鏈結層</td>
+<td align="left">第二層如 L2交換器，第三層路由透過高速 ASICs 硬體完成</td>
+<td align="left">&gt;24</td>
+<td align="left">專門為大流量的 VLAN 設計</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>ch2 slide p.42, 44, 46</p>
+</blockquote>
+</li>
+<li><p>Consider a network with 12 stations interconnected via three types of net devices (Router, Switch, and Hub) shown below. Each device that directly connects to a station operates at a rate of 10 Gb&#x2F;s per port. All devices run in a full duplex mode.<br>(a) (15%) Compute the number of collision domains in this network. What is the maximum throughput of the network?<br>(b) (10%) Propose a strategy for increasing the throughput, without changing the topology, by increasing the number of collision domains, and re-compute the maximum throughput.<br>(c) (10%) Mark all broadcast domains in this network.<br>(d) (15%) For the revised network shown below, two VLANs (V1 and V2) are adopted. Mark all broadcast domains in this network to justify how the performance of the network can be improved through VLAN.<br>(e) (15%) For this network, describe in detail how frames are sent from “host1” to “host2”<br>考慮一個具有 12 個站點的網路，這些站點通過如下圖1所示的三種網路設備(路由器、交換機和集線器)互連。每個直接連接到站點的設備以每個埠 10 Gb&#x2F;s 的速率運行。所有設備都以全雙工模式運行。<br>(a) (15%) 計算該網路中碰撞網域的數量。網路的最大吞吐量是多少?<br>(b) (10%) 提出通過增加碰撞網域的數量，在不改變拓撲結構的情況下增加吞吐量的策略，並重新計算最大吞吐量。<br>(c) (10%) 標記此網路中的所有廣播網域。<br>(d) (15%) 對於如下圖2所示的修改後的網路，採用了兩個 VLAN(V1 和 V2)。標記此網路中的所有廣播網域，以證明如何通過 VLAN 提高網路性能。<br>(e) (15%) 對於這個網路，詳細描述訊框是如何從 “host1” 發送到 “host2”。<br><img src="https://i.imgur.com/lSjvVpA.png" alt="Image1"><br><img src="https://i.imgur.com/29cDC3w.png" alt="Image2"><br><code>Ans:</code><br>(a) 12, 90 Gb&#x2F;s<br>(b) 將 Hub 換成 Switch，碰撞網域變為 16 個，吞吐量達 120 Gb&#x2F;s<br>(c) 2, 只有路由器可以切割廣播網域<br>(d)<br>(e)</p>
+</li>
+<li><p>(70%) For a layer-2 network topology given below, there are a total of 6 Layer-2 switches. The 3-digit number inside of each switch box is the MAC address of the switch. All switches share the same priority value. The cost of each link is given and specified beside the link.<br>(a) (20%) To increase reliability, this L2 topology contains redundant links&#x2F;switches for data transport, which results in three severe data-forwarding problems. Describe and illustrate the three problems using a subset of the given topology, containing only three switches, 205, 207, and 307, the three links connecting them, and two end servers, source S00 and destination D11. (The rest of the switches&#x2F;links is ignored for this question.)<br><img src="https://i.imgur.com/FRFh1Jr.png" alt="Image"><br>(b) (30%) The STP has been proposed to solve such problems. Determine for each port of the entire above topology the resulted port type (designated, root, and blocked) after executing the STP algorithm. Reason all your answers clearly and briefly.<br>(c) (10%) For any link containing a blocking port, why is the other port of the link assigned as a “designated” port, but not a “blocking” port as well?<br>(d) (10%) Describe one advantage and two major disadvantages of the STP succinctly<br>對於下面給出的 layer-2 網路拓撲，共有 6 個 layer-2 交換器。每個交換器框框內的 3 位數是交換器的 MAC 位址。所有交換器共享相同的優先權值。每個鏈結的成本在鏈結旁邊給出並指定。<br>(a) (20%) 為了提高可靠性，這種 L2 拓撲包含用於資料傳輸的冗餘鏈結&#x2F;交換器，這會導致三個嚴重的資料轉發問題。使用給定拓撲的子集描述和說明這三個問題，其中僅包含三個交換器 205、207 和 307，連接它們的三個鏈結，以及兩個終端伺服器，來源端 S00 和目地端 D11。(此問題忽略了其餘的交換器&#x2F;鏈結。)<br>(b) (30%) 已提出 STP 來解決此類問題。在執行 STP 演算法後，確定整個上述拓撲的每個埠的結果埠類型(designated、root 和 blocked)。清楚而簡短地解釋你所有的答案。<br>(c) (10%) 對於包含 blocking port 的任何鏈結，為什麼將鏈結的另一個 port 分配為  “designated” port，而不是 “blocking” port?<br>(d) (10%) 簡明扼要地描述 STP 的一個優點和兩個主要缺點<br><code>Ans:</code><br>(b) Blocking port 不會傳送或接收或者轉發資料，只會接收 BPDU 且不進行位址學習，但如果有同一 link 兩邊都是 blocking port，則可能無法轉送和接收到 BPDU 的封包，並且少一個可以轉發的 port 會造成網路資源浪費。</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>NYCU</category>
+        <category>110-2</category>
+        <category>DCN</category>
+      </categories>
+      <tags>
+        <tag>NYCU</tag>
+        <tag>110-2</tag>
+        <tag>DCN</tag>
+        <tag>Midterm</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[資料中心網路技術] Project2 實作一簡單的網路系統</title>
+    <url>/KenChen/343485954/</url>
+    <content><![CDATA[<h1 id="資料中心網路技術-project2-實作一簡單的網路系統"><a href="#資料中心網路技術-project2-實作一簡單的網路系統" class="headerlink" title="資料中心網路技術 project2 實作一簡單的網路系統"></a>資料中心網路技術 project2 實作一簡單的網路系統</h1><hr>
+<p>交大資料中心網路技術 project 2，在這個 project 將會學到如何使用 Mininet 和 SDN controller (RYU) 來實作一簡單的網路系統。</p>
+<p><a href="https://bit.ly/3tnofNE">Demo日期</a>: 3&#x2F;22 19:45</p>
+<h2 id="介紹"><a href="#介紹" class="headerlink" title="介紹"></a>介紹</h2><hr>
+<h3 id="SDN-Switch"><a href="#SDN-Switch" class="headerlink" title="SDN Switch"></a>SDN Switch</h3><p><img src="https://i.imgur.com/8YBtiTR.jpg" alt="SDN-switch"><br><img src="https://i.imgur.com/TbaL5FS.jpg" alt="flow-table"></p>
+<ul>
+<li>Server1 要送封包給 Server2</li>
+<li>首先，SDN switch 會檢查 flow table</li>
+<li>接著，如果沒有符合的資訊在 flow table，則 switch 會將封包轉送給 controller，稱為 <strong>packet-in</strong></li>
+<li>最後，Controller 會決定 action，並送封包回去給 switch (<strong>packet-out</strong>)後在 flow table 新增項目。</li>
+</ul>
+<h3 id="Mininet"><a href="#Mininet" class="headerlink" title="Mininet"></a>Mininet</h3><ul>
+<li>Mininet 建立一真實的「虛擬網路」，執行真實的 kernel、switch和 application code。</li>
+<li>它在 linux kernel 上運行一終端主機、交換器、路由器和鏈結的 collection。</li>
+<li>交換器是 OpenFlow-enabled</li>
+</ul>
+<p><img src="https://i.imgur.com/LNcgyPC.jpg" alt="minet"></p>
+<h3 id="Ryu"><a href="#Ryu" class="headerlink" title="Ryu"></a>Ryu</h3><ul>
+<li>為 SDN controller</li>
+<li>Ryu 支援 OpenFlow 1.0~1.5</li>
+<li>Ryu 可以和 OpenStack 協同工作以進行雲端計算</li>
+<li>由 Python 撰寫</li>
+<li><a href="https://bit.ly/3N6wPIp">參考書</a></li>
+</ul>
+<h3 id="如何執行"><a href="#如何執行" class="headerlink" title="如何執行"></a>如何執行</h3><ul>
+<li>建立 VM，如何建立就不再贅述，這邊使用的是 Ubuntu 20.04</li>
+<li>安裝 Mininet</li>
+<li>安裝 Ryu</li>
+<li>執行 Mininet 和 Ryu 共同協作一簡單的 SDN 網路系統</li>
+<li>研讀 SDN controller 的 sample code (參考上面的參考書第二章)</li>
+</ul>
+<h3 id="安裝-Mininet"><a href="#安裝-Mininet" class="headerlink" title="安裝 Mininet"></a>安裝 Mininet</h3><ul>
+<li>安裝 git<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install -y git</span><br></pre></td></tr></table></figure>
+需先將 <code>https</code> 改為 <code>git</code><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global url.<span class="string">&quot;https://&quot;</span>.insteadOf git://</span><br></pre></td></tr></table></figure></li>
+<li>Clone Mininet repo<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git://github.com/mininet/mininet</span><br></pre></td></tr></table></figure></li>
+<li>安裝 Mininet (約3~7分鐘)<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> mininet/util</span><br><span class="line">sudo ./install.sh -a</span><br></pre></td></tr></table></figure></li>
+<li>測試 Mininet 是否安裝成功<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo mn --<span class="built_in">test</span> pingall</span><br></pre></td></tr></table></figure>
+<img src="https://i.imgur.com/hCPQb3a.jpg" alt="pignall"></li>
+</ul>
+<h3 id="安裝-Ryu"><a href="#安裝-Ryu" class="headerlink" title="安裝 Ryu"></a>安裝 Ryu</h3><ul>
+<li>安裝需要的套件<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install -y python3-pip</span><br></pre></td></tr></table></figure></li>
+<li>安裝 Ryu<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git://github.com/osrg/ryu.git</span><br><span class="line"><span class="built_in">cd</span> ryu</span><br><span class="line">sudo pip3 install .</span><br></pre></td></tr></table></figure></li>
+<li>測試 Ryu<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ryu-manager</span><br></pre></td></tr></table></figure>
+<img src="https://i.imgur.com/ehydkAt.jpg" alt="ryu-manager"></li>
+</ul>
+<h3 id="執行-Mininet"><a href="#執行-Mininet" class="headerlink" title="執行 Mininet"></a>執行 Mininet</h3><ul>
+<li>建立 tree topology<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo mn --controller=remote,ip=127.0.0.1 --topo tree,depth=3</span><br></pre></td></tr></table></figure>
+<img src="https://i.imgur.com/LNF08z9.jpg" alt="tree_topology"></li>
+</ul>
+<h3 id="執行-Ryu"><a href="#執行-Ryu" class="headerlink" title="執行 Ryu"></a>執行 Ryu</h3><ul>
+<li>找到 Ryu 安裝目錄<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pip show ryu</span><br></pre></td></tr></table></figure>
+<img src="https://i.imgur.com/Okre26l.png" alt="show_ryu"></li>
+<li>前往 ryu 安裝目錄<br><img src="https://i.imgur.com/HYnGX7W.png" alt="show_ryu2"></li>
+<li>執行 sample code: simple_switch_13.py<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ryu-manager ryu/app/simple_switch_13.py</span><br></pre></td></tr></table></figure>
+<img src="https://i.imgur.com/SgtHqT6.png" alt="simple_switch_13"></li>
+</ul>
+<h3 id="在-Mininet-執行-pingall"><a href="#在-Mininet-執行-pingall" class="headerlink" title="在 Mininet 執行 pingall"></a>在 Mininet 執行 <code>pingall</code></h3><ul>
+<li>執行 <code>pingall</code><br><img src="https://i.imgur.com/PewgomE.png" alt="pingall"></li>
+</ul>
+<h2 id="simple-switch-13-py-如何運作"><a href="#simple-switch-13-py-如何運作" class="headerlink" title="simple_switch_13.py 如何運作"></a>simple_switch_13.py 如何運作</h2><hr>
+<h3 id="Switching-Hub"><a href="#Switching-Hub" class="headerlink" title="Switching Hub"></a>Switching Hub</h3><p>Switching Hub 有很多功能，這邊測試的交換器只具有以下簡單功能:</p>
+<ul>
+<li>知道連接到埠的主機 MAC 位址並將其保留在 <code>MAC address table</code> 中。</li>
+<li>當接收到發送已知主機的封包時，將它們傳送到連接到主機的埠。</li>
+<li>當接收到發送未知主機的封包時，執行 <code>flooding</code>。<br>以下利用 Ryu 實作一 switch。</li>
+</ul>
+<h3 id="Switching-Hub-by-OpenFlow"><a href="#Switching-Hub-by-OpenFlow" class="headerlink" title="Switching Hub by OpenFlow"></a>Switching Hub by OpenFlow</h3><p>OpenFlow switches 可以透過接收來自 Ryu 等 OpenFlow controller 的指令來執行以下操作:</p>
+<ul>
+<li>重寫接收封包的位址或從指定埠傳輸封包。</li>
+<li>將接收到的封包傳送到控制器 (<code>Packet-In</code>）。</li>
+<li>轉送控制器從指定埠轉送的封包 (<code>Packet-Out</code>)。</li>
+</ul>
+<p>首先，需要使用 <code>Packet-In</code> 功能來學習 MAC 位址。 控制器可以使用 <code>Packet-In</code> 功能從交換機接收封包。 交換器分析接收到的封包以了解主機的MAC位址和連接埠的資訊。</p>
+<p>學習後，交換器將接收到的封包轉送出去。 交換器會檢查封包的目的 MAC 地址是否屬於學習到的主機。根據檢查結果，交換器會執行以下處理。</p>
+<ul>
+<li>如果是已經學習過的主機: 使用 Packet-Out 功能從連接埠傳送封包</li>
+<li>如果是未知主機: 使用 Packet-Out 功能執行 <code>flooding</code>。</li>
+</ul>
+<h3 id="實際操作前的觀念"><a href="#實際操作前的觀念" class="headerlink" title="實際操作前的觀念"></a>實際操作前的觀念</h3><ul>
+<li><p>初始化</p>
+<ul>
+<li>flow table 為空的初始狀態。 </li>
+<li>假設主機 A 連接到埠 1，主機 B 連接到埠 4，主機 C 連接到埠 3。</li>
+<li><img src="https://i.imgur.com/PtZZmph.png" alt="initial"></li>
+</ul>
+</li>
+<li><p>A -&gt; B</p>
+<ul>
+<li>當封包從主機 A 發送到主機 B 時，會發送 Packet-In 訊息，並通過埠 1 學習主機 A 的 MAC 位址。由於尚未找到主機 B 的埠，因此封包被 <code>flooding</code> 並由 主機 B 和主機 C 接收。</li>
+<li><img src="https://i.imgur.com/Lqn7D7R.png" alt="flooding"></li>
+<li>Packet-In<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">in-port: 1</span><br><span class="line">eth-dst: Host B</span><br><span class="line">eth-src: Host A</span><br></pre></td></tr></table></figure></li>
+<li>Packet-Out<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">action: OUTPUT:Flooding</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>B -&gt; A</p>
+<ul>
+<li>當封包從主機 B -&gt; A 時，會在 flow table 中增加一個 entry，並將封包傳送到埠 1。因此不會被主機 C 收到。</li>
+<li><img src="https://i.imgur.com/rPbbJ6R.png" alt="B-&gt;A"></li>
+<li>Packet-In<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">in-port: 4</span><br><span class="line">eth-dst: Host A</span><br><span class="line">eth-src: Host B</span><br></pre></td></tr></table></figure></li>
+<li>Packet-Out<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">action: OUTPUT:Port 1</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>A -&gt; B</p>
+<ul>
+<li>再一次 A-&gt; B，會在 flow table 中增加一個 entry，並且封包也會傳送到埠 4。</li>
+<li><img src="https://i.imgur.com/8AlVuw3.png" alt="again"></li>
+<li>Packet-In<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">in-port: 1</span><br><span class="line">eth-dst: Host B</span><br><span class="line">eth-src: Host A</span><br></pre></td></tr></table></figure></li>
+<li>Packet-Out<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">action: OUTPUT:Port 4</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h3 id="實際操作"><a href="#實際操作" class="headerlink" title="實際操作"></a>實際操作</h3><p>利用 simple_switch_13.py 實作，尚有 simple_switch.py (OpenFlow 1.0) 和 simple_switch_12.py (OpenFlow 1.2)，依據 OpenFlow 的版本決定，所以這邊是以 OpenFlow 1.3 實現。</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> ryu.base <span class="keyword">import</span> app_manager</span><br><span class="line"><span class="keyword">from</span> ryu.controller <span class="keyword">import</span> ofp_event</span><br><span class="line"><span class="keyword">from</span> ryu.controller.handler <span class="keyword">import</span> CONFIG_DISPATCHER, MAIN_DISPATCHER</span><br><span class="line"><span class="keyword">from</span> ryu.controller.handler <span class="keyword">import</span> set_ev_cls</span><br><span class="line"><span class="keyword">from</span> ryu.ofproto <span class="keyword">import</span> ofproto_v1_3</span><br><span class="line"><span class="keyword">from</span> ryu.lib.packet <span class="keyword">import</span> packet</span><br><span class="line"><span class="keyword">from</span> ryu.lib.packet <span class="keyword">import</span> ethernet</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ExampleSwitch13</span>(app_manager.RyuApp):</span><br><span class="line">    OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, *args, **kwargs</span>):</span><br><span class="line">        <span class="built_in">super</span>(ExampleSwitch13, self).__init__(*args, **kwargs)</span><br><span class="line">        <span class="comment"># initialize mac address table.</span></span><br><span class="line">        self.mac_to_port = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">    @set_ev_cls(<span class="params">ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER</span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">switch_features_handler</span>(<span class="params">self, ev</span>):</span><br><span class="line">        datapath = ev.msg.datapath</span><br><span class="line">        ofproto = datapath.ofproto</span><br><span class="line">        parser = datapath.ofproto_parser</span><br><span class="line"></span><br><span class="line">        <span class="comment"># install the table-miss flow entry.</span></span><br><span class="line">        match = parser.OFPMatch()</span><br><span class="line">        actions = [parser.OFPActionOutput(ofproto.OFPP_CONTROLLER,</span><br><span class="line">        ofproto.OFPCML_NO_BUFFER)]</span><br><span class="line"></span><br><span class="line">        self.add_flow(datapath, <span class="number">0</span>, match, actions)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">add_flow</span>(<span class="params">self, datapath, priority, match, actions</span>):</span><br><span class="line">        ofproto = datapath.ofproto</span><br><span class="line">        parser = datapath.ofproto_parser</span><br><span class="line"></span><br><span class="line">        <span class="comment"># construct flow_mod message and send it.</span></span><br><span class="line">        inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS,</span><br><span class="line">        actions)]</span><br><span class="line">        mod = parser.OFPFlowMod(datapath=datapath, priority=priority,</span><br><span class="line">        match=match, instructions=inst)</span><br><span class="line">        datapath.send_msg(mod)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @set_ev_cls(<span class="params">ofp_event.EventOFPPacketIn, MAIN_DISPATCHER</span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_packet_in_handler</span>(<span class="params">self, ev</span>):</span><br><span class="line">        msg = ev.msg</span><br><span class="line">        datapath = msg.datapath</span><br><span class="line">        ofproto = datapath.ofproto</span><br><span class="line">        parser = datapath.ofproto_parser</span><br><span class="line"></span><br><span class="line">        <span class="comment"># get Datapath ID to identify OpenFlow switches.</span></span><br><span class="line">        dpid = datapath.<span class="built_in">id</span></span><br><span class="line">        self.mac_to_port.setdefault(dpid, &#123;&#125;)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># analyse the received packets using the packet library.</span></span><br><span class="line">        pkt = packet.Packet(msg.data)</span><br><span class="line">        eth_pkt = pkt.get_protocol(ethernet.ethernet)</span><br><span class="line">        dst = eth_pkt.dst</span><br><span class="line">        src = eth_pkt.src</span><br><span class="line"></span><br><span class="line">        <span class="comment"># get the received port number from packet_in message.</span></span><br><span class="line">        in_port = msg.match[<span class="string">&#x27;in_port&#x27;</span>]</span><br><span class="line"></span><br><span class="line">        self.logger.info(<span class="string">&quot;packet in %s %s %s %s&quot;</span>, dpid, src, dst, in_port)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># learn a mac address to avoid FLOOD next time.</span></span><br><span class="line">        self.mac_to_port[dpid][src] = in_port</span><br><span class="line"></span><br><span class="line">        <span class="comment"># if the destination mac address is already learned,</span></span><br><span class="line">        <span class="comment"># decide which port to output the packet, otherwise FLOOD.</span></span><br><span class="line">        <span class="keyword">if</span> dst <span class="keyword">in</span> self.mac_to_port[dpid]:</span><br><span class="line">            out_port = self.mac_to_port[dpid][dst]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            out_port = ofproto.OFPP_FLOOD</span><br><span class="line"></span><br><span class="line">        <span class="comment"># construct action list.</span></span><br><span class="line">        actions = [parser.OFPActionOutput(out_port)]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># install a flow to avoid packet_in next time.</span></span><br><span class="line">        <span class="keyword">if</span> out_port != ofproto.OFPP_FLOOD:</span><br><span class="line">            match = parser.OFPMatch(in_port=in_port, eth_dst=dst)</span><br><span class="line">            self.add_flow(datapath, <span class="number">1</span>, match, actions)</span><br><span class="line">            </span><br><span class="line">        <span class="comment"># construct packet_out message and send it.</span></span><br><span class="line">        out = parser.OFPPacketOut(datapath=datapath,</span><br><span class="line">                                buffer_id=ofproto.OFP_NO_BUFFER,</span><br><span class="line">                                in_port=in_port, actions=actions,</span><br><span class="line">                                data=msg.data)</span><br><span class="line">        datapath.send_msg(out)</span><br></pre></td></tr></table></figure>
+<ol>
+<li>Class 定義和初始化<br>為了實作 Ryu</li>
+</ol>
+<ul>
+<li>要繼承 ryu.base.app_manager.RyuApp。</li>
+<li>設定 <code>OFP_VERSIONS</code> 指定為 OpenFlow 1.3。</li>
+<li>MAC address table mac_to_port 也要定義。<br>在 OpenFlow 中，定義 OpenFlow 交換器與控制器間通訊所需的握手過程。但由於 Ryu 的框架負責處理這些程序，因此無需了解。<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 繼承於 app_manager.RyuApp</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ExampleSwitch13</span>(app_manager.RyuApp):</span><br><span class="line">  <span class="comment"># 使用 OpenFlow 1.3</span></span><br><span class="line">  OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 初始化設定</span></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, *args, **kwargs</span>):</span><br><span class="line">    <span class="built_in">super</span>(ExampleSwitch13, self).__init__(*args, **kwargs)</span><br><span class="line">    <span class="comment"># 定義 MAC address table</span></span><br><span class="line">    self.mac_to_port = &#123;&#125;</span><br><span class="line"><span class="comment"># ...</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<ol start="2">
+<li>事件處理器(Event Handler)<blockquote>
+<ul>
+<li>使用 Ryu 時，當接收到 OpenFlow 訊息時，會產生與該訊息相對應的事件。Ryu App. 實現了一個與希望接收的訊息相對應的事件處理器。</li>
+<li>事件處理器定義一個具有事件對象(event object)的函數，並使用 <code>ryu.controller.handler.set_ev_cls</code> decorator 進行 decorate。(decorate 是什麼有待補充，我也不太了解細節)</li>
+<li><code>set_ev_cls</code> 為指定事件類別和 OpenFlow 交換器的狀態。</li>
+<li>事件類別為 <code>ryu.controller.ofp_event.EventOFP</code> + &lt;OpenFlow Message name&gt;。 例如，在 <code>Packet-In</code> 訊息的情況下，會變成 <code>EventOFPPacketIn</code>。<table>
+<thead>
+<tr>
+<th align="left">Definition</th>
+<th align="left">Explanation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">ryu.controller.handler.HANDSHAKE_DISPATCHER</td>
+<td align="left">交換 HELLO 訊息</td>
+</tr>
+<tr>
+<td align="left">ryu.controller.handler.CONFIG_DISPATCHER</td>
+<td align="left">等待接收 SwitchFeatures 訊息</td>
+</tr>
+<tr>
+<td align="left">ryu.controller.handler.MAIN_DISPATCHER</td>
+<td align="left">正常狀態</td>
+</tr>
+<tr>
+<td align="left">ryu.controller.handler.DEAD_DISPATCHER</td>
+<td align="left">取消連接</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+</blockquote>
+</li>
+</ol>
+<ul>
+<li><p>新增表格遺失(Table-miss)的 Flow entry</p>
+<ul>
+<li>與 OpenFlow 交換器握手後，將表格遺失的 flow entry 新增到 flow table 中，以準備接收 <code>Packet-In</code> 訊息。</li>
+<li>在接收到 Switch Features(Features Reply)訊息後，新增表格遺失的 flow entry。<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 指定事件類別和 OpenFlow 交換器狀態</span></span><br><span class="line"><span class="meta">@set_ev_cls(<span class="params">ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">switch_features_handler</span>(<span class="params">self, ev</span>):</span><br><span class="line">  datapath = ev.msg.datapath</span><br><span class="line">  ofproto = datapath.ofproto</span><br><span class="line">  parser = datapath.ofproto_parser</span><br><span class="line"><span class="comment"># ...</span></span><br></pre></td></tr></table></figure></li>
+<li>在 <code>ev.msg</code> 中，存儲了事件對應的 OpenFlow 訊息類別的實例。在這種情況下他是 <code>ryu.ofproto.ofproto_v1_3_parser.OFPSwitchFeatures</code>。 </li>
+<li>在 <code>msg.datapath</code> 中，存儲發出此訊息 OpenFlow 交換器對應的 <code>ryu.controller.controller.Datapath</code> 類別的實例。 </li>
+<li>Datapath 類執行重要的處理，例如與 OpenFlow 交換器的實際通訊以及與接收到的訊息對應的事件發布。</li>
+<li>Ryu 應用程序使用的主要屬性如下:<table>
+<thead>
+<tr>
+<th align="left">屬性名</th>
+<th align="left">解釋</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">id</td>
+<td align="left">連接的 OpenFlow switch ID (data path ID)。</td>
+</tr>
+<tr>
+<td align="left">ofproto</td>
+<td align="left">表示支持正在使用的 OpenFlow 版本的 ofproto 模組。 在 OpenFlow 1.3 形式的情況下，將遵守模組 <code>ryu.ofproto.ofproto_v1_3</code>。</td>
+</tr>
+<tr>
+<td align="left">ofproto_parser</td>
+<td align="left">同 ofproto，表示 ofproto_parser 模組。 在 OpenFlow 1.3 形式的情況下，將遵守模組 <code>ryu.ofproto.ofproto_v1_3_parser</code>。</td>
+</tr>
+</tbody></table>
+</li>
+<li>Ryu 中使用 Datapath class 的主要方法如下:<ul>
+<li><code>send_msg(msg)</code><br>發送 OpenFlow 消息。 msg 是 <code>ryu.ofproto.ofproto_parser.MsgBase</code> 的子類別，對應於發送 OpenFlow 訊息。</li>
+</ul>
+</li>
+<li>交換集線器本身並不特別使用接收到的 Switch Features 訊息。而是作為一個事件處理，以獲得新增 Table-miss flow entry 的時間。<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">switch_features_handler</span>(<span class="params">self, ev</span>):</span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line">  <span class="comment"># install the table-miss flow entry.</span></span><br><span class="line">  <span class="comment"># 產生一空匹配以匹配封包，並用 OFPMatch 表示</span></span><br><span class="line">  match = parser.OFPMatch()</span><br><span class="line">  actions = [parser.OFPActionOutput(ofproto.OFPP_CONTROLLER,</span><br><span class="line">  ofproto.OFPCML_NO_BUFFER)]</span><br><span class="line">  self.add_flow(datapath, <span class="number">0</span>, match, actions)</span><br></pre></td></tr></table></figure></li>
+<li>Table-miss flow entry 有最低 (0) 優先權，並且該 entry 匹配所有封包。 在該 entry 的指令中，通過指定輸出到控制器埠的動作，如果接收到的封包與任何正常 flow entry 不匹配，則發出 <code>Packet-In</code>。</li>
+<li>產生一個空匹配(match)以匹配所有封包。匹配用 <code>OFPMatch</code> 類別表示。</li>
+<li>接下來，產生 OUTPUT action class (<code>OFPActionOutput</code>) 的實例以傳送到控制器埠。控制器被指定為輸出目的地，並且 <code>OFPCML_NO_BUFFER</code> 被指定為 max_len 以便將所有封包發送到控制器。</li>
+<li>最後，為優先權指定為 0(最低)並執行 <code>add_flow()</code> 方法以發送 Flow Mod 訊息。<code>add_flow()</code> 方法在後面會解釋。</li>
+</ul>
+</li>
+<li><p>Packet-in Massage</p>
+<ul>
+<li>建立 Packet-In 事件處理器來處理未知目的地的封包事件<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="meta">@set_ev_cls(<span class="params">ofp_event.EventOFPPacketIn, MAIN_DISPATCHER</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">_packet_in_handler</span>(<span class="params">self, ev</span>):</span><br><span class="line">  msg = ev.msg</span><br><span class="line">  datapath = msg.datapath</span><br><span class="line">  ofproto = datapath.ofproto</span><br><span class="line">  parser = datapath.ofproto_parser</span><br><span class="line"><span class="comment"># ...</span></span><br></pre></td></tr></table></figure></li>
+<li>常用的 OFPPacketIn class 屬性:<table>
+<thead>
+<tr>
+<th align="left">屬性名</th>
+<th align="left">解釋</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">match</td>
+<td align="left"><code>ryu.ofproto.ofproto_v1_3_parser.OFPMatch</code> class 實例，其中設置了接收封包的 meta 訊息。</td>
+</tr>
+<tr>
+<td align="left">data</td>
+<td align="left">代表接收到封包的二元資料</td>
+</tr>
+<tr>
+<td align="left">total_len</td>
+<td align="left">封包資料長度</td>
+</tr>
+<tr>
+<td align="left">buffer_id</td>
+<td align="left">當接收封包在 OpenFlow switch 中緩衝時，代表為其 ID; 若沒有緩衝，則設置 <code>ryu.ofproto.ofproto_v1_3.OFP_NO_BUFFER</code></td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+</li>
+<li><p>更新 MAC Address Table</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">_packet_in_handler</span>(<span class="params">self, ev</span>):</span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line">  <span class="comment"># get the received port number from packet_in message.</span></span><br><span class="line">  in_port = msg.match[<span class="string">&#x27;in_port&#x27;</span>]</span><br><span class="line">  self.logger.info(<span class="string">&quot;packet in %s %s %s %s&quot;</span>, dpid, src, dst, in_port)</span><br><span class="line">  <span class="comment"># learn a mac address to avoid FLOOD next time.</span></span><br><span class="line">  self.mac_to_port[dpid][src] = in_port</span><br><span class="line"><span class="comment"># ...</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>從 OFPPacketIn match 取得接收埠(in_port)，目的端 MAC 位址和發送端 MAC 位址是使用 Ryu 的封包庫從接收到的封包中的以太 header 中獲得。</li>
+<li>依獲取的發送端 MAC 位址和接收埠，更新MAC address table。</li>
+<li>為了支持多個 OpenFlow switches 的連線，MAC address table 用來管理每個 OpenFlow switch，並且用 data path ID 代表他們的身分。</li>
+</ul>
+</li>
+<li><p>Judging the Transfer Destination Port</p>
+<ul>
+<li>當 MAC address table 中存在目的 MAC 位址時，使用對應的埠。如果未找到，則生成為輸出埠特定泛洪 (<code>OFPP_FLOOD</code>) 的 OUTPUT action class的實例。<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">_packet_in_handler</span>(<span class="params">self, ev</span>):</span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line">  <span class="comment"># if the destination mac address is already learned,</span></span><br><span class="line">  <span class="comment"># decide which port to output the packet, otherwise FLOOD.</span></span><br><span class="line">  <span class="comment"># 如果 MAC address table 有就傳，沒有就 flooding。</span></span><br><span class="line">  <span class="keyword">if</span> dst <span class="keyword">in</span> self.mac_to_port[dpid]:</span><br><span class="line">    out_port = self.mac_to_port[dpid][dst]</span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    out_port = ofproto.OFPP_FLOOD</span><br><span class="line">  <span class="comment"># construct action list.</span></span><br><span class="line">  actions = [parser.OFPActionOutput(out_port)]</span><br><span class="line">  <span class="comment"># install a flow to avoid packet_in next time.</span></span><br><span class="line">  <span class="keyword">if</span> out_port != ofproto.OFPP_FLOOD:</span><br><span class="line">    match = parser.OFPMatch(in_port=in_port, eth_dst=dst)</span><br><span class="line">    self.add_flow(datapath, <span class="number">1</span>, match, actions)</span><br><span class="line"><span class="comment"># ...</span></span><br></pre></td></tr></table></figure></li>
+<li>如果找到目的 MAC 位址，則在 OpenFlow switch 的 flow table 中新增一個entry。</li>
+<li>與新增 Table-miss flow entry 一樣，指定 match 和 action，並執行 add_flow() 以新增 flow entry。</li>
+<li>與 Table-miss flow entry 不同，這次設置 match 的條件。這次交換集線器的實現，已經指定了接收埠 (in_port) 和目的 MAC 位址 (eth_dst)。例如，埠1 接收到發往主機 B 的封包是目標。</li>
+<li>本次 flow entry 的優先權指定為 1，值越大優先權越高，因此此處新增的 flow entry 將在Table-miss flow entry 之前進行評估。</li>
+<li>根據包含上述 action 的總結，將以下 flow entry 加到flow table 中。<ul>
+<li>封包 -&gt; B (目的地 MAC 位址是 B) 接收從 埠4 到埠1。</li>
+</ul>
+</li>
+<li>Hint: 在 OpenFlow 中，選項中規定了一個稱為 NORMAL 的邏輯輸出埠，當為輸出埠指定 NORMAL 時，交換器的 L2&#x2F;L3 功能用於處理封包。代表通過指示將所有封包輸出到 NORMAL 埠，可以使交換器作為交換集線器運行。並用 OpenFlow 實現每個處理。</li>
+</ul>
+</li>
+<li><p>Adding Processing of Flow Entry</p>
+<ul>
+<li>Packet-In 處理程序的處理尚未完成，下面是新增 flow entry 的方法。<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">add_flow</span>(<span class="params">self, datapath, priority, match, actions</span>):</span><br><span class="line">  ofproto = datapath.ofproto</span><br><span class="line">  parser = datapath.ofproto_parser</span><br><span class="line"></span><br><span class="line">  <span class="comment"># construct flow_mod message and send it.</span></span><br><span class="line">  inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS,</span><br><span class="line">  actions)]</span><br><span class="line"><span class="comment"># ...</span></span><br></pre></td></tr></table></figure></li>
+<li>對於 flow entry，設置表示目標封包條件的 match，以及表示對封包的操作、entry 優先級和有效時間的指令。</li>
+<li>在交換集線器實現中，Apply Actions 用於指令設置，以便立即使用指定的 action。</li>
+<li>最後，通過發出 Flow Mod 訊息將 entry 新增到 flow table 中。<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">add_flow</span>(<span class="params">self, datapath, priority, match, actions</span>):</span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line">  mod = parser.OFPFlowMod(datapath=datapath, priority=priority,</span><br><span class="line">  match=match, instructions=inst)</span><br><span class="line">  datapath.send_msg(mod)</span><br></pre></td></tr></table></figure></li>
+<li>Flow Mod 訊息對應的 class 是 <code>OFPFlowMod</code> class。生成 OFPFlowMod class 的實例，並使用 Datapath.send_msg() 方法將消息發送到 OpenFlow 交換器。</li>
+<li>OFPFlowMod class 的建構子有很多參數。通常可以直接用預設值，括號內是預設值。<ul>
+<li>datapath</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Packet Transfer</p>
+<ul>
+<li>回到 Packet-In 處理器，並解釋最後的處理。</li>
+<li>無論是否從 MAC address table 中找到目的 MAC 位址，最後都會發出 Packet-Out 訊息並傳送接收到的封包。<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">_packet_in_handler</span>(<span class="params">self, ev</span>):</span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line">  <span class="comment"># construct packet_out message and send it.</span></span><br><span class="line">  out = parser.OFPPacketOut(datapath=datapath,</span><br><span class="line">                            buffer_id=ofproto.OFP_NO_BUFFER,</span><br><span class="line">                            in_port=in_port, actions=actions,</span><br><span class="line">                            data=msg.data)</span><br><span class="line">  datapath.send_msg(out)</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>NYCU</category>
+        <category>110-2</category>
+        <category>DCN</category>
+      </categories>
+      <tags>
+        <tag>NYCU</tag>
+        <tag>110-2</tag>
+        <tag>DCN</tag>
+        <tag>Project</tag>
+      </tags>
+  </entry>
+</search>

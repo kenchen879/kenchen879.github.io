@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://i.imgur.com/oN6kBF1.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://i.imgur.com/oN6kBF1.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://i.imgur.com/oN6kBF1.png">
+  <link rel="mask-icon" href="https://i.imgur.com/oN6kBF1.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kenchen.me","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false,"width":240},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Hexo + GitHub Actions 利用 CI&#x2F;CD 自動化部署 我算是 Hexo 新手，在建立 blog 時需要多多爬文才能解決我遇到的問題或是新增功能，剛好在學校學到  CI&#x2F;CD 相關概念，在這之前一直是以手動佈署的方式(每次都要打 hexo d -g)發文，一開始還沒感覺，當文章數量變多時，光是等 hexo 重新生成靜態頁面後再部署到 GitHub 太久又太麻煩，因此決定">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[CI&#x2F;CD] Hexo + GitHub Actions 自動化部署">
+<meta property="og:url" content="https://kenchen.me/KenChen/895155673/index.html">
+<meta property="og:site_name" content="KENKEN">
+<meta property="og:description" content="Hexo + GitHub Actions 利用 CI&#x2F;CD 自動化部署 我算是 Hexo 新手，在建立 blog 時需要多多爬文才能解決我遇到的問題或是新增功能，剛好在學校學到  CI&#x2F;CD 相關概念，在這之前一直是以手動佈署的方式(每次都要打 hexo d -g)發文，一開始還沒感覺，當文章數量變多時，光是等 hexo 重新生成靜態頁面後再部署到 GitHub 太久又太麻煩，因此決定">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://i.imgur.com/RNHnUGs.png">
+<meta property="og:image" content="https://i.imgur.com/iZTDYyU.png">
+<meta property="og:image" content="https://i.imgur.com/GnmsBha.gif">
+<meta property="article:published_time" content="2022-03-29T09:16:12.000Z">
+<meta property="article:modified_time" content="2022-05-27T15:11:52.977Z">
+<meta property="article:author" content="Ken Chen">
+<meta property="article:tag" content="Notes">
+<meta property="article:tag" content="cloud_native">
+<meta property="article:tag" content="CI&#x2F;CD">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.imgur.com/RNHnUGs.png">
+
+<link rel="canonical" href="https://kenchen.me/KenChen/895155673/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-TW'
+  };
+</script>
+
+  <title>[CI/CD] Hexo + GitHub Actions 自動化部署 | KENKEN</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">KENKEN</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>時間線<span class="badge">11</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>關於我</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">19</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分類<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>網站地圖</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/kenchen879" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://kenchen.me/KenChen/895155673/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.imgur.com/C7LzYau.jpg">
+      <meta itemprop="name" content="Ken Chen">
+      <meta itemprop="description" content="初學者">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KENKEN">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [CI/CD] Hexo + GitHub Actions 自動化部署
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+
+              <time title="創建時間：2022-03-29 17:16:12" itemprop="dateCreated datePublished" datetime="2022-03-29T17:16:12+08:00">2022-03-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2022-05-27 23:11:52" itemprop="dateModified" datetime="2022-05-27T23:11:52+08:00">2022-05-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分類於</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Notes/" itemprop="url" rel="index"><span itemprop="name">Notes</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Notes/cloud-native/" itemprop="url" rel="index"><span itemprop="name">cloud_native</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="閱讀次數" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">閱讀次數：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/KenChen/895155673/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="KenChen/895155673/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Hexo-GitHub-Actions-利用-CI-x2F-CD-自動化部署"><a href="#Hexo-GitHub-Actions-利用-CI-x2F-CD-自動化部署" class="headerlink" title="Hexo + GitHub Actions 利用 CI&#x2F;CD 自動化部署"></a>Hexo + GitHub Actions 利用 CI&#x2F;CD 自動化部署</h1><hr>
+<p>我算是 Hexo 新手，在建立 blog 時需要多多爬文才能解決我遇到的問題或是新增功能，剛好在學校學到 <span class="label info"> CI/CD</span> 相關概念，在這之前一直是以手動佈署的方式(每次都要打 <code>hexo d -g</code>)發文，一開始還沒感覺，當文章數量變多時，光是等 hexo 重新生成靜態頁面後再部署到 GitHub 太久又太麻煩，因此決定使用自動化部署流程。</p>
+<p>因為遇到一些問題，為了幫助可能遇到也跟我一樣問題的人，寫了這篇文~</p>
+<blockquote>
+<p>有遇到任何問題，也可以在下方留言板聯絡我!</p>
+</blockquote>
+<h2 id="GitHub-Actions-介紹"><a href="#GitHub-Actions-介紹" class="headerlink" title="GitHub Actions 介紹"></a>GitHub Actions 介紹</h2><hr>
+<p>首先介紹 GitHub Acitons 是什麼，參考自<a target="_blank" rel="noopener" href="https://docs.github.com/en/actions"><code>連結</code></a>。</p>
+<div class="note success">
+            <p>原因: GitHub Actions 是 GitHub 的整合產品，不用額外申請帳號，並且很快，還可以支援 private repo!</p>
+          </div>
+
+<h3 id="簡單介紹"><a href="#簡單介紹" class="headerlink" title="簡單介紹"></a>簡單介紹</h3><ul>
+<li><p>目前常見的 CI&#x2F;CD 服務平台是 Travis CI 跟 Jenkins</p>
+<ul>
+<li>Travis CI 適用於開源專案，有很多 Hexo 自動化部署的參考文獻，不過不支援 GitHub private repo，所以本篇文沒有使用這個。</li>
+<li>Jenkins 常用於大型專案，功能完整且有大量的 plugin，使用者也很多。</li>
+</ul>
+</li>
+<li><p>GitHub Actions 由 GitHub 官方在2018年10月推出的<code>自動化流程工具</code>，也就是 CI&#x2F;CD 服務，目前已經開放公有、私有 repo 使用。</p>
+<ul>
+<li>CI&#x2F;CD: Continuous Integrataion 持續整合和 Continuous Deployment 持續部署，也就是把程式流程自動化，push 到 repo 後自動 bulid、自動跑測試、自動部署，都十分重要，由很多步驟與流程組成，而 GitHub Actions 將這些步驟稱為 <code>Actions</code>。<ul>
+<li>實作 CI&#x2F;CD: 寫設定檔(通常為 yml 或 json，關於 yaml 檔後續會開一篇介紹)後，由 CI&#x2F;CD 服務來進行對應的操作，就是 Infrastructire as Code(IaC) 的實踐。</li>
+<li>在寫程式時，要常注意是否遵守 DRY(Do Not Repeat Yourself) 原則，把共用的部分變成一個 module 或 function，在 CI&#x2F;CD 中也是相同的概念，許多操作在不同 project 是類似的或相同的，可以提出共享。</li>
+</ul>
+</li>
+<li>因此 GitHub Actions 可以把自己寫的 Actions 發布到公開的 Marketplace，讓別的開發者可以直接飲用，並且也能有多個版本，類似於 GitHub 或 Docker Hub。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Github-Actions-基本元素"><a href="#Github-Actions-基本元素" class="headerlink" title="Github Actions 基本元素"></a>Github Actions 基本元素</h3><p>在 GitHub Actions 中，有幾個重要的元素，由大至小為:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Workflow &gt; Job &gt; Step &gt; Action</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Workflow: CI&#x2F;CD 一次要運行的整個過程，一個 workflow 會涵蓋多個 Job、Step、Action</li>
+<li>Job: 代表「任務」，一個 workflow 由多個 job 組成，相對一個 workflow 可以完成多個任務。</li>
+<li>Step: 代表「步驟」，一個 job 由多個 step 組成，也就是一步一步完一個 job。</li>
+<li>Action: 代表「命令」或「動作」，每個 step 可以依序執行多個命令。</li>
+</ul>
+<h3 id="GitHub-Actions-Workflow-Config"><a href="#GitHub-Actions-Workflow-Config" class="headerlink" title="GitHub Actions Workflow Config"></a>GitHub Actions Workflow Config</h3><p>要啟用 GitHub Actions，不用太複雜的設定，只要在專案的根目錄新增 .github&#x2F;workflow&#x2F;xxx.yml，push 到 GitHub 上後就會自動執行放在該路徑裡的 .yml config 檔 (workflow document 採 YAML 格式)。可以創建很多個 .yml，GitHub 就會執行多個 workflow。</p>
+<blockquote>
+<p>Config 更多語法可以參閱<a target="_blank" rel="noopener" href="https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions">官方文件</a>。<br>舉接下來會用到的設定檔來說:</p>
+</blockquote>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 幫這個 workflow 取名，預設為 .yml 檔名</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">&#x27;hexo deploy&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 監聽 main 分支若有 push 行為就執行 jobs</span></span><br><span class="line"><span class="comment">## 也就是 workflow 的觸發條件，也有像是 schedule 等觸發條件</span></span><br><span class="line"><span class="comment">## Docs: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows</span></span><br><span class="line"><span class="attr">on:</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">main</span></span><br><span class="line"><span class="comment">## 可以有多個 jobs，原則上會平行執行，若沒有則按照順序</span></span><br><span class="line"><span class="comment">## job 也可以有多個 steps</span></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="comment">## 這邊 build 代表 job 的名稱</span></span><br><span class="line">  <span class="attr">build:</span></span><br><span class="line">    <span class="comment">## 指定要運行的環境</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line">    <span class="comment">## 定義真正要執行的指令</span></span><br><span class="line">    <span class="comment">## name: 方便 debug，名字可以自己定義</span></span><br><span class="line">    <span class="comment">## uses: 直接使用其他開發者寫好的 actions</span></span><br><span class="line">    <span class="comment">## Docs: https://github.com/actions/checkout</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Checkout</span></span><br><span class="line">      <span class="attr">uses:</span> <span class="string">actions/checkout@v1</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Use</span> <span class="string">Node.js</span> <span class="number">12.</span><span class="string">x</span></span><br><span class="line">      <span class="attr">uses:</span> <span class="string">actions/setup-node@v1</span></span><br><span class="line">      <span class="attr">with:</span></span><br><span class="line">        <span class="attr">node-version:</span> <span class="string">&quot;12.x&quot;</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">init)init</span> <span class="string">ssh</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">          ...</span></span><br><span class="line"><span class="string"></span>    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">A)npm</span> <span class="string">install</span> <span class="string">-g</span> <span class="string">hexo-cli</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">        npm install -g hexo-cli</span></span><br><span class="line"><span class="string"></span>    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">B)npm</span> <span class="string">install</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">        npm install</span></span><br><span class="line"><span class="string"></span>    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">C)</span> <span class="string">hexo</span> <span class="string">d</span> <span class="string">-g</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">hexo</span> <span class="string">d</span> <span class="string">-g</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Hexo-GitHub-Actions-自動化部署步驟"><a href="#Hexo-GitHub-Actions-自動化部署步驟" class="headerlink" title="Hexo + GitHub Actions 自動化部署步驟"></a>Hexo + GitHub Actions 自動化部署步驟</h2><hr>
+<h3 id="GitHub-Repository"><a href="#GitHub-Repository" class="headerlink" title="GitHub Repository"></a>GitHub Repository</h3><table>
+<thead>
+<tr>
+<th align="left">Repository</th>
+<th align="left">操作</th>
+<th align="left">說明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://github.com/kenchen879/xxx">https://github.com/kenchen879/xxx</a></td>
+<td align="left">建立一個倉儲，把原本 hexo 的 source code 放進去</td>
+<td align="left">名字隨便取，可以是 private</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://github.com/kenchen879.github.io">https://github.com/kenchen879.github.io</a></td>
+<td align="left">GitHub Actions 會把靜態網頁部署到這</td>
+<td align="left">名字固定，要是 public</td>
+</tr>
+</tbody></table>
+<h3 id="生成-SSG-部署金鑰"><a href="#生成-SSG-部署金鑰" class="headerlink" title="生成 SSG 部署金鑰"></a>生成 SSG 部署金鑰</h3><p>首先在 terminal 利用 <code>ssh-keygen</code> 生成一組金鑰，包含私鑰(github-deploy-key)和公鑰(github-deploy-key.pub)。</p>
+<blockquote>
+<p>名稱可以自己取</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -f github-deploy-key</span><br></pre></td></tr></table></figure>
+
+<div class="note warning @">
+            <p>在 Mac OS 下用這個指令產生金鑰會出現問題(permission denied)，所以建議可以利用 GitHub 裡面產生 token，或是另外查詢 Mac 產生金鑰的方法。</p>
+          </div>
+
+
+<h3 id="設置-repo"><a href="#設置-repo" class="headerlink" title="設置 repo"></a>設置 repo</h3><h4 id="HexoBlog-存放-source-code-的-repo"><a href="#HexoBlog-存放-source-code-的-repo" class="headerlink" title="HexoBlog (存放 source code 的 repo)"></a>HexoBlog (存放 source code 的 repo)</h4><p>在存放 source code 的 repo 中，步驟如下<br><code>repo -&gt; Settings -&gt; Secrets -&gt; Actions -&gt; New repository secret</code><br><img src="https://i.imgur.com/RNHnUGs.png" alt="private"><br><img src="https://i.imgur.com/iZTDYyU.png" alt="new key"></p>
+<blockquote>
+<p>Name: 可以自己取，但後面設定 config 檔時要記得這個名稱!<br>Value: 放剛剛產生的私鑰 github-deploy-key 的內容</p>
+</blockquote>
+<h4 id="kenchen879-github-io-存放靜態網頁的repo"><a href="#kenchen879-github-io-存放靜態網頁的repo" class="headerlink" title="kenchen879.github.io (存放靜態網頁的repo)"></a>kenchen879.github.io (存放靜態網頁的repo)</h4><p>裡面的檔案設定好下列步驟後都不用動，會自動部署到 GitHub Pages，步驟如下<br><code>repo -&gt; Settings -&gt; Deploy keys -&gt; Add deploy key</code></p>
+<blockquote>
+<p>Name: 可以自己取<br>Value: 放剛剛產生的公鑰 github-deploy-key.pub 的內容</p>
+</blockquote>
+<h3 id="設定-config-file"><a href="#設定-config-file" class="headerlink" title="設定 config file"></a>設定 config file</h3><p>上面兩個設定好後，開啟 source code，並在根目錄下建立 <code>.github/workflow/hexoActions.yml</code>，就是上面說的 workflow，接下來 GitHub Actions 會抓取裡面的檔案內容執行動作。</p>
+<p>hexoActions.yml 如下</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">&#x27;hexo deploy&#x27;</span></span><br><span class="line"><span class="attr">on:</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">main</span></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">build:</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Checkout</span></span><br><span class="line">      <span class="attr">uses:</span> <span class="string">actions/checkout@v1</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Use</span> <span class="string">Node.js</span> <span class="number">12.</span><span class="string">x</span></span><br><span class="line">      <span class="attr">uses:</span> <span class="string">actions/setup-node@v1</span></span><br><span class="line">      <span class="attr">with:</span></span><br><span class="line">        <span class="attr">node-version:</span> <span class="string">&quot;12.x&quot;</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">init)init</span> <span class="string">ssh</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">          mkdir -p ~/.ssh/</span></span><br><span class="line"><span class="string">          echo &quot;$&#123;&#123;secrets.xxx&#125;&#125;&quot; &gt; ~/.ssh/id_rsa</span></span><br><span class="line"><span class="string">          chmod 600 ~/.ssh/id_rsa</span></span><br><span class="line"><span class="string">          ssh-keyscan github.com &gt;&gt; ~/.ssh/known_hosts</span></span><br><span class="line"><span class="string">          git config --global user.name &quot;xxx&quot;</span></span><br><span class="line"><span class="string">          git config --global user.email &quot;xxx@gmail.com&quot;</span></span><br><span class="line"><span class="string"></span>    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">A)npm</span> <span class="string">install</span> <span class="string">-g</span> <span class="string">hexo-cli</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">        npm install -g hexo-cli</span></span><br><span class="line"><span class="string"></span>    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">B)npm</span> <span class="string">install</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">        npm install</span></span><br><span class="line"><span class="string"></span>    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">C)</span> <span class="string">hexo</span> <span class="string">d</span> <span class="string">-g</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">hexo</span> <span class="string">d</span> <span class="string">-g</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>secrets.xxx</code>: 剛剛在 GitHub 設定的私鑰名稱<br><code>user.name &quot;xxx&quot;</code>: 使用者名稱<br><code>user.email &quot;xxx@gmail.com&quot;</code>: 使用者電子郵件</p>
+</blockquote>
+<h3 id="修改在根目錄下的-config-yml"><a href="#修改在根目錄下的-config-yml" class="headerlink" title="修改在根目錄下的 _config.yml"></a>修改在根目錄下的 _config.yml</h3><p>將 http 改成 ssh 才可以，因為是從 private repo. 自動化操作的，透過 ssh 進行連接。</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">git@github.com:xxx/xxx.github.io.git</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>branch: master</code>: 也可以是 <code>branch: main</code></p>
+</blockquote>
+<h3 id="刪掉-themes-x2F-next-下的-git"><a href="#刪掉-themes-x2F-next-下的-git" class="headerlink" title="刪掉 themes&#x2F;next 下的 .git"></a>刪掉 themes&#x2F;next 下的 <code>.git</code></h3><div class="note danger @">
+            <p>這點要特別注意，如果沒有做，當 GitHub Actions 自動部署到 GitHub Pages 時，產生的頁面會都是空白!</p>
+          </div>
+
+<p>當時我在這裡花費不少時間，因為主題 next 是 <code>git clone</code> 下來的，所以產生了 <code>.git</code>，會和 hexo 根目錄下的 .git 衝突，會使 <code>commit</code> 沒有把主題 push 上去而產生空白頁面。</p>
+<p>如果仍沒有辦法，將 themes&#x2F;next 先移出去，然後 commit 一次後，再將 themes&#x2F;next 移回來就成功了。</p>
+<p><img src="https://i.imgur.com/GnmsBha.gif" alt="GitHub Actions 流程"></p>
+<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><hr>
+<h3 id="困難與挑戰"><a href="#困難與挑戰" class="headerlink" title="困難與挑戰"></a>困難與挑戰</h3><p>用 GitHub Actions 這個 CI&#x2F;CD 的服務聽起來很方便，而且感覺也不難，但實際在執行時會遇到種種問題:</p>
+<ul>
+<li>workflow 的設定檔很嚴謹，要很注意縮排或是有沒有空格，可能都會出錯</li>
+<li>GitHub 上公私鑰的設定名稱鑰自己記得打了什麼，在 .yml 裡就是什麼</li>
+<li>特別注意 &#x2F;themes&#x2F;next 下的 .git 要刪掉，不然會被空白頁面搞瘋</li>
+</ul>
+<h3 id="心得"><a href="#心得" class="headerlink" title="心得"></a>心得</h3><p>爬了很多文，終於讓我成功使用 GitHub Actions 進行 CI&#x2F;CD 嚕 ~</p>
+<p>原因如下</p>
+<ul>
+<li>因為當部落格的數量越來越龐大，在本地端要產生靜態頁面(<code>hexo g</code>)並部署(<code>hexo d</code>)會花費太多時間和資源，並且我也懶得一直打 <code>hexo g -d</code>。</li>
+<li>當有文章還不想部署時，可以先不用 push 到 repo 中，進行隱藏只給自己在本地端修改和查看。</li>
+</ul>
+<p>剛好看到一篇<a target="_blank" rel="noopener" href="https://op30132.github.io/2020/02/05/github-action/">文章</a>，讓我學習到怎麼用 GitHub Actions 來進行 CI&#x2F;CD，下篇我會針對 Cloud Native 相關知識進行補充。</p>
+<p>謝謝各位看到最後，當你&#x2F;妳需要任何的協助，歡迎在下面留言板留言(或是直接 mail 給我)~</p>
+<h2 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h2><hr>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.codeleading.com/article/28645292659/">Github action自动部署Hexo Next</a></li>
+<li><a target="_blank" rel="noopener" href="https://op30132.github.io/2020/02/05/github-action/">Hexo + github actions 自動化部署</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/starbugs/%E5%AF%A6%E4%BD%9C%E9%96%8B%E6%BA%90%E5%B0%8F%E5%B7%A5%E5%85%B7-%E8%88%87-github-actions-%E7%9A%84%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%9B%B8%E9%81%87-3dd2d70eeb">實作開源小工具，與 Github Actions 的第一次相遇!</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Notes/" rel="tag"><i class="fa fa-tag"></i> Notes</a>
+              <a href="/tags/cloud-native/" rel="tag"><i class="fa fa-tag"></i> cloud_native</a>
+              <a href="/tags/CI-CD/" rel="tag"><i class="fa fa-tag"></i> CI/CD</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/KenChen/343485956/" rel="prev" title="[雲原生] Cloud Native 相關概念">
+      <i class="fa fa-chevron-left"></i> [雲原生] Cloud Native 相關概念
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/KenChen/998653267/" rel="next" title="[2022Intern] 台積電 IT BSID 面試前相關問題整理和心得">
+      [2022Intern] 台積電 IT BSID 面試前相關問題整理和心得 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Hexo-GitHub-Actions-%E5%88%A9%E7%94%A8-CI-x2F-CD-%E8%87%AA%E5%8B%95%E5%8C%96%E9%83%A8%E7%BD%B2"><span class="nav-number">1.</span> <span class="nav-text">Hexo + GitHub Actions 利用 CI&#x2F;CD 自動化部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GitHub-Actions-%E4%BB%8B%E7%B4%B9"><span class="nav-number">1.1.</span> <span class="nav-text">GitHub Actions 介紹</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B0%A1%E5%96%AE%E4%BB%8B%E7%B4%B9"><span class="nav-number">1.1.1.</span> <span class="nav-text">簡單介紹</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Github-Actions-%E5%9F%BA%E6%9C%AC%E5%85%83%E7%B4%A0"><span class="nav-number">1.1.2.</span> <span class="nav-text">Github Actions 基本元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GitHub-Actions-Workflow-Config"><span class="nav-number">1.1.3.</span> <span class="nav-text">GitHub Actions Workflow Config</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hexo-GitHub-Actions-%E8%87%AA%E5%8B%95%E5%8C%96%E9%83%A8%E7%BD%B2%E6%AD%A5%E9%A9%9F"><span class="nav-number">1.2.</span> <span class="nav-text">Hexo + GitHub Actions 自動化部署步驟</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GitHub-Repository"><span class="nav-number">1.2.1.</span> <span class="nav-text">GitHub Repository</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90-SSG-%E9%83%A8%E7%BD%B2%E9%87%91%E9%91%B0"><span class="nav-number">1.2.2.</span> <span class="nav-text">生成 SSG 部署金鑰</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A8%AD%E7%BD%AE-repo"><span class="nav-number">1.2.3.</span> <span class="nav-text">設置 repo</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#HexoBlog-%E5%AD%98%E6%94%BE-source-code-%E7%9A%84-repo"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">HexoBlog (存放 source code 的 repo)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#kenchen879-github-io-%E5%AD%98%E6%94%BE%E9%9D%9C%E6%85%8B%E7%B6%B2%E9%A0%81%E7%9A%84repo"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">kenchen879.github.io (存放靜態網頁的repo)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A-config-file"><span class="nav-number">1.2.4.</span> <span class="nav-text">設定 config file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E5%9C%A8%E6%A0%B9%E7%9B%AE%E9%8C%84%E4%B8%8B%E7%9A%84-config-yml"><span class="nav-number">1.2.5.</span> <span class="nav-text">修改在根目錄下的 _config.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%AA%E6%8E%89-themes-x2F-next-%E4%B8%8B%E7%9A%84-git"><span class="nav-number">1.2.6.</span> <span class="nav-text">刪掉 themes&#x2F;next 下的 .git</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B5%90%E8%AB%96"><span class="nav-number">1.3.</span> <span class="nav-text">結論</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%B0%E9%9B%A3%E8%88%87%E6%8C%91%E6%88%B0"><span class="nav-number">1.3.1.</span> <span class="nav-text">困難與挑戰</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%83%E5%BE%97"><span class="nav-number">1.3.2.</span> <span class="nav-text">心得</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%83%E8%80%83"><span class="nav-number">1.4.</span> <span class="nav-text">參考</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ken Chen"
+      src="https://i.imgur.com/C7LzYau.jpg">
+  <p class="site-author-name" itemprop="name">Ken Chen</p>
+  <div class="site-description" itemprop="description">初學者</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kenchen879" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kenchen879" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ken917088@gmail.com" title="E-Mail → mailto:ken917088@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/profile.php?id=100000236840206" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;profile.php?id&#x3D;100000236840206" rel="noopener" target="_blank"><i class="fab fa-facebook fa-fw"></i>FB Page</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.youtube.com/channel/UCyILH0iUe8_gSOWnDlp4dIQ/playlists" title="YouTube → https:&#x2F;&#x2F;www.youtube.com&#x2F;channel&#x2F;UCyILH0iUe8_gSOWnDlp4dIQ&#x2F;playlists" rel="noopener" target="_blank"><i class="fab fa-youtube fa-fw"></i>YouTube</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ken Chen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 超強力驅動
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="訪客總數">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="總瀏覽次數">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://kenken-2.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://kenchen.me/KenChen/895155673/";
+    this.page.identifier = "KenChen/895155673/";
+    this.page.title = "[CI/CD] Hexo + GitHub Actions 自動化部署";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://kenken-2.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

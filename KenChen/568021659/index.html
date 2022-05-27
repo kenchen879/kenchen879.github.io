@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://i.imgur.com/oN6kBF1.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://i.imgur.com/oN6kBF1.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://i.imgur.com/oN6kBF1.png">
+  <link rel="mask-icon" href="https://i.imgur.com/oN6kBF1.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kenchen.me","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false,"width":240},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="資料中心網路技術期中考準備 ch1~3 整理交大 110-2 資料中心網路技術期中考筆記，範圍:  Chapter 1: Introduction to Data Center Networks and Cloud Computing Chapter 2: Networking and Switching Technology Overview Chapter 3: Software Define">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[資料中心網路技術] Midterm ch1&amp;2&amp;3">
+<meta property="og:url" content="https://kenchen.me/KenChen/568021659/index.html">
+<meta property="og:site_name" content="KENKEN">
+<meta property="og:description" content="資料中心網路技術期中考準備 ch1~3 整理交大 110-2 資料中心網路技術期中考筆記，範圍:  Chapter 1: Introduction to Data Center Networks and Cloud Computing Chapter 2: Networking and Switching Technology Overview Chapter 3: Software Define">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://i.imgur.com/j2mb3Qn.png">
+<meta property="og:image" content="https://i.imgur.com/vCLdPXc.png">
+<meta property="og:image" content="https://i.imgur.com/cSjxwwo.png">
+<meta property="og:image" content="https://i.imgur.com/moqsOgf.png">
+<meta property="og:image" content="https://i.imgur.com/zOsYo44.png">
+<meta property="og:image" content="https://i.imgur.com/awJD68G.png">
+<meta property="og:image" content="https://i.imgur.com/CXjuZj1.png">
+<meta property="og:image" content="https://i.imgur.com/c7maoSi.png">
+<meta property="og:image" content="https://i.imgur.com/Rv6Xwc8.png">
+<meta property="og:image" content="https://i.imgur.com/Qls7t6I.png">
+<meta property="og:image" content="https://i.imgur.com/kcrS92n.png">
+<meta property="og:image" content="https://i.imgur.com/DtjC0C5.png">
+<meta property="og:image" content="https://i.imgur.com/DtjC0C5.png">
+<meta property="og:image" content="https://i.imgur.com/PGlmUEw.png">
+<meta property="og:image" content="https://i.imgur.com/Xw6B3Oy.png">
+<meta property="og:image" content="https://i.imgur.com/GCU3x69.png">
+<meta property="og:image" content="https://i.imgur.com/lSjvVpA.png">
+<meta property="og:image" content="https://i.imgur.com/29cDC3w.png">
+<meta property="og:image" content="https://i.imgur.com/FRFh1Jr.png">
+<meta property="article:published_time" content="2022-04-10T13:20:16.000Z">
+<meta property="article:modified_time" content="2022-05-27T15:11:52.977Z">
+<meta property="article:author" content="Ken Chen">
+<meta property="article:tag" content="NYCU">
+<meta property="article:tag" content="110-2">
+<meta property="article:tag" content="DCN">
+<meta property="article:tag" content="Midterm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.imgur.com/j2mb3Qn.png">
+
+<link rel="canonical" href="https://kenchen.me/KenChen/568021659/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-TW'
+  };
+</script>
+
+  <title>[資料中心網路技術] Midterm ch1&2&3 | KENKEN</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">KENKEN</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>時間線<span class="badge">11</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>關於我</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">19</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分類<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>網站地圖</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/kenchen879" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://kenchen.me/KenChen/568021659/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.imgur.com/C7LzYau.jpg">
+      <meta itemprop="name" content="Ken Chen">
+      <meta itemprop="description" content="初學者">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KENKEN">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [資料中心網路技術] Midterm ch1&2&3
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+
+              <time title="創建時間：2022-04-10 21:20:16" itemprop="dateCreated datePublished" datetime="2022-04-10T21:20:16+08:00">2022-04-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2022-05-27 23:11:52" itemprop="dateModified" datetime="2022-05-27T23:11:52+08:00">2022-05-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分類於</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NYCU/" itemprop="url" rel="index"><span itemprop="name">NYCU</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NYCU/110-2/" itemprop="url" rel="index"><span itemprop="name">110-2</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NYCU/110-2/DCN/" itemprop="url" rel="index"><span itemprop="name">DCN</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="閱讀次數" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">閱讀次數：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/KenChen/568021659/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="KenChen/568021659/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="資料中心網路技術期中考準備-ch1-3"><a href="#資料中心網路技術期中考準備-ch1-3" class="headerlink" title="資料中心網路技術期中考準備 ch1~3"></a>資料中心網路技術期中考準備 ch1~3</h1><hr>
+<p>整理交大 110-2 資料中心網路技術期中考筆記，範圍:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://bit.ly/3ikPtOr">Chapter 1: Introduction to Data Center Networks and Cloud Computing</a></li>
+<li><a target="_blank" rel="noopener" href="https://bit.ly/3traSMw">Chapter 2: Networking and Switching Technology Overview</a></li>
+<li><a target="_blank" rel="noopener" href="https://bit.ly/3JBa5y3">Chapter 3: Software Defined Networking (SDN)</a></li>
+</ul>
+<h2 id="筆記整理"><a href="#筆記整理" class="headerlink" title="筆記整理"></a>筆記整理</h2><hr>
+<h3 id="ch1"><a href="#ch1" class="headerlink" title="ch1"></a>ch1</h3><p>大綱:</p>
+<ul>
+<li>介紹</li>
+<li>雲端運算<ul>
+<li>例子: 從地(ground)到雲(cloud)</li>
+<li>什麼是雲端運算</li>
+<li>雲服務和部署模型</li>
+</ul>
+</li>
+<li>資料中心網路的特性和挑戰</li>
+</ul>
+<h4 id="介紹"><a href="#介紹" class="headerlink" title="介紹"></a>介紹</h4><p><strong>新興的網路運算應用</strong><br><img src="https://i.imgur.com/j2mb3Qn.png" alt="Network Application"><br>–&gt; 所有東西都藉由網路來完成。</p>
+<p><strong>網路規模共享的超級電腦</strong><br>雲端用戶可以藉由網路來連接到雲上，並且可以運算作業、執行應用程式或儲存資料。</p>
+<p><strong>典型的倉儲規模的資料中心</strong></p>
+<ul>
+<li>每個資料中心就像是一個倉儲規模的電腦。<ul>
+<li>由數十萬台伺服器組成。</li>
+</ul>
+</li>
+<li>這些伺服器透過資料中心網路(DCN)的可靠且高效的基處架構互相連接，並支持雲端運算的應用程式和服務。</li>
+</ul>
+<p><strong>資料中心的伺服器和網路設備</strong><br><img src="https://i.imgur.com/vCLdPXc.png" alt="data center network"></p>
+<ul>
+<li>Server: 由商用現成產品(commercial off-the-shelf, COTS) PC 組成<ul>
+<li>CPUs</li>
+<li>Memory</li>
+<li>Hard Disks</li>
+</ul>
+</li>
+</ul>
+<p><strong>雲端運算的需求和好處</strong></p>
+<blockquote>
+<p>可靠且可擴展的 DCN 基礎設施對於實現無所不在的高品質使用者體驗是不可或缺的。</p>
+</blockquote>
+<ul>
+<li>容易擴充(scale well)</li>
+<li>藉由網路可以在任何一處取得(ubiquitous)資料</li>
+</ul>
+<h4 id="雲端運算"><a href="#雲端運算" class="headerlink" title="雲端運算"></a>雲端運算</h4><p><strong>From Ground to Cloud</strong></p>
+<ul>
+<li>Example1 - Computer Storage<ul>
+<li>電腦有內部硬碟儲存(C: Drive)來儲存程式、檔案和影片等。舉例來說，在一特定電腦內儲存資料，要使用那個內容必須回到那台電腦，因此要想辦法在其他電腦上存取那個資料，非常不彈性。</li>
+<li>外部儲存裝置的發展，使得內容可以被移動，並且可以儲存檔案在裝置中，開啟和使用該資料在任何電腦中。</li>
+<li>接著網路儲存，多個電腦可以共享儲存檔案，不需要使用 C:Deive，電腦間透過網路進行連結。</li>
+<li>最後是利用雲端儲存，資料儲存在雲端上(例如: Google Drive)，在任何有網路的設備上進行登入就可以取得資料。</li>
+</ul>
+</li>
+<li>Example2 - Programs<ul>
+<li>在一開始，要使用特定的軟體程式，進行購買後安裝到電腦上，只有當下載到電腦上才能開始使用，現在，使用者可以在雲端上使用軟體程式(例如: Gmail)，並且不用安裝和維護，隨時隨地可以使用。</li>
+</ul>
+</li>
+</ul>
+<p><strong>什麼是雲端運算</strong></p>
+<ul>
+<li>是一種基於網際網路(Internet)的資源供應，透過 Internet 將共享資源(運算和儲存）、軟體和資訊作為服務(如電網)按需(on-demand)提供給使用者&#x2F;設備。具有可利用網路存取、彈性擴展資源、資源可以被測量、按需求提供服務和將資源池提供給使用者等特性。<br>演進的過程: <code>Mainframe --&gt; PC --&gt; Client-Server Computing --&gt; Web Service(and SOA) --&gt; Cloud Computing</code></li>
+</ul>
+<p><strong>雲端服務模型</strong></p>
+<ul>
+<li>IaaS: 基礎設施即服務，把電腦原始資源(例如: 儲存裝置、硬體、網路)虛擬化按需提供給使用者，例如 Amazon EC2、GCP。</li>
+<li>PaaS: 平台即服務，提供開發者一可以執行、測試和發布程式的平台，不用擔心平台的擴充問題，例如 Microsoft Azure、Google App Engine。</li>
+<li>SaaS: 軟體即服務，將軟體利用網路提供給使用者，應用程式運行在雲端，不用下載、維護和補丁即可使用，例如 Google Apps、Dropbox。</li>
+</ul>
+<p><strong>雲端部署模型</strong></p>
+<ul>
+<li>Public Cloud: 第三方服務提供商(cloud data center)利用網路動態供應資源。</li>
+<li>Private Cloud: 資源在公司內的企業資料中心進行整合，並部署在組織內為使用者提供服務。</li>
+<li>Hybrid Cloud<ul>
+<li>這些服務包括 on-site(私有雲)和 off-site(公共雲)的計算資源。</li>
+<li>通過整合公有雲和私有雲服務，使用者可以利用雲端解決方案來處理成本太高而無法在本地維護的複雜功能(例如: 虛擬伺服器災難恢復和測試)。</li>
+</ul>
+</li>
+</ul>
+<p><strong>DCN 的特性和挑戰</strong></p>
+<ul>
+<li>Ethernet L2&#x2F;L3 switching: 目前最先進的 DCN 技術<ul>
+<li>雖然比其他標準好，但相同的舊設計是否可行?</li>
+<li>基於叢集的應用程式驅使了東西向流量的增加。</li>
+</ul>
+</li>
+<li>Convergence: 電腦和儲存裝置空間減少。</li>
+<li>Automated software-based control<ul>
+<li>最小化手動設定，例如 “plug-and-play”。</li>
+<li>新的典範轉移: SDN</li>
+</ul>
+</li>
+<li>效能、擴充性和成本<ul>
+<li>效能: 在多個工作負載下高吞吐量和低延遲</li>
+<li>擴充性: 支援伺服器的增加</li>
+<li>成本: opex&#x2F;capex</li>
+</ul>
+</li>
+<li>虛擬化<ul>
+<li>伺服器虛擬化: 更精細的資源分配粒度。</li>
+<li>網路虛擬化: 支持多使用者。</li>
+</ul>
+</li>
+</ul>
+<h3 id="ch2"><a href="#ch2" class="headerlink" title="ch2"></a>ch2</h3><p>大綱:</p>
+<ul>
+<li>Layer-2 Ethernet- The Basics</li>
+<li>Layer-3 IP and Subnetting</li>
+<li>Virtual LAN - Introduction and Operations</li>
+<li>Layer-2 and Layer-3 Data Forwarding (Switching) Devices<ul>
+<li>Layer-2 Switch</li>
+<li>Layer-2&#x2F;3 Switch</li>
+<li>Layer-3 Router</li>
+</ul>
+</li>
+<li>Layer-2 Spanning Tree Protocol<ul>
+<li>Layer-2 Switch Redundancy and Problems</li>
+<li>Spanning Tree Protocol (STP) and the Algorithm</li>
+</ul>
+</li>
+</ul>
+<p><strong>Frame Forwarding</strong></p>
+<ul>
+<li>不用設定就可以進行訊框轉發 – 即插即用(plug-and-play)和位址自動學習</li>
+<li>基於 Address Learning Table 進行訊框轉發<ul>
+<li>ALT 包含交換器的埠與連接設備的 MAC 位址的配對</li>
+<li>通過檢查傳入訊框的來源端 MAC 位址，通過學習建立表格</li>
+<li>根據表格檢查目的端 MAC 位址，然後通過配對的埠發送每個訊框</li>
+<li>如果目的端 MAC 位址不在表格中，則該訊框被泛洪(flooding)</li>
+<li>對於廣播訊框，會被 flooding 到所有埠</li>
+</ul>
+</li>
+<li>訊框轉發在硬體中以超快的速度完成</li>
+</ul>
+<h3 id="Virtual-LAN-Introduction-and-Operations"><a href="#Virtual-LAN-Introduction-and-Operations" class="headerlink" title="Virtual LAN - Introduction and Operations"></a>Virtual LAN - Introduction and Operations</h3><h4 id="為什麼要用-VLAN"><a href="#為什麼要用-VLAN" class="headerlink" title="為什麼要用 VLAN"></a>為什麼要用 VLAN</h4><p><img src="https://i.imgur.com/cSjxwwo.png" alt="VLAN"></p>
+<ul>
+<li>有兩個子網域(例如: 兩個公司)在這個網路中</li>
+<li>由於連接到交換器的所有主機都在同一個廣播網域中因此來自一個節點的廣播將被所有其他節點 flooding –&gt; 頻寬效率降低</li>
+<li>因此要使用 <code>VLAN</code></li>
+<li>VLAN 支援 在 Layer 2 “網路虛擬化和分段”</li>
+<li>廣播只會基於 VLAN 執行 –&gt; 效率更高</li>
+</ul>
+<h4 id="VLAN-vs-Subnetting"><a href="#VLAN-vs-Subnetting" class="headerlink" title="VLAN vs. Subnetting"></a>VLAN vs. Subnetting</h4><ul>
+<li>在L3，子網域劃分允許將網絡劃分為多個較小的廣播網域</li>
+<li>在L2，一個 LAN 是一個廣播網域</li>
+<li>VLAN 可以將單個網域切割為多個較小的廣播網域，來減少不需要的廣播(並增加吞吐量)，且實現更好的安全性</li>
+<li>如果有不同的子網域連接到一個 L2 Switch，需要使用不同的 VLAN (只要沒有跨越L3邊界)</li>
+<li>如果有一個子網連接到一個 L2 Switch，仍然可以定義不同的VLAN</li>
+<li>VLAN ID 不跨子網域(即 VLAN ID 相同但不同子網域下的2個 VLAN 完全不相關）</li>
+</ul>
+<h4 id="介紹-VLAN"><a href="#介紹-VLAN" class="headerlink" title="介紹 VLAN"></a>介紹 VLAN</h4><p><strong>沒有 VLAN</strong><br><img src="https://i.imgur.com/moqsOgf.png" alt="VLAN"></p>
+<ul>
+<li>每個 LAN 交換器創建立一個廣播網域，將所有訊框廣播到與交換器相連的所有主機。</li>
+<li>問題：這種物理位置依賴性導致嚴重的不靈活性、安全性和網路管理問題。</li>
+</ul>
+<p><strong>有 VLAN</strong><br><img src="https://i.imgur.com/zOsYo44.png" alt="VLAN"></p>
+<ul>
+<li>VLAN 是一個邏輯定義的廣播網域，由一個(如圖2)或多個交換器(如圖1)建立</li>
+<li>VLAN 根據組織的功能、項目團隊或應用程式在邏輯上對交換網路進行分段，而不考慮物理位置或與網路的連接</li>
+<li>特定工作團隊使用的所有主機共享同一個 VLAN，無論物理連接或位置如何</li>
+<li>VLAN 將 “Layer-3 子網域” 概念引入 Layer 2</li>
+<li>VLAN 解決可擴展性、吞吐量和網路管理問題</li>
+</ul>
+<h4 id="情境"><a href="#情境" class="headerlink" title="情境"></a>情境</h4><p><strong>2個子網域、一個交換器和沒有 VLAN</strong><br><img src="https://i.imgur.com/awJD68G.png" alt="no VLAN"><br><code>情境一</code><br>Host 10.1.0.10 想要發送訊框給 Host 10.1.0.30。<br>由於沒有 MAC address，所以 Layer 2 廣播 ARP request。</p>
+<p><code>問題一</code><br>交換器會 flood 給所有埠，所以每個不同子網域的主機也會收到廣播，因此導致 Layer-2 未知的單播</p>
+<p><code>情境二</code><br>Host 10.1.0.10 想要傳送訊框到 10.2.0.40。<br>不同子網域上的裝置必須通過路由器進行通訊，包含預設閘道(DG)功能。</p>
+<p><code>問題二</code><br>路由器發送 ARP 請求，向所有主機廣播 –&gt; 未知單播。</p>
+<h4 id="解決方法"><a href="#解決方法" class="headerlink" title="解決方法"></a>解決方法</h4><p><strong>傳統解決方法: Multiple Switched</strong><br><img src="https://i.imgur.com/CXjuZj1.png" alt="Solution1"></p>
+<p><strong>VLAN 解決方法: Port-based Assignment</strong><br><img src="https://i.imgur.com/c7maoSi.png" alt="Solution2"></p>
+<ul>
+<li>每個交換器埠都被設定(靜態&#x2F;動態)屬於一個 VLAN。</li>
+<li>任何連接到該埠的設備都屬於該埠的 VLAN。</li>
+<li>一個 VLAN 是由一個或多個交換器建立的廣播網域，即一個 VLAN 可以跨 LAN 交換器(如右圖)。</li>
+<li>連接交換機的埠&#x2F;鏈結設定為承載所有 VLAN 的流量，稱為中繼(trunk)埠&#x2F;鏈結。</li>
+</ul>
+<p><strong>在 VLAN 中的廣播網域</strong><br><img src="https://i.imgur.com/Rv6Xwc8.png" alt="Broadcast"></p>
+<ul>
+<li>被分配到同一 VLAN 的埠在同一個廣播廣域。</li>
+<li>避免了不正確的 flooding(如 ARP)。</li>
+</ul>
+<h4 id="VLAN-Trunk-x2F-Tagging"><a href="#VLAN-Trunk-x2F-Tagging" class="headerlink" title="VLAN Trunk&#x2F;Tagging"></a>VLAN Trunk&#x2F;Tagging</h4><p><img src="https://i.imgur.com/Qls7t6I.png" alt="VLAN trunk"></p>
+<p><strong>什麼是 VLAN Trunk&#x2F;Tagging</strong><br><code>Problem</code><br>屬於同一個 VLAN 但物理連接到兩個不同 LAN 交換器的兩台主機如何通訊?<br><code>Solution 1</code><br>在兩台交換機之間使用兩條獨立的鏈結 –&gt; 不可擴展，浪費頻寬。<br><code>Solution 2</code><br>使用帶 <code>Tagging</code> 的共享 Trunk 跨交換器攜帶流量。</p>
+<p><strong>如何通訊</strong></p>
+<ul>
+<li>Tag(一個唯一的 VLAN 標識符，VLAN ID)在訊框標頭進入 trunk 時被加到訊框標頭<ul>
+<li>標籤指定每個訊框的 VLAN 成員身份。</li>
+</ul>
+</li>
+<li>然後訊框根據 VLAN 標識符和 MAC 位址被轉發到適當的交換器。</li>
+<li>離開 trunk 到達目的交換器後，訊框中的 VLAN ID 被刪掉，訊框被轉發到目的。<br><img src="https://i.imgur.com/kcrS92n.png" alt="Image"></li>
+</ul>
+<h3 id="Layer-2-and-Layer-3-Data-Forwarding-Switching-Devices"><a href="#Layer-2-and-Layer-3-Data-Forwarding-Switching-Devices" class="headerlink" title="Layer-2 and Layer-3 Data Forwarding (Switching) Devices"></a>Layer-2 and Layer-3 Data Forwarding (Switching) Devices</h3><h3 id="L2-Switching-Ethernet"><a href="#L2-Switching-Ethernet" class="headerlink" title="L2 Switching(Ethernet)"></a>L2 Switching(Ethernet)</h3><ul>
+<li>裝置: L2 Switch</li>
+<li>資料鏈結層</li>
+<li>較便宜的裝置</li>
+<li>在硬體中進行交換(switching)</li>
+<li>基於固定的 MAC 位址</li>
+<li>自動設定</li>
+<li>訊框無法被更改</li>
+<li>無縫移動、遷移和故障轉移</li>
+<li>有很高的埠密度(&gt; 24)</li>
+<li><strong><u>專門為 VLAN 內(LAN) 通訊而設計</u></strong><br><img src="https://i.imgur.com/DtjC0C5.png" alt="L2 Switching"></li>
+</ul>
+<h3 id="L3-Routing"><a href="#L3-Routing" class="headerlink" title="L3 Routing"></a>L3 Routing</h3><ul>
+<li>裝置: Router</li>
+<li>較貴的裝置</li>
+<li>在軟硬體中進行路由(routing)</li>
+<li>基於分層的邏輯 IP 位址</li>
+<li>智能進行最短路徑和多重路徑路由</li>
+<li>封包拆封(de-encapsulated)</li>
+<li>有較少的埠</li>
+<li><strong><u>專門為 WAN 網路設計</u></strong><br><img src="https://i.imgur.com/DtjC0C5.png" alt="L3 Routing"></li>
+</ul>
+<h3 id="L2-x2F-3-Switch"><a href="#L2-x2F-3-Switch" class="headerlink" title="L2&#x2F;3 Switch"></a>L2&#x2F;3 Switch</h3><p><strong>緣由</strong></p>
+<ul>
+<li>如果不同 VLAN 之間的流量很大，需要一台具有 L3 路由能力的設備(路由器)</li>
+<li>但是，路由器通常比交換器慢(路由&#x2F;轉發決策通常比第 2 層轉發決策更複雜)，並且依賴於協定(OSPF、RIP 等) <ul>
+<li>支持 VLAN 間流量的過度使用</li>
+<li>延遲性能降低</li>
+</ul>
+</li>
+<li>新的解決方案: L2&#x2F;3 Switch<ul>
+<li>A light-weight router</li>
+<li>最常見的快速轉發決策設計在芯片(HW) 中，而其他決策則由 CPU 處理。<ul>
+<li>1: 路由查詢</li>
+<li>2: 減少生存時間 (TTL) 計數</li>
+<li>3: 重新計算 checksum</li>
+<li>4: 將訊框轉發到正確的輸出埠</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>說明</strong></p>
+<ul>
+<li>如同 L2 switches，有高密度的埠(&gt; 24)</li>
+<li>支持第 2 層橋接 (MAC) 和第 3 層 (IP) 路由功能的路由交換器</li>
+<li>第 3 層路由透過高速 ASICs 硬體完成</li>
+<li>沒有 WAN 連接(因此沒有複雜的 WAN 技術)</li>
+<li>需要典型的路由器進行 WAN 通訊(路由器位於 WAN 的邊緣)</li>
+</ul>
+<h3 id="Layer-2-Spanning-Tree-Protocol"><a href="#Layer-2-Spanning-Tree-Protocol" class="headerlink" title="Layer-2 Spanning Tree Protocol"></a>Layer-2 Spanning Tree Protocol</h3><h4 id="Redundant-Networking-Topology"><a href="#Redundant-Networking-Topology" class="headerlink" title="Redundant Networking Topology"></a>Redundant Networking Topology</h4><p><strong>緣由</strong></p>
+<ul>
+<li>冗餘網路拓撲用於確保網路在存在一個點故障的情況下繼續運行<ul>
+<li>包括交換器和鏈結</li>
+</ul>
+</li>
+<li>一個交換器或鏈結出現故障<ul>
+<li>由另一個接管<br><img src="https://i.imgur.com/PGlmUEw.png" alt="Image"></li>
+</ul>
+</li>
+</ul>
+<p><strong>冗餘拓樸問題</strong></p>
+<ul>
+<li>冗餘的 L2 拓樸會形成迴圈</li>
+<li>迴圈會形成下列問題<ul>
+<li>廣播風暴</li>
+<li>多重訊框複製</li>
+<li>MAC address table 不穩定<br><img src="https://i.imgur.com/Xw6B3Oy.png" alt="Image"></li>
+</ul>
+</li>
+</ul>
+<h4 id="STP"><a href="#STP" class="headerlink" title="STP"></a>STP</h4><p><strong>STP 優缺點</strong></p>
+<ul>
+<li>優點<ul>
+<li>Plug-and-Play 不用設定</li>
+<li>自動執行故障轉移</li>
+</ul>
+</li>
+<li>缺點<ul>
+<li>擴充性問題</li>
+<li>沒有利用的 L2 冗餘(頻寬浪費)</li>
+</ul>
+</li>
+</ul>
+<h3 id="ch3"><a href="#ch3" class="headerlink" title="ch3"></a>ch3</h3><p>大綱: </p>
+<ul>
+<li>Introduction<ul>
+<li>An Analogy between Computer and Network</li>
+</ul>
+</li>
+<li>Traditional Networks and Problems</li>
+<li>Software Defined Networking (SDN)<ul>
+<li>A New Paradigm</li>
+<li>Architecture and Interface</li>
+</ul>
+</li>
+<li>SDN API- OpenFlow Protocol</li>
+<li>SDN Advantages and Challenges</li>
+</ul>
+<h4 id="介紹-1"><a href="#介紹-1" class="headerlink" title="介紹"></a>介紹</h4><p><strong>演進</strong></p>
+<ul>
+<li>垂直整合 –&gt; 垂直不整合</li>
+<li>沒有層級&#x2F;抽象 –&gt; 有層級&#x2F;抽象</li>
+<li>封閉系統(供應商特定) –&gt; 開放系統和介面</li>
+<li>小企業並且創新慢 –&gt; 大企業演進快</li>
+</ul>
+<p><strong>在網路中分層和抽象</strong></p>
+<ul>
+<li>網路中的層級即是抽象的形式</li>
+<li>而分層只應用在 “Data Plane”</li>
+<li>Problem: 沒有在 “control plane” 抽象</li>
+<li>Solution: SDN，在 control plane 建立抽象</li>
+</ul>
+<h4 id="Traditional-Networks-and-Problems"><a href="#Traditional-Networks-and-Problems" class="headerlink" title="Traditional Networks and Problems"></a>Traditional Networks and Problems</h4><p><strong>傳統網路的控制平面如何操作</strong><br><img src="https://i.imgur.com/GCU3x69.png" alt="Image"><br>整合的系統:</p>
+<ul>
+<li>利用一分散式演算法來追蹤拓樸的改變</li>
+<li>計算路由</li>
+<li>安裝轉送規則</li>
+</ul>
+<p><strong>挑戰和問題</strong></p>
+<ul>
+<li>交換器和路由器已經演進到很多功能。<ul>
+<li>L2&#x2F;3 switching and VLAN、L3 routing、VPN、QoS and firewall</li>
+</ul>
+</li>
+<li>依賴分層(layering): 為了促進新功能，資料平面使用異質模組實現，導致複雜性增加。</li>
+<li>封閉系統，很難創新。<ul>
+<li>軟體透過供應商特定的介面與硬體綁在一起</li>
+<li>開發和部署新功能的時間很長</li>
+<li>維護成本高</li>
+</ul>
+</li>
+<li>動態分散式路由計算導致網路開銷高。<ul>
+<li>路由器的設計目的是動態和獨立地回應快速變化的網路狀況 –&gt; 資料中心網絡的過度利用。</li>
+<li>在當今的大型資料中心網路絡，30% 的路由器控制平面能力用於追蹤網絡拓撲。</li>
+<li>分散式演算法 –&gt; 效能降低<ul>
+<li>通用設計，而不是針對特殊需求量身定制</li>
+<li>收斂時間長得令人無法接受，效率低下(例如 STP)</li>
+<li>可擴展性差</li>
+<li>路由表資訊不一致</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="SDN-API-OpenFlow-Protocol"><a href="#SDN-API-OpenFlow-Protocol" class="headerlink" title="SDN API- OpenFlow Protocol"></a>SDN API- OpenFlow Protocol</h4><p><strong>Flow Table Matching</strong></p>
+<ul>
+<li>Match Fields</li>
+<li>Priority</li>
+<li>Counters</li>
+<li>Actions</li>
+<li>Timeouts</li>
+</ul>
+<h4 id="SDN-Advantages-and-Challenges"><a href="#SDN-Advantages-and-Challenges" class="headerlink" title="SDN Advantages and Challenges"></a>SDN Advantages and Challenges</h4><p><strong>SDN 優點</strong></p>
+<ul>
+<li>集中網絡查看和控制<ul>
+<li>SDN 控制器對拓撲、資源可用性以及網絡流量負載和分佈具有全局視圖</li>
+</ul>
+</li>
+<li>靈活可程式的控制所有設備<ul>
+<li>SDN 能夠控制流量的路徑、QoS、網路功能、彈性；甚至彈性的定義 “流量”</li>
+</ul>
+</li>
+<li>網路資源抽象<ul>
+<li>物理網路資源以彈性的方式抽象和分配給應用程式</li>
+<li>允許網路虛擬化</li>
+</ul>
+</li>
+<li>供應商不用管<ul>
+<li>新轉發功能的插入與使用哪些供應商的交換機無關</li>
+</ul>
+</li>
+</ul>
+<h2 id="題目"><a href="#題目" class="headerlink" title="題目"></a>題目</h2><hr>
+<h3 id="ch1-1"><a href="#ch1-1" class="headerlink" title="ch1"></a>ch1</h3><ol>
+<li>回答下列關於雲端運算的問題<br>(a). 舉兩個 “from Ground to Cloud” 演進的例子。並且簡短描述其優點。<br>(b). 簡明扼要地定義雲端運算。<br>(c). 雲端運算有 SaaS、PaaS 和 IaaS。請簡潔地描述各個模型的關鍵好處對於雲端使用者。<br><code>Ans:</code><br>(a).</li>
+</ol>
+<h3 id="ch2-1"><a href="#ch2-1" class="headerlink" title="ch2"></a>ch2</h3><ol>
+<li><p>There are three most commonly used data forwarding devices, namely typical routers, L2 switches, and L2&#x2F;3 switches. Describe how they are different from each other by drawing comparisons (e.g., with a table) from four perspectives: (1) layer-based functionality, (2) forwarding by software&#x2F;hardware, (3) port count, and (4) traffic pattern to be supported.<br>最常用的資料轉發裝置有典型的路由器、L2交換器和L2&#x2F;3交換器三種。通過從四個角度進行比較(例如: 使用表格)來描述它們之間的區別: (1) 基於層的功能、(2) 軟體&#x2F;硬體轉發、(3) 埠數以及 (4) 流量要支持的模式。<br><code>Ans:</code></p>
+<table>
+<thead>
+<tr>
+<th align="left">裝置</th>
+<th align="left">基於層的功能</th>
+<th align="left">軟硬體轉發</th>
+<th align="left">埠計數</th>
+<th align="left">流量模式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Router</td>
+<td align="left">網路層</td>
+<td align="left">在軟硬體中進行路由(routing)，利用分層的邏輯 IP 位址</td>
+<td align="left">很少</td>
+<td align="left">專門為 WAN 網路設計</td>
+</tr>
+<tr>
+<td align="left">L2 switches</td>
+<td align="left">資料鏈結層</td>
+<td align="left">在硬體中進行交換</td>
+<td align="left">&gt;24</td>
+<td align="left">專門為 inter-VLAN(LAN) 通訊設計</td>
+</tr>
+<tr>
+<td align="left">L2&#x2F;3 switches</td>
+<td align="left">網路層和資料鏈結層</td>
+<td align="left">第二層如 L2交換器，第三層路由透過高速 ASICs 硬體完成</td>
+<td align="left">&gt;24</td>
+<td align="left">專門為大流量的 VLAN 設計</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>ch2 slide p.42, 44, 46</p>
+</blockquote>
+</li>
+<li><p>Consider a network with 12 stations interconnected via three types of net devices (Router, Switch, and Hub) shown below. Each device that directly connects to a station operates at a rate of 10 Gb&#x2F;s per port. All devices run in a full duplex mode.<br>(a) (15%) Compute the number of collision domains in this network. What is the maximum throughput of the network?<br>(b) (10%) Propose a strategy for increasing the throughput, without changing the topology, by increasing the number of collision domains, and re-compute the maximum throughput.<br>(c) (10%) Mark all broadcast domains in this network.<br>(d) (15%) For the revised network shown below, two VLANs (V1 and V2) are adopted. Mark all broadcast domains in this network to justify how the performance of the network can be improved through VLAN.<br>(e) (15%) For this network, describe in detail how frames are sent from “host1” to “host2”<br>考慮一個具有 12 個站點的網路，這些站點通過如下圖1所示的三種網路設備(路由器、交換機和集線器)互連。每個直接連接到站點的設備以每個埠 10 Gb&#x2F;s 的速率運行。所有設備都以全雙工模式運行。<br>(a) (15%) 計算該網路中碰撞網域的數量。網路的最大吞吐量是多少?<br>(b) (10%) 提出通過增加碰撞網域的數量，在不改變拓撲結構的情況下增加吞吐量的策略，並重新計算最大吞吐量。<br>(c) (10%) 標記此網路中的所有廣播網域。<br>(d) (15%) 對於如下圖2所示的修改後的網路，採用了兩個 VLAN(V1 和 V2)。標記此網路中的所有廣播網域，以證明如何通過 VLAN 提高網路性能。<br>(e) (15%) 對於這個網路，詳細描述訊框是如何從 “host1” 發送到 “host2”。<br><img src="https://i.imgur.com/lSjvVpA.png" alt="Image1"><br><img src="https://i.imgur.com/29cDC3w.png" alt="Image2"><br><code>Ans:</code><br>(a) 12, 90 Gb&#x2F;s<br>(b) 將 Hub 換成 Switch，碰撞網域變為 16 個，吞吐量達 120 Gb&#x2F;s<br>(c) 2, 只有路由器可以切割廣播網域<br>(d)<br>(e)</p>
+</li>
+<li><p>(70%) For a layer-2 network topology given below, there are a total of 6 Layer-2 switches. The 3-digit number inside of each switch box is the MAC address of the switch. All switches share the same priority value. The cost of each link is given and specified beside the link.<br>(a) (20%) To increase reliability, this L2 topology contains redundant links&#x2F;switches for data transport, which results in three severe data-forwarding problems. Describe and illustrate the three problems using a subset of the given topology, containing only three switches, 205, 207, and 307, the three links connecting them, and two end servers, source S00 and destination D11. (The rest of the switches&#x2F;links is ignored for this question.)<br><img src="https://i.imgur.com/FRFh1Jr.png" alt="Image"><br>(b) (30%) The STP has been proposed to solve such problems. Determine for each port of the entire above topology the resulted port type (designated, root, and blocked) after executing the STP algorithm. Reason all your answers clearly and briefly.<br>(c) (10%) For any link containing a blocking port, why is the other port of the link assigned as a “designated” port, but not a “blocking” port as well?<br>(d) (10%) Describe one advantage and two major disadvantages of the STP succinctly<br>對於下面給出的 layer-2 網路拓撲，共有 6 個 layer-2 交換器。每個交換器框框內的 3 位數是交換器的 MAC 位址。所有交換器共享相同的優先權值。每個鏈結的成本在鏈結旁邊給出並指定。<br>(a) (20%) 為了提高可靠性，這種 L2 拓撲包含用於資料傳輸的冗餘鏈結&#x2F;交換器，這會導致三個嚴重的資料轉發問題。使用給定拓撲的子集描述和說明這三個問題，其中僅包含三個交換器 205、207 和 307，連接它們的三個鏈結，以及兩個終端伺服器，來源端 S00 和目地端 D11。(此問題忽略了其餘的交換器&#x2F;鏈結。)<br>(b) (30%) 已提出 STP 來解決此類問題。在執行 STP 演算法後，確定整個上述拓撲的每個埠的結果埠類型(designated、root 和 blocked)。清楚而簡短地解釋你所有的答案。<br>(c) (10%) 對於包含 blocking port 的任何鏈結，為什麼將鏈結的另一個 port 分配為  “designated” port，而不是 “blocking” port?<br>(d) (10%) 簡明扼要地描述 STP 的一個優點和兩個主要缺點<br><code>Ans:</code><br>(b) Blocking port 不會傳送或接收或者轉發資料，只會接收 BPDU 且不進行位址學習，但如果有同一 link 兩邊都是 blocking port，則可能無法轉送和接收到 BPDU 的封包，並且少一個可以轉發的 port 會造成網路資源浪費。</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/NYCU/" rel="tag"><i class="fa fa-tag"></i> NYCU</a>
+              <a href="/tags/110-2/" rel="tag"><i class="fa fa-tag"></i> 110-2</a>
+              <a href="/tags/DCN/" rel="tag"><i class="fa fa-tag"></i> DCN</a>
+              <a href="/tags/Midterm/" rel="tag"><i class="fa fa-tag"></i> Midterm</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/KenChen/1142073039/" rel="prev" title="[2022Intern] 聯發科 5G 軟韌體面試前相關問題整理和心得">
+      <i class="fa fa-chevron-left"></i> [2022Intern] 聯發科 5G 軟韌體面試前相關問題整理和心得
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/KenChen/690226879/" rel="next" title="[資料中心網路技術] Project3 在 Mininet 中建立拓樸並使用 SDN 控制器監視系統">
+      [資料中心網路技術] Project3 在 Mininet 中建立拓樸並使用 SDN 控制器監視系統 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B3%87%E6%96%99%E4%B8%AD%E5%BF%83%E7%B6%B2%E8%B7%AF%E6%8A%80%E8%A1%93%E6%9C%9F%E4%B8%AD%E8%80%83%E6%BA%96%E5%82%99-ch1-3"><span class="nav-number">1.</span> <span class="nav-text">資料中心網路技術期中考準備 ch1~3</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AD%86%E8%A8%98%E6%95%B4%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text">筆記整理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ch1"><span class="nav-number">1.1.1.</span> <span class="nav-text">ch1</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%8B%E7%B4%B9"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">介紹</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%B2%E7%AB%AF%E9%81%8B%E7%AE%97"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">雲端運算</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ch2"><span class="nav-number">1.1.2.</span> <span class="nav-text">ch2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Virtual-LAN-Introduction-and-Operations"><span class="nav-number">1.1.3.</span> <span class="nav-text">Virtual LAN - Introduction and Operations</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%82%BA%E4%BB%80%E9%BA%BC%E8%A6%81%E7%94%A8-VLAN"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">為什麼要用 VLAN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VLAN-vs-Subnetting"><span class="nav-number">1.1.3.2.</span> <span class="nav-text">VLAN vs. Subnetting</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%8B%E7%B4%B9-VLAN"><span class="nav-number">1.1.3.3.</span> <span class="nav-text">介紹 VLAN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%83%85%E5%A2%83"><span class="nav-number">1.1.3.4.</span> <span class="nav-text">情境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E6%B1%BA%E6%96%B9%E6%B3%95"><span class="nav-number">1.1.3.5.</span> <span class="nav-text">解決方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VLAN-Trunk-x2F-Tagging"><span class="nav-number">1.1.3.6.</span> <span class="nav-text">VLAN Trunk&#x2F;Tagging</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Layer-2-and-Layer-3-Data-Forwarding-Switching-Devices"><span class="nav-number">1.1.4.</span> <span class="nav-text">Layer-2 and Layer-3 Data Forwarding (Switching) Devices</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#L2-Switching-Ethernet"><span class="nav-number">1.1.5.</span> <span class="nav-text">L2 Switching(Ethernet)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#L3-Routing"><span class="nav-number">1.1.6.</span> <span class="nav-text">L3 Routing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#L2-x2F-3-Switch"><span class="nav-number">1.1.7.</span> <span class="nav-text">L2&#x2F;3 Switch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Layer-2-Spanning-Tree-Protocol"><span class="nav-number">1.1.8.</span> <span class="nav-text">Layer-2 Spanning Tree Protocol</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Redundant-Networking-Topology"><span class="nav-number">1.1.8.1.</span> <span class="nav-text">Redundant Networking Topology</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#STP"><span class="nav-number">1.1.8.2.</span> <span class="nav-text">STP</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ch3"><span class="nav-number">1.1.9.</span> <span class="nav-text">ch3</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%8B%E7%B4%B9-1"><span class="nav-number">1.1.9.1.</span> <span class="nav-text">介紹</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Traditional-Networks-and-Problems"><span class="nav-number">1.1.9.2.</span> <span class="nav-text">Traditional Networks and Problems</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SDN-API-OpenFlow-Protocol"><span class="nav-number">1.1.9.3.</span> <span class="nav-text">SDN API- OpenFlow Protocol</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SDN-Advantages-and-Challenges"><span class="nav-number">1.1.9.4.</span> <span class="nav-text">SDN Advantages and Challenges</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%8C%E7%9B%AE"><span class="nav-number">1.2.</span> <span class="nav-text">題目</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ch1-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">ch1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ch2-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">ch2</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ken Chen"
+      src="https://i.imgur.com/C7LzYau.jpg">
+  <p class="site-author-name" itemprop="name">Ken Chen</p>
+  <div class="site-description" itemprop="description">初學者</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kenchen879" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kenchen879" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ken917088@gmail.com" title="E-Mail → mailto:ken917088@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/profile.php?id=100000236840206" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;profile.php?id&#x3D;100000236840206" rel="noopener" target="_blank"><i class="fab fa-facebook fa-fw"></i>FB Page</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.youtube.com/channel/UCyILH0iUe8_gSOWnDlp4dIQ/playlists" title="YouTube → https:&#x2F;&#x2F;www.youtube.com&#x2F;channel&#x2F;UCyILH0iUe8_gSOWnDlp4dIQ&#x2F;playlists" rel="noopener" target="_blank"><i class="fab fa-youtube fa-fw"></i>YouTube</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ken Chen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 超強力驅動
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="訪客總數">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="總瀏覽次數">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://kenken-2.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://kenchen.me/KenChen/568021659/";
+    this.page.identifier = "KenChen/568021659/";
+    this.page.title = "[資料中心網路技術] Midterm ch1&2&3";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://kenken-2.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

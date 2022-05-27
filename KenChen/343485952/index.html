@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://i.imgur.com/oN6kBF1.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://i.imgur.com/oN6kBF1.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://i.imgur.com/oN6kBF1.png">
+  <link rel="mask-icon" href="https://i.imgur.com/oN6kBF1.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kenchen.me","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false,"width":240},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Paper這是我第一篇記錄的 paper，會有我的個人心得，這篇主要是在講述 Big Data 在雲端裡的應用，為了交大雲端計算報告才看的，我的架構會是先從摘要和結論開始，再講述他們的 Methodology。  題目: LEVERAGING CLOUD BASED BIG DATA ANALYTICS IN KNOWLEDGE MANAGEMENT FOR ENHANCED DECISION M">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Paper(一)] Leveraging Cloud Based Big Data Analytics In Knowledge Management For Enhanced Decision Making In Organization">
+<meta property="og:url" content="https://kenchen.me/KenChen/343485952/index.html">
+<meta property="og:site_name" content="KENKEN">
+<meta property="og:description" content="Paper這是我第一篇記錄的 paper，會有我的個人心得，這篇主要是在講述 Big Data 在雲端裡的應用，為了交大雲端計算報告才看的，我的架構會是先從摘要和結論開始，再講述他們的 Methodology。  題目: LEVERAGING CLOUD BASED BIG DATA ANALYTICS IN KNOWLEDGE MANAGEMENT FOR ENHANCED DECISION M">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://i.imgur.com/zloMLmy.png">
+<meta property="og:image" content="https://i.imgur.com/yDtIeyh.png">
+<meta property="article:published_time" content="2022-03-22T16:06:05.000Z">
+<meta property="article:modified_time" content="2022-05-27T15:11:52.977Z">
+<meta property="article:author" content="Ken Chen">
+<meta property="article:tag" content="Papers">
+<meta property="article:tag" content="IJDPS">
+<meta property="article:tag" content="Big Data">
+<meta property="article:tag" content="Cloud Computing">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.imgur.com/zloMLmy.png">
+
+<link rel="canonical" href="https://kenchen.me/KenChen/343485952/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-TW'
+  };
+</script>
+
+  <title>[Paper(一)] Leveraging Cloud Based Big Data Analytics In Knowledge Management For Enhanced Decision Making In Organization | KENKEN</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">KENKEN</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>時間線<span class="badge">11</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>關於我</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">19</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分類<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>網站地圖</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/kenchen879" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://kenchen.me/KenChen/343485952/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.imgur.com/C7LzYau.jpg">
+      <meta itemprop="name" content="Ken Chen">
+      <meta itemprop="description" content="初學者">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KENKEN">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [Paper(一)] Leveraging Cloud Based Big Data Analytics In Knowledge Management For Enhanced Decision Making In Organization
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+
+              <time title="創建時間：2022-03-23 00:06:05" itemprop="dateCreated datePublished" datetime="2022-03-23T00:06:05+08:00">2022-03-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2022-05-27 23:11:52" itemprop="dateModified" datetime="2022-05-27T23:11:52+08:00">2022-05-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分類於</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Papers/" itemprop="url" rel="index"><span itemprop="name">Papers</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Papers/IJDPS/" itemprop="url" rel="index"><span itemprop="name">IJDPS</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="閱讀次數" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">閱讀次數：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/KenChen/343485952/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="KenChen/343485952/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Paper"><a href="#Paper" class="headerlink" title="Paper"></a>Paper</h1><p>這是我第一篇記錄的 paper，會有我的個人心得，這篇主要是在講述 Big Data 在雲端裡的應用，<del>為了交大雲端計算報告才看的</del>，我的架構會是先從摘要和結論開始，再講述他們的 Methodology。</p>
+<ul>
+<li>題目: <a target="_blank" rel="noopener" href="https://bit.ly/3L6AWCA">LEVERAGING CLOUD BASED BIG DATA ANALYTICS IN KNOWLEDGE MANAGEMENT FOR ENHANCED DECISION MAKING IN ORGANIZATIONS</a><blockquote>
+<p><a target="_blank" rel="noopener" href="https://bit.ly/3IvdEo0">在知識管理中利用基於雲的大數據分析來增強組織的決策能力</a></p>
+</blockquote>
+</li>
+<li>等級: Journal</li>
+<li>出版: International Journal of Distributed and Parallel Systems (IJDPS) Vol.8, No.1, January 2017</li>
+</ul>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Big Data 可以幫助組織在 KM 上更加突破，不過因為 Big Data 具 5V 特性(甚至到10V，相關定義可以到此<a target="_blank" rel="noopener" href="https://bit.ly/3D24Bdg">連結</a>查看)，傳統的資料管理技術已經無法提供有效的儲存和分析，因此本篇提出新的技術和架構想要解決這個問題。<br>能夠<strong>儲存和處理大量資料的雲端計算</strong>因此用於高效的 Big Data 處理，因為能夠最大限度降低 Big Data 分析所需的大規模計算基礎設施的成本。</p>
+<ul>
+<li><strong>貢獻</strong><ul>
+<li>分析 Big Data 對 KM 的影響。</li>
+<li>提出基於雲的概念框架，可以即時分析 Big Data，以促進主要在獲得競爭優勢的增強決策。</li>
+<li>為加強組織探索 Big Data 和 KM 之間的關係，因其通常是被分開討論。</li>
+</ul>
+</li>
+</ul>
+<h1 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h1><p>對於組織來說，收集大量資料為了做出更好的決策，並且根據研究得到</p>
+<blockquote>
+<p>利用資料推動決策的組織可以得到更多利潤。<br>Big Data 可以為組織有效管理 KM 創造新的可能性和機會。</p>
+</blockquote>
+<ul>
+<li>這篇論文主要是在研究 Big Data 在 KM 的作用，並將兩者連結，因此他們提出一基於雲的框架，透過分析從 Big Data 中提取價值，用於 KM 開發出有效的決策。</li>
+<li>在這個框架中，Big Data 平台將用具有雲端服務的技術來支持，像是 HDFS 和 MapReduce，以實現跨資料中心 cluster 的分散式處理。並且利用 NoSQL 在 Big Data 的即時處理上。</li>
+<li>通過分析舉例說明 Big Data 獲取和分析的完整週期，將 Big Data 價值轉為可操作的洞察力，用以支持包括知識獲取、分發和共享、呈現和儲存以及利用的 KM 過程。</li>
+<li>最後，由於在 KM 中利用這項新技術面臨著許多挑戰，例如數據科學家的可用性和保護資料隱私等，這些問題需要先解決才能實現這個框架。</li>
+</ul>
+<h1 id="Big-Data-與-KM-之間的關係"><a href="#Big-Data-與-KM-之間的關係" class="headerlink" title="Big Data 與 KM 之間的關係"></a>Big Data 與 KM 之間的關係</h1><p>由於 Big Data 和 雲端計算的盛行，組織在尋找如何有效收集和處理資料的方法，而使 KM 創造價值。</p>
+<p>Davenport 等人提出(<a target="_blank" rel="noopener" href="https://bit.ly/36AEJZM">連結</a>)，組織可以通過使用與 KM 相關的 Big Data 來實現一些好處，組織主要使用的是資料流而不是歷史資料，因此逐漸益賴<strong>數據科學家</strong>而不是數據分析師，這項工作最後逐漸從 IT 中分離出來，並作為核心業務和運營職能。因此組織可以創造有價值的知識，並利用其來改進 KM 和 競爭優勢，因此得到 Big Data 和分析可以有助於即時 KM。</p>
+<h2 id="KM-兩種方法比較"><a href="#KM-兩種方法比較" class="headerlink" title="KM 兩種方法比較"></a>KM 兩種方法比較</h2><p>傳統方法 vs. 基於 Big Data 的方法</p>
+<ul>
+<li>傳統方法<br>著重在將隱性知識轉為顯性知識，將人們的專業知識轉為程式碼並存入資料庫中。</li>
+<li>基於 Big Data 的方法<br>由累積的大量數據來形成新知識，除了內部收集，更是可以從雲中收集，基於 Big Data 的 KM 主要是進行知識預測、知識導航和知識發現，以增強支持組織中的營運和決策制定。</li>
+</ul>
+<h1 id="Big-Data-Driven-KM-Framework"><a href="#Big-Data-Driven-KM-Framework" class="headerlink" title="Big Data Driven KM Framework"></a>Big Data Driven KM Framework</h1><ul>
+<li>首先從技術角度概述系統架構</li>
+<li>描述在 KM 中利用 Big Data 架構模式</li>
+<li>描述 Big Data 的功能視圖，Big Data 分析技術是管理系統和相關 Big Data 工具的關鍵</li>
+</ul>
+<h2 id="基礎設施層-Infrastructure-Layer"><a href="#基礎設施層-Infrastructure-Layer" class="headerlink" title="基礎設施層(Infrastructure Layer)"></a>基礎設施層(Infrastructure Layer)</h2><ul>
+<li>基礎設施由 sensor 網路、設備網路、數據和管理接口組成</li>
+<li>網路組件由各類型的 sensor、執行器、軟體組件和其他設備組成，從不同來源收集(或驅動)數據。</li>
+</ul>
+<p>可以看到下圖，管理底層網路基礎設施並處理其中生成的數據，增加了由定義良好的 Data 和 Management API組成的控制平面，<br><img src="https://i.imgur.com/zloMLmy.png" alt="A layered architecture of the framework"></p>
+<p>除了上述的 Big Data source 外，我們還將客戶的參與視為他們福利、業務規劃和決策的重要數據來源，這通常被稱為”眾包”(crowdsourcing)。 簡而言之，這些大數據的生成速度非常快，必須快速捕獲和處理(如即時監控的情況)。</p>
+<h2 id="平台層-Platform-Layer"><a href="#平台層-Platform-Layer" class="headerlink" title="平台層(Platform Layer)"></a>平台層(Platform Layer)</h2><p>架構的核心是第二層(平台層)，包含三個建構塊(building block)</p>
+<h2 id="知識管理層-Knowledge-Management-Layer"><a href="#知識管理層-Knowledge-Management-Layer" class="headerlink" title="知識管理層(Knowledge Management Layer)"></a>知識管理層(Knowledge Management Layer)</h2><p>可以看到圖中，最上層就是 KM layer 可以提供知識獲取、創建、分配和共享、存儲和利用知識管理的cycle。以達到即時創建Actionable Insights (代表可以作為依據做某些事情的，可操作的; 深入準確的理解; 合起來就是對公司而言有價值、可操作的有用信息。可以參考這個<a target="_blank" rel="noopener" href="https://bit.ly/3wAxWu3">文章</a>)，用於支持依照需求的決策。</p>
+<p>這個框架會利用下層的分析結果會輸入到知識管理層，來完成剛剛提到的知識管理。在這個框架的基礎上，企業、政府和股東社群可以更好地規劃他們的商業活動，甚至是參與增強和有效的決策制定。</p>
+<h2 id="實作上的挑戰"><a href="#實作上的挑戰" class="headerlink" title="實作上的挑戰"></a>實作上的挑戰</h2><blockquote>
+<p>Question: 你覺得這個基於大數據的知識管理框架具提供即時資訊的功能，結合了大數據和雲端計算的優點，有什麼問題或挑戰嗎?</p>
+</blockquote>
+<p>這個基於大數據的知識管理框架，在理論上相要結合大數據和雲端計算的優點，但實際上有許多問題和挑戰。</p>
+<ul>
+<li>最重要的是面臨了技術挑戰。現在的技術可以很容易收集和管理大量的資料，這個框架必須解決處理大量不同資料和處理時間太長的問題，因為剛剛有提到需要有即時提供資訊的功能。在實際上，資料在沒處理前有很多種，無論是非結構或結構化的資料都十分龐大，很難分析和提取有效的價值。</li>
+<li>另一個問題是這些資料很難管理，這也是從大數據很難提取有用價值的主因。同時，擺脫傳統的資料管理技術並提出有效的分析演算法來處理結構化和非結構化資料是比較難的。</li>
+<li>最後，這個框架的實作需要跨領域的知識，例如: 大數據分析需要統計學、機器學習和資料管理上的專業知識，才能從組織大數據中得到有價值的見解，這將是一個挑戰。因此，該框架的成功會產生知識管理領域的新專家，主要是利用大數據和雲計算。</li>
+</ul>
+<h1 id="案例說明-–-Yahoo的大數據活動"><a href="#案例說明-–-Yahoo的大數據活動" class="headerlink" title="案例說明 – Yahoo的大數據活動"></a>案例說明 – Yahoo的大數據活動</h1><p>主要是關於為自己的產品和服務做廣告的預測模型，據他們觀察的資料，這篇文是在五年前發表的，所以現在已經不是這樣了，在當時美國 80% 的用戶會使用 Yahoo 提供的各種服務，每月會有來自世界各地超過 6 億用戶。提供的產品包括媒體、商業、貿易、搜索和訪問產品，並擁有像是 E-mail、電視、新聞、金融等的資產，相信現在這些服務也不是主流了。不過在當時，他們每天收集的資料量達到 25 TB 以上。資料主要是合作夥伴、廣告商和消費者。</p>
+<p>他們採用的商業策略是行為定位(這個機制能藉由消費者在網路中的行為，利用標籤進行興趣分類，來增加品牌跟消費者之間關聯性，舉例來說，像我平常可能搜尋或是講到 iPhone 這個關鍵字，過沒多久就會出現許多相關廣告)，以獲得競爭優勢的增強決策。他們維護每個消費者的行為或興趣和盈利能力指標。該策略通過將廣告定位到最新行為或在線活動表明與他們相關的產品或服務類別的客戶。以這種方式，最相關的用戶類別被識別。</p>
+<ul>
+<li>Enhance Decision Making<ul>
+<li>Look in — Restructure your IT organization for the “new normal” with trends, forecasts, and benchmarking.<ul>
+<li>通過趨勢、預測和基準測試，使 IT 組織可以適應新環境。</li>
+</ul>
+</li>
+<li>Look across — Understand your colleagues’ and constituents’ needs and expectations so you can refine your IT service management.<ul>
+<li>了解同事和委託人的需求和期望，這樣就可以改進 IT 服務的管理。</li>
+</ul>
+</li>
+<li>Look up — Align IT with the institutional mission through strategic uses of technology and data.<ul>
+<li>通過技術和資料的策略性應用，使 IT 與組織目標保持一致。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>下圖說明了他們的預測建模如何在非常抽象的級別上工作:<br><img src="https://i.imgur.com/yDtIeyh.png" alt="Yahoo predictive modeling cycle for target consumers"></p>
+<ul>
+<li>預測模型開始以數十萬個產品類別週期分析購買歷史，這些產品類別包含大量資料以進行前置處理。</li>
+<li>在這些產品的每個類別中，都建立了一個行為模型來描述消費者的購買行為，這也代表消費者對廣告的網路點擊流量。</li>
+<li>在下一階段，每個消費者每天都會標記適合產品類別的分數。</li>
+<li>然後根據在每個產品類別中獲得的分數對消費者進行排序，並且預測方案選擇消費者來定位所選產品類別中獲得最高相關性分數的廣告。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Papers/" rel="tag"><i class="fa fa-tag"></i> Papers</a>
+              <a href="/tags/IJDPS/" rel="tag"><i class="fa fa-tag"></i> IJDPS</a>
+              <a href="/tags/Big-Data/" rel="tag"><i class="fa fa-tag"></i> Big Data</a>
+              <a href="/tags/Cloud-Computing/" rel="tag"><i class="fa fa-tag"></i> Cloud Computing</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/KenChen/343485954/" rel="prev" title="[資料中心網路技術] Project2 實作一簡單的網路系統">
+      <i class="fa fa-chevron-left"></i> [資料中心網路技術] Project2 實作一簡單的網路系統
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/KenChen/410559358/" rel="next" title="[行動網路安全] Project1 Anomaly Detector in 5G Core Network">
+      [行動網路安全] Project1 Anomaly Detector in 5G Core Network <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Paper"><span class="nav-number">1.</span> <span class="nav-text">Paper</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">2.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B5%90%E8%AB%96"><span class="nav-number">3.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Big-Data-%E8%88%87-KM-%E4%B9%8B%E9%96%93%E7%9A%84%E9%97%9C%E4%BF%82"><span class="nav-number">4.</span> <span class="nav-text">Big Data 與 KM 之間的關係</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#KM-%E5%85%A9%E7%A8%AE%E6%96%B9%E6%B3%95%E6%AF%94%E8%BC%83"><span class="nav-number">4.1.</span> <span class="nav-text">KM 兩種方法比較</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Big-Data-Driven-KM-Framework"><span class="nav-number">5.</span> <span class="nav-text">Big Data Driven KM Framework</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A4%8E%E8%A8%AD%E6%96%BD%E5%B1%A4-Infrastructure-Layer"><span class="nav-number">5.1.</span> <span class="nav-text">基礎設施層(Infrastructure Layer)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B3%E5%8F%B0%E5%B1%A4-Platform-Layer"><span class="nav-number">5.2.</span> <span class="nav-text">平台層(Platform Layer)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%A5%E8%AD%98%E7%AE%A1%E7%90%86%E5%B1%A4-Knowledge-Management-Layer"><span class="nav-number">5.3.</span> <span class="nav-text">知識管理層(Knowledge Management Layer)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%A6%E4%BD%9C%E4%B8%8A%E7%9A%84%E6%8C%91%E6%88%B0"><span class="nav-number">5.4.</span> <span class="nav-text">實作上的挑戰</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B%E8%AA%AA%E6%98%8E-%E2%80%93-Yahoo%E7%9A%84%E5%A4%A7%E6%95%B8%E6%93%9A%E6%B4%BB%E5%8B%95"><span class="nav-number">6.</span> <span class="nav-text">案例說明 – Yahoo的大數據活動</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ken Chen"
+      src="https://i.imgur.com/C7LzYau.jpg">
+  <p class="site-author-name" itemprop="name">Ken Chen</p>
+  <div class="site-description" itemprop="description">初學者</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kenchen879" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kenchen879" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ken917088@gmail.com" title="E-Mail → mailto:ken917088@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/profile.php?id=100000236840206" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;profile.php?id&#x3D;100000236840206" rel="noopener" target="_blank"><i class="fab fa-facebook fa-fw"></i>FB Page</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.youtube.com/channel/UCyILH0iUe8_gSOWnDlp4dIQ/playlists" title="YouTube → https:&#x2F;&#x2F;www.youtube.com&#x2F;channel&#x2F;UCyILH0iUe8_gSOWnDlp4dIQ&#x2F;playlists" rel="noopener" target="_blank"><i class="fab fa-youtube fa-fw"></i>YouTube</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ken Chen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 超強力驅動
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="訪客總數">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="總瀏覽次數">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://kenken-2.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://kenchen.me/KenChen/343485952/";
+    this.page.identifier = "KenChen/343485952/";
+    this.page.title = "[Paper(一)] Leveraging Cloud Based Big Data Analytics In Knowledge Management For Enhanced Decision Making In Organization";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://kenken-2.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

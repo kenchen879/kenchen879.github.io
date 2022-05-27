@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://i.imgur.com/oN6kBF1.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://i.imgur.com/oN6kBF1.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://i.imgur.com/oN6kBF1.png">
+  <link rel="mask-icon" href="https://i.imgur.com/oN6kBF1.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kenchen.me","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false,"width":240},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="資料中心網路技術 project3 在 Mininet 中建立拓樸並使用 SDN 控制器監視系統 交大資料中心網路技術 project 3，在這個 project 將會學到如何使用 Mininet 建立拓樸並使用 SDN controller 監視系統。 Demo日期: 4&#x2F;21 16:00 Mininet 介紹 基本指令 $ 在 shell 中執行 Linux 指令  mininet&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[資料中心網路技術] Project3 在 Mininet 中建立拓樸並使用 SDN 控制器監視系統">
+<meta property="og:url" content="https://kenchen.me/KenChen/690226879/index.html">
+<meta property="og:site_name" content="KENKEN">
+<meta property="og:description" content="資料中心網路技術 project3 在 Mininet 中建立拓樸並使用 SDN 控制器監視系統 交大資料中心網路技術 project 3，在這個 project 將會學到如何使用 Mininet 建立拓樸並使用 SDN controller 監視系統。 Demo日期: 4&#x2F;21 16:00 Mininet 介紹 基本指令 $ 在 shell 中執行 Linux 指令  mininet&amp;">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://i.imgur.com/P4Z8v3E.png">
+<meta property="og:image" content="https://i.imgur.com/MJ1XgNO.png">
+<meta property="og:image" content="https://i.imgur.com/RyOI6Vz.png">
+<meta property="og:image" content="https://i.imgur.com/oR8BWhx.png">
+<meta property="og:image" content="https://i.imgur.com/wJZR2qV.png">
+<meta property="article:published_time" content="2022-04-19T08:18:48.000Z">
+<meta property="article:modified_time" content="2022-05-27T15:11:52.977Z">
+<meta property="article:author" content="Ken Chen">
+<meta property="article:tag" content="NYCU">
+<meta property="article:tag" content="110-2">
+<meta property="article:tag" content="DCN">
+<meta property="article:tag" content="Project">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.imgur.com/P4Z8v3E.png">
+
+<link rel="canonical" href="https://kenchen.me/KenChen/690226879/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-TW'
+  };
+</script>
+
+  <title>[資料中心網路技術] Project3 在 Mininet 中建立拓樸並使用 SDN 控制器監視系統 | KENKEN</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">KENKEN</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>時間線<span class="badge">11</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>關於我</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">19</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分類<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>網站地圖</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/kenchen879" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://kenchen.me/KenChen/690226879/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.imgur.com/C7LzYau.jpg">
+      <meta itemprop="name" content="Ken Chen">
+      <meta itemprop="description" content="初學者">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KENKEN">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [資料中心網路技術] Project3 在 Mininet 中建立拓樸並使用 SDN 控制器監視系統
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+
+              <time title="創建時間：2022-04-19 16:18:48" itemprop="dateCreated datePublished" datetime="2022-04-19T16:18:48+08:00">2022-04-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2022-05-27 23:11:52" itemprop="dateModified" datetime="2022-05-27T23:11:52+08:00">2022-05-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分類於</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NYCU/" itemprop="url" rel="index"><span itemprop="name">NYCU</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NYCU/110-2/" itemprop="url" rel="index"><span itemprop="name">110-2</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NYCU/110-2/DCN/" itemprop="url" rel="index"><span itemprop="name">DCN</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="閱讀次數" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">閱讀次數：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/KenChen/690226879/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="KenChen/690226879/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="資料中心網路技術-project3-在-Mininet-中建立拓樸並使用-SDN-控制器監視系統"><a href="#資料中心網路技術-project3-在-Mininet-中建立拓樸並使用-SDN-控制器監視系統" class="headerlink" title="資料中心網路技術 project3 在 Mininet 中建立拓樸並使用 SDN 控制器監視系統"></a>資料中心網路技術 project3 在 Mininet 中建立拓樸並使用 SDN 控制器監視系統</h1><hr>
+<p>交大資料中心網路技術 project 3，在這個 project 將會學到如何使用 Mininet 建立拓樸並使用 SDN controller 監視系統。</p>
+<p><a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/16j_8sKSjkVPSrrXBOzbMj_b8uMHnhsdwQRBnILnhUEs/edit?usp=sharing">Demo日期</a>: 4&#x2F;21 16:00</p>
+<h2 id="Mininet-介紹"><a href="#Mininet-介紹" class="headerlink" title="Mininet 介紹"></a>Mininet 介紹</h2><hr>
+<h3 id="基本指令"><a href="#基本指令" class="headerlink" title="基本指令"></a>基本指令</h3><ul>
+<li><p><code>$</code> 在 shell 中執行 Linux 指令</p>
+</li>
+<li><p><code>mininet&gt;</code> 在 Mininet’s CLI 中執行 Mininet 指令</p>
+</li>
+<li><p><code>#</code> 在 root shell 中執行 Linux 指令</p>
+</li>
+<li><p>顯示 Mininet 參數選項</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo mn -h</span><br></pre></td></tr></table></figure></li>
+<li><p>使用最小拓樸進入 Mininet CLI</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo mn</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>mininet 預設拓樸 <code>mininal</code>，包含一個 switch、一個 controller 和 兩個主機</p>
+</blockquote>
+</li>
+<li><p>顯示 Mininet CLI commands</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mininet&gt; <span class="built_in">help</span></span><br></pre></td></tr></table></figure></li>
+<li><p>顯示 nodes</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mininet&gt; nodes</span><br></pre></td></tr></table></figure></li>
+<li><p>顯示鏈結</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mininet&gt; net</span><br></pre></td></tr></table></figure></li>
+<li><p>印出所有 nodes 的資訊</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mininet&gt; dump</span><br></pre></td></tr></table></figure></li>
+<li><p>對 host1 下 ifonfig -a 指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mininet&gt; h1 ifconfig -a</span><br></pre></td></tr></table></figure></li>
+<li><p>測試兩個hosts的連線</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mininet&gt; h1 ping h2</span><br></pre></td></tr></table></figure></li>
+<li><p>測試所有連線</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pingall</span><br></pre></td></tr></table></figure></li>
+<li><p>執行一簡單的 web server and client</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mininet&gt; h1 python -m SimpleHTTPServer 80 &amp;</span><br><span class="line">mininet&gt; h2 wget -O - h1</span><br><span class="line">...</span><br><span class="line">mininet&gt; h1 <span class="built_in">kill</span> %python</span><br></pre></td></tr></table></figure></li>
+<li><p>離開 CLI</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mininet&gt; <span class="built_in">exit</span></span><br></pre></td></tr></table></figure></li>
+<li><p>CleanUp，若有 carsh 則執行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo mn -c</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="進階選項"><a href="#進階選項" class="headerlink" title="進階選項"></a>進階選項</h3><ul>
+<li><code>--custom</code>: 使用 custom topology</li>
+<li><code>--topo</code>: 使用在腳本中的字典 “topos” 的 “mytopo”</li>
+<li><code>--link=tc</code>: 使用 traffic control link</li>
+<li><code>--controller</code>: 使用外部 controller 控制<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mn --topo mytopo --custom ~/mininet/custom/xxxscript.py --controller remote --switch default,protocols=OpenFlow13 --<span class="built_in">link</span>=tc</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="執行測試"><a href="#執行測試" class="headerlink" title="執行測試"></a>執行測試</h4><ul>
+<li>在 shell 執行 pingall<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo mn --<span class="built_in">test</span> pingair</span><br></pre></td></tr></table></figure></li>
+<li>測試 h1&#x2F;h2 間流量效能<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo mn --<span class="built_in">test</span> iperf</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="改變拓樸大小和型態"><a href="#改變拓樸大小和型態" class="headerlink" title="改變拓樸大小和型態"></a>改變拓樸大小和型態</h4><ul>
+<li>使用 <code>--topo</code> 這個參數<ul>
+<li>single 是單個 switch 連接多台 host</li>
+<li>linear 是一台 host 接一台 switch，switch 再串成線狀<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo mn --<span class="built_in">test</span> pingall --topo single,3</span><br><span class="line">$ sudo mn --<span class="built_in">test</span> pingall --topo linear,4</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h4 id="Link-variations"><a href="#Link-variations" class="headerlink" title="Link variations"></a>Link variations</h4><ul>
+<li>Mininet 2.0 後允許對 link 下參數</li>
+<li>假設將頻寬設為 10 Mps，每條 link 有 delay 10 ms，在測試中可見 RTT 約為 40 ms<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sudo mn --<span class="built_in">link</span> tc,bw=10,delay=10ms</span><br><span class="line">mininet&gt; iperf</span><br><span class="line">mininet&gt; h1 ping -c10 h2</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="步驟"><a href="#步驟" class="headerlink" title="步驟"></a>步驟</h2><hr>
+<p>大綱:</p>
+<ul>
+<li>在 mininet 中建立一個特定的拓樸網路系統</li>
+<li>修改 SDN controller <code>simple_switch_13.py</code> 程式碼<ul>
+<li>使控制器可以監控交換器的流量</li>
+<li>並顯示交換器的 L2 address table<br><img src="https://i.imgur.com/P4Z8v3E.png" alt="Source Address Table"></li>
+</ul>
+</li>
+</ul>
+<h3 id="在-mininet-中建立拓樸"><a href="#在-mininet-中建立拓樸" class="headerlink" title="在 mininet 中建立拓樸"></a>在 mininet 中建立拓樸</h3><p>參考 mininet 中一簡單 script: <code>~/mininet/custom/topo-2sw-2host.py</code>。</p>
+<h4 id="建立拓樸指令"><a href="#建立拓樸指令" class="headerlink" title="建立拓樸指令"></a>建立拓樸指令</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mn --topo mytopo --custom ~/mininet/custom/yourscript.py --controller remote --switch default,protocols=OpenFlow13 -- <span class="built_in">link</span>=tc</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>--custom</code>: 使用 custom topology</li>
+<li><code>--topo</code>: 使用在腳本中的字典 “topos” 的 “mytopo”</li>
+<li><code>--link=tc</code>: 使用 traffic control link</li>
+<li><code>--controller</code>: 使用外部 controller 控制</li>
+</ul>
+<p><strong>~&#x2F;mininet&#x2F;custom&#x2F;topo-2sw-2host.py</strong></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> mininet.topo <span class="keyword">import</span> Topo</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyTopo</span>( <span class="title class_ inherited__">Topo</span> ):</span><br><span class="line">  <span class="string">&quot;Simple topology example.&quot;</span></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">build</span>(<span class="params"> self </span>):</span><br><span class="line">    <span class="string">&quot;Create custom topo.&quot;</span></span><br><span class="line">      <span class="comment"># Add hosts and switches</span></span><br><span class="line">      leftHost = self.addHost( <span class="string">&#x27;h1&#x27;</span> )</span><br><span class="line">      rightHost = self.addHost( <span class="string">&#x27;h2&#x27;</span> )</span><br><span class="line">      leftSwitch = self.addSwitch( <span class="string">&#x27;s3&#x27;</span> )</span><br><span class="line">      rightSwitch = self.addSwitch( <span class="string">&#x27;s4&#x27;</span> )</span><br><span class="line"></span><br><span class="line">      <span class="comment"># Add links</span></span><br><span class="line">      self.addLink( leftHost, leftSwitch )</span><br><span class="line">      self.addLink( leftSwitch, rightSwitch )</span><br><span class="line">      self.addLink( rightSwitch, rightHost )</span><br><span class="line">topos = &#123; <span class="string">&#x27;mytopo&#x27;</span>: ( <span class="keyword">lambda</span>: MyTopo() ) &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="建立一拓樸"><a href="#建立一拓樸" class="headerlink" title="建立一拓樸"></a>建立一拓樸</h4><p><img src="https://i.imgur.com/MJ1XgNO.png" alt="topology"></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyTopo</span>( <span class="title class_ inherited__">Topo</span> ):</span><br><span class="line">  <span class="string">&quot;Simple topology example.&quot;</span></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">build</span>(<span class="params"> self </span>):</span><br><span class="line">      <span class="string">&quot;Create custom topo.&quot;</span></span><br><span class="line">      <span class="comment"># Add 6 hosts</span></span><br><span class="line">      myHost = []</span><br><span class="line">      <span class="keyword">for</span> h <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">6</span>):</span><br><span class="line">        myHost.append(self.addHost(<span class="string">&#x27;h%s&#x27;</span> % (h+<span class="number">1</span>)))</span><br><span class="line">      <span class="comment"># Add 4 switches</span></span><br><span class="line">      mySwitch = []</span><br><span class="line">      <span class="keyword">for</span> h <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">4</span>):</span><br><span class="line">        mySwitch.append(self.addSwitch(<span class="string">&#x27;s%s&#x27;</span> % (h+<span class="number">1</span>)))</span><br><span class="line">      <span class="comment"># Add links</span></span><br><span class="line">      <span class="comment"># bw: bandwidth of 10 Mbps</span></span><br><span class="line">      <span class="comment"># loss: 10% packet loss rate</span></span><br><span class="line">      self.addLink(myHost[<span class="number">0</span>], mySwitch[<span class="number">0</span>], bw=<span class="number">100</span>)</span><br><span class="line">      self.addLink(myHost[<span class="number">1</span>], mySwitch[<span class="number">0</span>], bw=<span class="number">100</span>)</span><br><span class="line">      self.addLink(myHost[<span class="number">2</span>], mySwitch[<span class="number">1</span>], bw=<span class="number">100</span>)</span><br><span class="line">      self.addLink(myHost[<span class="number">3</span>], mySwitch[<span class="number">2</span>], bw=<span class="number">100</span>)</span><br><span class="line">      self.addLink(myHost[<span class="number">4</span>], mySwitch[<span class="number">3</span>], bw=<span class="number">100</span>)</span><br><span class="line">      self.addLink(myHost[<span class="number">5</span>], mySwitch[<span class="number">3</span>], bw=<span class="number">100</span>)</span><br><span class="line">      self.addLink(mySwitch[<span class="number">0</span>], mySwitch[<span class="number">1</span>], bw=<span class="number">1000</span>, loss=<span class="number">5</span>)</span><br><span class="line">      self.addLink(mySwitch[<span class="number">1</span>], mySwitch[<span class="number">2</span>], bw=<span class="number">1000</span>, loss=<span class="number">5</span>)</span><br><span class="line">      self.addLink(mySwitch[<span class="number">2</span>], mySwitch[<span class="number">3</span>], bw=<span class="number">1000</span>, loss=<span class="number">5</span>)</span><br><span class="line">topos = &#123; <span class="string">&#x27;mytopo&#x27;</span>: ( <span class="keyword">lambda</span>: MyTopo() ) &#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="修改-SDN-controller-code"><a href="#修改-SDN-controller-code" class="headerlink" title="修改 SDN controller code"></a>修改 SDN controller code</h3><ul>
+<li>建立一 thread 來每五秒監視交換器流量<br>參考 <a target="_blank" rel="noopener" href="http://osrg.github.io/ryu-book/en/Ryubook.pdf">Chap.3 of Ryubook</a></li>
+<li>使用 <code>OFPPortStatsRequest()</code>、<code>OFPPortStatsReply()</code> 來取得交換器埠的資訊<br>參考 <a target="_blank" rel="noopener" href="https://ryu.readthedocs.io/en/latest/ofproto_v1_3_ref.html">Chap.3 of Ryubook or the link below</a></li>
+<li>目標<ul>
+<li>使用 OFPPortStatsRequest()、OFPPortStatsReply() 得到交換器 port 資訊</li>
+<li>監控資訊<ul>
+<li>Switch ID</li>
+<li>TX 和 RX 封包資訊</li>
+<li>交換器 MAC address table</li>
+</ul>
+</li>
+<li>每五秒將結果印出來<br><img src="https://i.imgur.com/RyOI6Vz.png" alt="monitor"></li>
+<li>使用上面所規定的拓樸(4sw_6hosts)</li>
+</ul>
+</li>
+</ul>
+<h4 id="實作一流量監視器"><a href="#實作一流量監視器" class="headerlink" title="實作一流量監視器"></a>實作一流量監視器</h4><p>網路是許多服務和業務的基礎設施，因此必須保持正常穩定運行。當網路發生錯誤時，必須查明原因並迅速恢復運行。為了檢測錯誤並找出原因，有必要定期了解網路狀態。</p>
+<p>例如，假設某個網路設備的某個 port 的流量指示一個非常高的值，如果沒有連續測量該 port 的流量，則無法確定是異常狀態還是通常是這種狀態以及何時變為這種狀態，出於這個原因，持續監控網路的健康狀況對於使用該網次的服務或企業的持續和安全運行至關重要。當然，簡單地監控流量資訊並不能提供完美的保證，但本節將介紹如何使用 OpenFlow 獲取交換器的統計信息。</p>
+<h4 id="Fixed-Cycle-Processing"><a href="#Fixed-Cycle-Processing" class="headerlink" title="Fixed-Cycle Processing"></a>Fixed-Cycle Processing</h4><p>在交換集線器處理的同時，創建一個 thread 定期向 OpenFlow 交換器發出請求以得到統計資訊。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SimpleMonitor13</span>(simple_switch_13.SimpleSwitch13):</span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, *args, **kwargs</span>):</span><br><span class="line">    <span class="built_in">super</span>(SimpleMonitor13, self).__init__(*args, **kwargs)</span><br><span class="line">    self.datapaths = &#123;&#125;</span><br><span class="line">    self.monitor_thread = hub.spawn(self._monitor)</span><br><span class="line"><span class="comment"># ...</span></span><br></pre></td></tr></table></figure>
+<p><code>ryu.lib.hub</code> 中有一些 eventlet wrappers 和基本類別實現。在此使用 <code>hub.spawn()</code>，用於建立 thread。實際上建立的 thread 是一個 eventlet green thread。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ...</span></span><br><span class="line"><span class="meta">@set_ev_cls(<span class="params">ofp_event.EventOFPStateChange, [MAIN_DISPATCHER, DEAD_DISPATCHER]</span>)</span></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">_state_change_handler</span>(<span class="params">self, ev</span>):</span><br><span class="line">    datapath = ev.datapath</span><br><span class="line">    <span class="keyword">if</span> ev.state == MAIN_DISPATCHER:</span><br><span class="line">      <span class="keyword">if</span> datapath.<span class="built_in">id</span> <span class="keyword">not</span> <span class="keyword">in</span> self.datapaths:</span><br><span class="line">        self.logger.debug(<span class="string">&#x27;register datapath: %016x&#x27;</span>, datapath.<span class="built_in">id</span>)</span><br><span class="line">        self.datapaths[datapath.<span class="built_in">id</span>] = datapath</span><br><span class="line">    <span class="keyword">elif</span> ev.state == DEAD_DISPATCHER:</span><br><span class="line">      <span class="keyword">if</span> datapath.<span class="built_in">id</span> <span class="keyword">in</span> self.datapaths:</span><br><span class="line">        self.logger.debug(<span class="string">&#x27;unregister datapath: %016x&#x27;</span>, datapath.<span class="built_in">id</span>)</span><br><span class="line">        <span class="keyword">del</span> self.datapaths[datapath.<span class="built_in">id</span>]</span><br><span class="line"><span class="comment"># 每 10 秒對交換器發出統計訊息的請求</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">_monitor</span>(<span class="params">self</span>):</span><br><span class="line">  <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="keyword">for</span> dp <span class="keyword">in</span> self.datapaths.values():</span><br><span class="line">      self._request_stats(dp)</span><br><span class="line">  hub.sleep(<span class="number">10</span>)</span><br><span class="line"><span class="comment"># ...</span></span><br></pre></td></tr></table></figure>
+<p>為了確保連接的交換器被監控，<code>EventOFPStateChange</code> 事件用於檢測連接和斷開連接。此事件由 Ryu 框架發出，在 Datapath 狀態更改時發出。<br>因此當 Datapath 狀態變為 <code>MAIN_DISPATCHER</code> 時，該交換器被註冊為監視目標，當它變為 <code>DEAD_DISPATCHER</code> 時，該註冊被刪除。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">_request_stats</span>(<span class="params">self, datapath</span>):</span><br><span class="line">  self.logger.debug(<span class="string">&#x27;send stats request: %016x&#x27;</span>, datapath.<span class="built_in">id</span>)</span><br><span class="line">  ofproto = datapath.ofproto</span><br><span class="line">  parser = datapath.ofproto_parser</span><br><span class="line"></span><br><span class="line">  req = parser.OFPFlowStatsRequest(datapath)</span><br><span class="line">  datapath.send_msg(req)</span><br><span class="line"></span><br><span class="line">  req = parser.OFPPortStatsRequest(datapath, <span class="number">0</span>, ofproto.OFPP_ANY)</span><br><span class="line">  datapath.send_msg(req)</span><br></pre></td></tr></table></figure>
+<p>透過定期呼叫 <code>_request_stats()</code>，向交換器發出 <code>OFPFlowStatsRequest</code> 和 <code>OFPPortStatsRequest</code>。</p>
+<ul>
+<li><code>OFPFlowStatsRequest</code> 請求交換器提供與 flow entry 相關的統計資訊。請求的目標 flow entry 可以通過 table ID、output port、cookie 值和 match 等條件來縮小範圍，但這裡所有 entry 都受請求的約束。</li>
+<li><code>OFPPortStatsRequest</code> 請求交換器提供 port 相關的統計資訊。可以指定所需的 port number 以從中獲取資訊。在這裡，<code>OFPP_ANY</code> 被指定為從所有 port 請求資訊。</li>
+</ul>
+<h4 id="FlowStats"><a href="#FlowStats" class="headerlink" title="FlowStats"></a>FlowStats</h4><p>為了從交換器接收回應，要建立一個接收 <code>FlowStatsReply</code> 消息的事件處理器。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@set_ev_cls(<span class="params">ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">_flow_stats_reply_handler</span>(<span class="params">self, ev</span>):</span><br><span class="line">  body = ev.msg.body</span><br><span class="line">  self.logger.info(<span class="string">&#x27;datapath &#x27;</span></span><br><span class="line">                    <span class="string">&#x27;in-port eth-dst &#x27;</span></span><br><span class="line">                    <span class="string">&#x27;out-port packets bytes&#x27;</span>)</span><br><span class="line">  self.logger.info(<span class="string">&#x27;---------------- &#x27;</span></span><br><span class="line">                    <span class="string">&#x27;-------- ----------------- &#x27;</span></span><br><span class="line">                    <span class="string">&#x27;-------- -------- --------&#x27;</span>)</span><br><span class="line">  <span class="keyword">for</span> stat <span class="keyword">in</span> <span class="built_in">sorted</span>([flow <span class="keyword">for</span> flow <span class="keyword">in</span> body <span class="keyword">if</span> flow.priority == <span class="number">1</span>],</span><br><span class="line">                      key=<span class="keyword">lambda</span> flow: (flow.match[<span class="string">&#x27;in_port&#x27;</span>],</span><br><span class="line">                                        flow.match[<span class="string">&#x27;eth_dst&#x27;</span>])):</span><br><span class="line">    self.logger.info(<span class="string">&#x27;%016x %8x %17s %8x %8d %8d&#x27;</span>,</span><br><span class="line">                      ev.msg.datapath.<span class="built_in">id</span>,</span><br><span class="line">                      stat.match[<span class="string">&#x27;in_port&#x27;</span>], stat.match[<span class="string">&#x27;eth_dst&#x27;</span>],</span><br><span class="line">                      stat.instructions[<span class="number">0</span>].actions[<span class="number">0</span>].port,</span><br><span class="line">                      stat.packet_count, stat.byte_count)</span><br></pre></td></tr></table></figure>
+<p><code>OPFFlowStatsReply</code> 類別的屬性 <code>body</code> 是 <code>OFPFlowStats</code> 的列表，存儲了每個 flow entry 的統計資訊，受 <code>FlowStatsRequest</code> 的約束。</p>
+<p>除了優先權為 0 的 Table-miss flow 外，所有 flow entry 都被選中。按照接收到的 port 和目的 MAC 位址排序，輸出與各個 flow entry match 的封包數和位元組數。</p>
+<p>此處，只將部分值輸出到日誌中，但為了持續收集和分析資訊，可能需要與外部程序連動。在這種情況下，可以將 <code>OFPFlowStatsReply</code> 的內容轉換為 JSON 格式。</p>
+<p>如下:</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line">self.logger.info(<span class="string">&#x27;%s&#x27;</span>, json.dumps(ev.msg.to_jsondict(), </span><br><span class="line">                  ensure_ascii=<span class="literal">True</span>, indent=<span class="number">3</span>, sort_keys=<span class="literal">True</span>))</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="PortStats"><a href="#PortStats" class="headerlink" title="PortStats"></a>PortStats</h4><p>為了從交換器接收回應，要建立一個接收 <code>PortStatsReply</code> 消息的事件處理器。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@set_ev_cls(<span class="params">ofp_event.EventOFPPortStatsReply, MAIN_DISPATCHER</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">_port_stats_reply_handler</span>(<span class="params">self, ev</span>):</span><br><span class="line">  body = ev.msg.body</span><br><span class="line">  self.logger.info(<span class="string">&#x27;datapath port &#x27;</span></span><br><span class="line">                    <span class="string">&#x27;rx-pkts rx-bytes rx-error &#x27;</span></span><br><span class="line">                    <span class="string">&#x27;tx-pkts tx-bytes tx-error&#x27;</span>)</span><br><span class="line">  self.logger.info(<span class="string">&#x27;---------------- -------- &#x27;</span></span><br><span class="line">                    <span class="string">&#x27;-------- -------- -------- &#x27;</span></span><br><span class="line">                    <span class="string">&#x27;-------- -------- --------&#x27;</span>)</span><br><span class="line">  <span class="keyword">for</span> stat <span class="keyword">in</span> <span class="built_in">sorted</span>(body, key=attrgetter(<span class="string">&#x27;port_no&#x27;</span>)):</span><br><span class="line">    self.logger.info(<span class="string">&#x27;%016x %8x %8d %8d %8d %8d %8d %8d&#x27;</span>,</span><br><span class="line">                      ev.msg.datapath.<span class="built_in">id</span>, stat.port_no,</span><br><span class="line">                      stat.rx_packets, stat.rx_bytes, stat.rx_errors,</span><br><span class="line">                      stat.tx_packets, stat.tx_bytes, stat.tx_errors)</span><br></pre></td></tr></table></figure>
+<p><code>OPFPortStatsReply</code> 類別的屬性 body 是 <code>OFPPortStats</code> 的列表。</p>
+<p><code>OFPPortStats</code> 分別儲存 port number、發送&#x2F;接收封包 count、byte count、drop count、error count、frame error count、overrun count、CRC error count 和 collision count 等統計資訊。</p>
+<p>這裡，按照 port number 排序，輸出接收封包計數、接收字元組計數、接收錯誤計數、發送封包計數、發送字元組計數和發送錯誤計數。</p>
+<h4 id="實作監視器，修改-simple-monitor-13-py"><a href="#實作監視器，修改-simple-monitor-13-py" class="headerlink" title="實作監視器，修改 simple_monitor_13.py"></a>實作監視器，修改 simple_monitor_13.py</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SwitchMonitor13</span>(simple_switch_13.SimpleSwitch13):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, *args, **kwargs</span>):</span><br><span class="line">        <span class="built_in">super</span>(SwitchMonitor13, self).__init__(*args, **kwargs)</span><br><span class="line">        self.datapaths = &#123;&#125;</span><br><span class="line">        self.monitor_thread = hub.spawn(self._monitor)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @set_ev_cls(<span class="params">ofp_event.EventOFPStateChange,</span></span></span><br><span class="line"><span class="params"><span class="meta">                [MAIN_DISPATCHER, DEAD_DISPATCHER]</span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_state_change_handler</span>(<span class="params">self, ev</span>):</span><br><span class="line">        datapath = ev.datapath</span><br><span class="line">        <span class="keyword">if</span> ev.state == MAIN_DISPATCHER:</span><br><span class="line">            <span class="keyword">if</span> datapath.<span class="built_in">id</span> <span class="keyword">not</span> <span class="keyword">in</span> self.datapaths:</span><br><span class="line">                self.logger.debug(<span class="string">&#x27;register datapath: %016x&#x27;</span>, datapath.<span class="built_in">id</span>)</span><br><span class="line">                self.datapaths[datapath.<span class="built_in">id</span>] = datapath</span><br><span class="line">        <span class="keyword">elif</span> ev.state == DEAD_DISPATCHER:</span><br><span class="line">            <span class="keyword">if</span> datapath.<span class="built_in">id</span> <span class="keyword">in</span> self.datapaths:</span><br><span class="line">                self.logger.debug(<span class="string">&#x27;unregister datapath: %016x&#x27;</span>, datapath.<span class="built_in">id</span>)</span><br><span class="line">                <span class="keyword">del</span> self.datapaths[datapath.<span class="built_in">id</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_monitor</span>(<span class="params">self</span>):</span><br><span class="line">        count = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">for</span> dp <span class="keyword">in</span> self.datapaths.values():</span><br><span class="line">                self._request_stats(dp)</span><br><span class="line">            <span class="comment"># Print the address table of all switches every 5 seconds</span></span><br><span class="line">            <span class="comment"># Count print times</span></span><br><span class="line">            </span><br><span class="line">            self.logger.info(<span class="string">f&#x27;Print the address table of all switches <span class="subst">&#123;count&#125;</span> times&#x27;</span>)</span><br><span class="line">            count = count + <span class="number">1</span></span><br><span class="line">            hub.sleep(<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_request_stats</span>(<span class="params">self, datapath</span>):</span><br><span class="line">        self.logger.debug(<span class="string">&#x27;send stats request: %016x&#x27;</span>, datapath.<span class="built_in">id</span>)</span><br><span class="line">        ofproto = datapath.ofproto</span><br><span class="line">        parser = datapath.ofproto_parser</span><br><span class="line"></span><br><span class="line">        <span class="comment"># get the switch port information</span></span><br><span class="line">        req_port = parser.OFPPortStatsRequest(datapath, <span class="number">0</span>, ofproto.OFPP_ANY)</span><br><span class="line">        datapath.send_msg(req_port)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Switch MAC Address Table</span></span><br><span class="line">        req_flow = parser.OFPFlowStatsRequest(datapath)</span><br><span class="line">        datapath.send_msg(req_flow)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @set_ev_cls(<span class="params">ofp_event.EventOFPPortStatsReply, MAIN_DISPATCHER</span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_port_stats_reply_handler</span>(<span class="params">self, ev</span>):</span><br><span class="line">        body = ev.msg.body</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Print Switch ID</span></span><br><span class="line">        self.logger.info(<span class="string">&#x27;Switch ID: %d&#x27;</span>, ev.msg.datapath.<span class="built_in">id</span>)</span><br><span class="line">        <span class="comment"># TX and RX packets information of each port in a switch</span></span><br><span class="line">        self.logger.info(<span class="string">&#x27;Port No. Tx-Bytes Rx-Bytes&#x27;</span>)</span><br><span class="line">        self.logger.info(<span class="string">&#x27;-------- -------- --------&#x27;</span>)</span><br><span class="line">        <span class="keyword">for</span> stat <span class="keyword">in</span> <span class="built_in">sorted</span>(body, key=attrgetter(<span class="string">&#x27;port_no&#x27;</span>)):</span><br><span class="line">            self.logger.info(<span class="string">&#x27;%8x %8d %8d&#x27;</span>, stat.port_no, stat.tx_bytes, stat.rx_bytes)</span><br><span class="line">    </span><br><span class="line"><span class="meta">    @set_ev_cls(<span class="params">ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER</span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_flow_stats_reply_handler</span>(<span class="params">self, ev</span>):</span><br><span class="line">        body = ev.msg.body</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Switch MAC Address Table</span></span><br><span class="line">        self.logger.info(<span class="string">&#x27;MAC Address Table Port No.&#x27;</span>)</span><br><span class="line">        self.logger.info(<span class="string">&#x27;----------------- --------&#x27;</span>)</span><br><span class="line">        <span class="keyword">for</span> stat <span class="keyword">in</span> <span class="built_in">sorted</span>([flow <span class="keyword">for</span> flow <span class="keyword">in</span> body <span class="keyword">if</span> flow.priority == <span class="number">1</span>],</span><br><span class="line">                           key=<span class="keyword">lambda</span> flow: (flow.match[<span class="string">&#x27;in_port&#x27;</span>],</span><br><span class="line">                                             flow.match[<span class="string">&#x27;eth_dst&#x27;</span>])):</span><br><span class="line">            self.logger.info(<span class="string">&#x27;%17s %8x&#x27;</span>, stat.match[<span class="string">&#x27;eth_dst&#x27;</span>], stat.match[<span class="string">&#x27;in_port&#x27;</span>])</span><br><span class="line">        self.logger.info(<span class="string">&#x27;***************************\n&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="結果"><a href="#結果" class="headerlink" title="結果"></a>結果</h2><hr>
+<blockquote>
+<p>為了方便執行，使用 makefile 更加快速，相關教學可以參考<a target="_blank" rel="noopener" href="https://mropengate.blogspot.com/2018/01/makefile.html">連結</a></p>
+</blockquote>
+<figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">all:</span></span><br><span class="line">	xterm -e <span class="string">&quot;ryu-manager switchMonitor13.py&quot;</span> &amp;</span><br><span class="line">	sudo mn --topo mytopo --custom ./topo-4sw-6host.py --link tc</span><br></pre></td></tr></table></figure>
+
+<p><strong>利用 mininet 開啟一拓樸</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo mn --topo mytopo --custom ./topo-4sw-6host.py --<span class="built_in">link</span> tc</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/oR8BWhx.png" alt="topo-4sw-6host"></p>
+<p><strong>利用 ryu 進行控制</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ryu-manager switchMonitor13.py</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/wJZR2qV.png" alt="switchMonitor13"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/NYCU/" rel="tag"><i class="fa fa-tag"></i> NYCU</a>
+              <a href="/tags/110-2/" rel="tag"><i class="fa fa-tag"></i> 110-2</a>
+              <a href="/tags/DCN/" rel="tag"><i class="fa fa-tag"></i> DCN</a>
+              <a href="/tags/Project/" rel="tag"><i class="fa fa-tag"></i> Project</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/KenChen/568021659/" rel="prev" title="[資料中心網路技術] Midterm ch1&2&3">
+      <i class="fa fa-chevron-left"></i> [資料中心網路技術] Midterm ch1&2&3
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/KenChen/3803256218/" rel="next" title="[TDD Kata] Potter">
+      [TDD Kata] Potter <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B3%87%E6%96%99%E4%B8%AD%E5%BF%83%E7%B6%B2%E8%B7%AF%E6%8A%80%E8%A1%93-project3-%E5%9C%A8-Mininet-%E4%B8%AD%E5%BB%BA%E7%AB%8B%E6%8B%93%E6%A8%B8%E4%B8%A6%E4%BD%BF%E7%94%A8-SDN-%E6%8E%A7%E5%88%B6%E5%99%A8%E7%9B%A3%E8%A6%96%E7%B3%BB%E7%B5%B1"><span class="nav-number">1.</span> <span class="nav-text">資料中心網路技術 project3 在 Mininet 中建立拓樸並使用 SDN 控制器監視系統</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Mininet-%E4%BB%8B%E7%B4%B9"><span class="nav-number">1.1.</span> <span class="nav-text">Mininet 介紹</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%8C%87%E4%BB%A4"><span class="nav-number">1.1.1.</span> <span class="nav-text">基本指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%B2%E9%9A%8E%E9%81%B8%E9%A0%85"><span class="nav-number">1.1.2.</span> <span class="nav-text">進階選項</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%B7%E8%A1%8C%E6%B8%AC%E8%A9%A6"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">執行測試</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%94%B9%E8%AE%8A%E6%8B%93%E6%A8%B8%E5%A4%A7%E5%B0%8F%E5%92%8C%E5%9E%8B%E6%85%8B"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">改變拓樸大小和型態</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Link-variations"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">Link variations</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A5%E9%A9%9F"><span class="nav-number">1.2.</span> <span class="nav-text">步驟</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8-mininet-%E4%B8%AD%E5%BB%BA%E7%AB%8B%E6%8B%93%E6%A8%B8"><span class="nav-number">1.2.1.</span> <span class="nav-text">在 mininet 中建立拓樸</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E6%8B%93%E6%A8%B8%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">建立拓樸指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E4%B8%80%E6%8B%93%E6%A8%B8"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">建立一拓樸</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9-SDN-controller-code"><span class="nav-number">1.2.2.</span> <span class="nav-text">修改 SDN controller code</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%A6%E4%BD%9C%E4%B8%80%E6%B5%81%E9%87%8F%E7%9B%A3%E8%A6%96%E5%99%A8"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">實作一流量監視器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Fixed-Cycle-Processing"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">Fixed-Cycle Processing</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#FlowStats"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">FlowStats</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PortStats"><span class="nav-number">1.2.2.4.</span> <span class="nav-text">PortStats</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%A6%E4%BD%9C%E7%9B%A3%E8%A6%96%E5%99%A8%EF%BC%8C%E4%BF%AE%E6%94%B9-simple-monitor-13-py"><span class="nav-number">1.2.2.5.</span> <span class="nav-text">實作監視器，修改 simple_monitor_13.py</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B5%90%E6%9E%9C"><span class="nav-number">1.3.</span> <span class="nav-text">結果</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ken Chen"
+      src="https://i.imgur.com/C7LzYau.jpg">
+  <p class="site-author-name" itemprop="name">Ken Chen</p>
+  <div class="site-description" itemprop="description">初學者</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kenchen879" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kenchen879" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ken917088@gmail.com" title="E-Mail → mailto:ken917088@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/profile.php?id=100000236840206" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;profile.php?id&#x3D;100000236840206" rel="noopener" target="_blank"><i class="fab fa-facebook fa-fw"></i>FB Page</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.youtube.com/channel/UCyILH0iUe8_gSOWnDlp4dIQ/playlists" title="YouTube → https:&#x2F;&#x2F;www.youtube.com&#x2F;channel&#x2F;UCyILH0iUe8_gSOWnDlp4dIQ&#x2F;playlists" rel="noopener" target="_blank"><i class="fab fa-youtube fa-fw"></i>YouTube</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ken Chen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 超強力驅動
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="訪客總數">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="總瀏覽次數">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://kenken-2.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://kenchen.me/KenChen/690226879/";
+    this.page.identifier = "KenChen/690226879/";
+    this.page.title = "[資料中心網路技術] Project3 在 Mininet 中建立拓樸並使用 SDN 控制器監視系統";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://kenken-2.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

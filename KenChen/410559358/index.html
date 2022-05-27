@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://i.imgur.com/oN6kBF1.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://i.imgur.com/oN6kBF1.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://i.imgur.com/oN6kBF1.png">
+  <link rel="mask-icon" href="https://i.imgur.com/oN6kBF1.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kenchen.me","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false,"width":240},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="行動網路安全 project1 Anomaly Detector in 5G Core Network 這是 NYCU 110-2 行動網路安全的第一個 project，在 5G 的核心網路進行異常偵測，在此之前其實我對 5G 沒有很理解，只知道他比 4G 快、穩、大，他所應用到的技術該如何實現，其實我也是很不懂，所以這篇文不只有 project1 的實作步驟，也會有 5G 相關的概念。 介紹 目">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[行動網路安全] Project1 Anomaly Detector in 5G Core Network">
+<meta property="og:url" content="https://kenchen.me/KenChen/410559358/index.html">
+<meta property="og:site_name" content="KENKEN">
+<meta property="og:description" content="行動網路安全 project1 Anomaly Detector in 5G Core Network 這是 NYCU 110-2 行動網路安全的第一個 project，在 5G 的核心網路進行異常偵測，在此之前其實我對 5G 沒有很理解，只知道他比 4G 快、穩、大，他所應用到的技術該如何實現，其實我也是很不懂，所以這篇文不只有 project1 的實作步驟，也會有 5G 相關的概念。 介紹 目">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://i.imgur.com/IMQqLt9.png">
+<meta property="article:published_time" content="2022-03-28T12:08:47.000Z">
+<meta property="article:modified_time" content="2022-05-27T15:11:52.977Z">
+<meta property="article:author" content="Ken Chen">
+<meta property="article:tag" content="NYCU">
+<meta property="article:tag" content="110-2">
+<meta property="article:tag" content="Project">
+<meta property="article:tag" content="MNS">
+<meta property="article:tag" content="5G">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.imgur.com/IMQqLt9.png">
+
+<link rel="canonical" href="https://kenchen.me/KenChen/410559358/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-TW'
+  };
+</script>
+
+  <title>[行動網路安全] Project1 Anomaly Detector in 5G Core Network | KENKEN</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">KENKEN</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>時間線<span class="badge">11</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>關於我</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">19</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分類<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>網站地圖</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/kenchen879" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://kenchen.me/KenChen/410559358/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.imgur.com/C7LzYau.jpg">
+      <meta itemprop="name" content="Ken Chen">
+      <meta itemprop="description" content="初學者">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KENKEN">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [行動網路安全] Project1 Anomaly Detector in 5G Core Network
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+
+              <time title="創建時間：2022-03-28 20:08:47" itemprop="dateCreated datePublished" datetime="2022-03-28T20:08:47+08:00">2022-03-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2022-05-27 23:11:52" itemprop="dateModified" datetime="2022-05-27T23:11:52+08:00">2022-05-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分類於</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NYCU/" itemprop="url" rel="index"><span itemprop="name">NYCU</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NYCU/110-2/" itemprop="url" rel="index"><span itemprop="name">110-2</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NYCU/110-2/MNS/" itemprop="url" rel="index"><span itemprop="name">MNS</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="閱讀次數" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">閱讀次數：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/KenChen/410559358/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="KenChen/410559358/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="行動網路安全-project1-Anomaly-Detector-in-5G-Core-Network"><a href="#行動網路安全-project1-Anomaly-Detector-in-5G-Core-Network" class="headerlink" title="行動網路安全 project1 Anomaly Detector in 5G Core Network"></a>行動網路安全 project1 Anomaly Detector in 5G Core Network</h1><hr>
+<p>這是 NYCU 110-2 行動網路安全的第一個 project，在 5G 的核心網路進行異常偵測，在此之前其實我對 5G 沒有很理解，只知道他比 4G 快、穩、大，他所應用到的技術該如何實現，其實我也是很不懂，所以這篇文不只有 project1 的實作步驟，也會有 5G 相關的概念。</p>
+<h2 id="介紹"><a href="#介紹" class="headerlink" title="介紹"></a>介紹</h2><hr>
+<h3 id="目標"><a href="#目標" class="headerlink" title="目標"></a>目標</h3><ul>
+<li>了解 5G AKA authentication 程序</li>
+<li>學會<ul>
+<li>5G AKA authentication</li>
+<li>5G SBA operation</li>
+<li>free5GC</li>
+<li>golang programming</li>
+<li>reading 3GPP Spec</li>
+</ul>
+</li>
+</ul>
+<h3 id="5G-AKA-authentication"><a href="#5G-AKA-authentication" class="headerlink" title="5G AKA authentication"></a>5G AKA authentication</h3><p>在介紹 5G 前，先來介紹 4G 的認證安全機制。</p>
+<h4 id="4G-認證安全機制"><a href="#4G-認證安全機制" class="headerlink" title="4G 認證安全機制"></a>4G 認證安全機制</h4><p>行動通訊網路安全以身分認證(Authectication)與金鑰管理(Key management)為基礎，在用戶端和網路之間進行雙向身分認證(MuutalAuthentication)，並產生加密金鑰來保護控制面(Control Plane)和用戶面(User Plane)資料，4G 採用 EPS-AKA(Evolved Packet System – Authentication and Key Agreement) 方式完成 4G 認證。</p>
+<p>完成身分認證有三個主要單元</p>
+<ul>
+<li>UE(User Equipment): 用戶設備，包含 1 塊通用體積電路卡(UICC)，其中包含至少 1 塊用戶身分識別模塊(USIM)應用程序，儲存用戶與 HN 共享的加密金鑰 K，稱為根金鑰(Root Key)。</li>
+<li>SN(Serving Network): 服務網路，主要由 4G 基地台(Evolved NodeB, eNB)和移動管理實體(Mobility ManagementEntity, MME)組成，提供無線電網路接入與訊息控制等服務。</li>
+<li>HN(Home Network): 本地網路，由本地用戶伺服器(HomeSubscribe Server, HSS)組成，HSS 儲存用戶資料及憑證，提供用戶身分認證和訪問授權(Authorization)等服務。HSS 包含認證中心(Authentication Center, AuC)，提供金鑰 K 儲存功能。</li>
+</ul>
+<p>依據 <code>TS 33.401</code>第六章內容，EPS-AKA 程序如下。<br><img src="https://i.imgur.com/IMQqLt9.png" alt="EPS-AKA"></p>
+<ol>
+<li>UE 將 <code>Attach Request</code> 消息，以無線電資源控制(Radio Resource Control, RRC) 程序傳送給 MME 後，觸發 EPS-AKA。</li>
+<li>MME 向 HSS 發送「認證請求(<code>Authentication Request</code>)」消息，包含 UE 標識(International Mobile Subscriber Identity, IMSI)和服務網路標識符(SN id)。</li>
+<li>…</li>
+</ol>
+<h4 id="5G-架構"><a href="#5G-架構" class="headerlink" title="5G 架構"></a>5G 架構</h4><p>在 5G 架構中，由具有不同功能的控制平面和使用者平面網路功能(Network Functions, NFs)組成。</p>
+<p>5G 網路還需實現</p>
+<ul>
+<li>UE 通訊、儲存其訂閱和憑證</li>
+<li>允許存取外部網路</li>
+<li>管理網路存取以及行動網路存取</li>
+</ul>
+<h2 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h2><hr>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://nccnews.com.tw/202010/ch4.html">5G行動通訊網路安全：認證安全機制淺談</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/NYCU/" rel="tag"><i class="fa fa-tag"></i> NYCU</a>
+              <a href="/tags/110-2/" rel="tag"><i class="fa fa-tag"></i> 110-2</a>
+              <a href="/tags/Project/" rel="tag"><i class="fa fa-tag"></i> Project</a>
+              <a href="/tags/MNS/" rel="tag"><i class="fa fa-tag"></i> MNS</a>
+              <a href="/tags/5G/" rel="tag"><i class="fa fa-tag"></i> 5G</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/KenChen/343485952/" rel="prev" title="[Paper(一)] Leveraging Cloud Based Big Data Analytics In Knowledge Management For Enhanced Decision Making In Organization">
+      <i class="fa fa-chevron-left"></i> [Paper(一)] Leveraging Cloud Based Big Data Analytics In Knowledge Management For Enhanced Decision Making In Organization
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/KenChen/343485956/" rel="next" title="[雲原生] Cloud Native 相關概念">
+      [雲原生] Cloud Native 相關概念 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A1%8C%E5%8B%95%E7%B6%B2%E8%B7%AF%E5%AE%89%E5%85%A8-project1-Anomaly-Detector-in-5G-Core-Network"><span class="nav-number">1.</span> <span class="nav-text">行動網路安全 project1 Anomaly Detector in 5G Core Network</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8B%E7%B4%B9"><span class="nav-number">1.1.</span> <span class="nav-text">介紹</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E6%A8%99"><span class="nav-number">1.1.1.</span> <span class="nav-text">目標</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5G-AKA-authentication"><span class="nav-number">1.1.2.</span> <span class="nav-text">5G AKA authentication</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4G-%E8%AA%8D%E8%AD%89%E5%AE%89%E5%85%A8%E6%A9%9F%E5%88%B6"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">4G 認證安全機制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5G-%E6%9E%B6%E6%A7%8B"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">5G 架構</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%83%E8%80%83"><span class="nav-number">1.2.</span> <span class="nav-text">參考</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ken Chen"
+      src="https://i.imgur.com/C7LzYau.jpg">
+  <p class="site-author-name" itemprop="name">Ken Chen</p>
+  <div class="site-description" itemprop="description">初學者</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kenchen879" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kenchen879" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ken917088@gmail.com" title="E-Mail → mailto:ken917088@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/profile.php?id=100000236840206" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;profile.php?id&#x3D;100000236840206" rel="noopener" target="_blank"><i class="fab fa-facebook fa-fw"></i>FB Page</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.youtube.com/channel/UCyILH0iUe8_gSOWnDlp4dIQ/playlists" title="YouTube → https:&#x2F;&#x2F;www.youtube.com&#x2F;channel&#x2F;UCyILH0iUe8_gSOWnDlp4dIQ&#x2F;playlists" rel="noopener" target="_blank"><i class="fab fa-youtube fa-fw"></i>YouTube</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ken Chen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 超強力驅動
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="訪客總數">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="總瀏覽次數">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://kenken-2.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://kenchen.me/KenChen/410559358/";
+    this.page.identifier = "KenChen/410559358/";
+    this.page.title = "[行動網路安全] Project1 Anomaly Detector in 5G Core Network";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://kenken-2.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>
